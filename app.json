@@ -31,8 +31,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "3680c3e9-42e5-4a9d-b03f-98a6a8e55b62"
+        "projectId": "e5c6b4bb-2fa3-4f39-8b53-011f7f98cd8b"
       }
-    }
+    },
+    "owner": "calebngeno"
   }
 }
