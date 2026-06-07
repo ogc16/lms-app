@@ -19,7 +19,7 @@ export default function AppNavigator() {
           headerStyle: {
             backgroundColor: '#2C3E50',
             elevation: 0,
-            shadowOpacity: 0,
+            boxShadow: 'none',
           },
           headerTintColor: '#fff',
           headerTitleStyle: {
@@ -42,7 +42,7 @@ export default function AppNavigator() {
             headerStyle: {
               backgroundColor: route.params?.courseId === 'python' ? '#3776AB' : '#00599C',
               elevation: 0,
-              shadowOpacity: 0,
+              boxShadow: 'none',
             },
           })}
         />
@@ -54,7 +54,7 @@ export default function AppNavigator() {
             headerStyle: {
               backgroundColor: '#2C3E50',
               elevation: 0,
-              shadowOpacity: 0,
+              boxShadow: 'none',
             },
           })}
         />
@@ -66,7 +66,7 @@ export default function AppNavigator() {
             headerStyle: {
               backgroundColor: '#2C3E50',
               elevation: 0,
-              shadowOpacity: 0,
+              boxShadow: 'none',
             },
           }}
         />
@@ -78,7 +78,7 @@ export default function AppNavigator() {
             headerStyle: {
               backgroundColor: '#4A90D9',
               elevation: 0,
-              shadowOpacity: 0,
+              boxShadow: 'none',
             },
           }}
         />
