@@ -40,6 +40,14 @@ yarn-error.*
 /ios
 /android
 
+# build artifacts
+*.apk
+*.aab
+
+# IDE
+.vscode/
+.idea/
+
 # IDE
 .vscode/
 .idea/
