@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import PropTypes from 'prop-types';
 import { useProgress } from '../context/ProgressContext';
 import { pythonCourse } from '../data/pythonCourse';
 import { cppCourse } from '../data/cppCourse';
@@ -234,3 +235,14 @@ const styles = StyleSheet.create({
     color: '#F39C12',
   },
 });
+
+CourseDetailScreen.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+  }).isRequired,
+  route: PropTypes.shape({
+    params: PropTypes.shape({
+      courseId: PropTypes.string,
+    }).isRequired,
+  }).isRequired,
+};

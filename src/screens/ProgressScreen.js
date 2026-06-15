@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import PropTypes from 'prop-types';
 import { useProgress } from '../context/ProgressContext';
 import { pythonCourse } from '../data/pythonCourse';
 import { cppCourse } from '../data/cppCourse';
@@ -255,3 +256,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
+
+ProgressScreen.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+  }).isRequired,
+};

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import PropTypes from 'prop-types';
 import { useProgress } from '../context/ProgressContext';
 import { pythonCourse } from '../data/pythonCourse';
 import { cppCourse } from '../data/cppCourse';
@@ -77,7 +78,7 @@ export default function LessonScreen({ route, navigation }) {
               </TouchableOpacity>
             )}
             {lesson.codeExamples.map((example, index) => (
-              <View key={index} style={styles.codeCard}>
+              <View key={example.title} style={styles.codeCard}>
                 <TouchableOpacity
                   style={styles.codeHeader}
                   onPress={() => toggleCode(index)}
@@ -230,3 +231,18 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 });
+
+LessonScreen.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+    replace: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired,
+  }).isRequired,
+  route: PropTypes.shape({
+    params: PropTypes.shape({
+      courseId: PropTypes.string.isRequired,
+      chapterId: PropTypes.string.isRequired,
+      lessonId: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
+};

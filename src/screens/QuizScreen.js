@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Animated } from 'react-native';
+import PropTypes from 'prop-types';
 import { useProgress } from '../context/ProgressContext';
 import { pythonCourse } from '../data/pythonCourse';
 import { cppCourse } from '../data/cppCourse';
@@ -91,7 +92,7 @@ export default function QuizScreen({ route, navigation }) {
 
           return (
             <TouchableOpacity
-              key={idx}
+              key={option}
               style={optionStyle}
               onPress={() => handleAnswer(currentQuestion, idx)}
               activeOpacity={0.7}
@@ -135,11 +136,11 @@ export default function QuizScreen({ route, navigation }) {
 
           <View style={styles.reviewSection}>
             <Text style={styles.reviewTitle}>Review Answers</Text>
-            {questions.map((q, idx) => {
+              {questions.map((q, idx) => {
               const selected = selectedAnswers[idx];
               const isCorrect = selected === q.correct;
               return (
-                <View key={idx} style={styles.reviewItem}>
+                <View key={q.question} style={styles.reviewItem}>
                   <Text style={styles.reviewIndicator}>
                     {isCorrect ? '✅' : '❌'}
                   </Text>
@@ -179,9 +180,9 @@ export default function QuizScreen({ route, navigation }) {
     <View style={styles.container}>
       <View style={styles.progressHeader}>
         <View style={styles.progressBar}>
-          {questions.map((_, idx) => (
+          {questions.map((q, idx) => (
             <View
-              key={idx}
+              key={q.question}
               style={[
                 styles.progressDot,
                 idx <= currentQuestion && styles.progressDotActive,
@@ -458,3 +459,16 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
 });
+
+QuizScreen.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired,
+  }).isRequired,
+  route: PropTypes.shape({
+    params: PropTypes.shape({
+      courseId: PropTypes.string.isRequired,
+      chapterId: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
+};

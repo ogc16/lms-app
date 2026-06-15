@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
+import PropTypes from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProgressContext = createContext();
@@ -6,6 +7,12 @@ const ProgressContext = createContext();
 const STORAGE_KEY = '@lms_progress';
 
 export function ProgressProvider({ children }) {
+  const value = useMemo(() => ({
+    progress, loading,
+    markLessonComplete, markQuizScore,
+    isLessonComplete, getQuizScore,
+    getCourseProgress, resetProgress
+  }), [progress, loading, markLessonComplete, markQuizScore, isLessonComplete, getQuizScore, getCourseProgress, resetProgress]);
   const [progress, setProgress] = useState({});
   const [loading, setLoading] = useState(true);
 
@@ -79,16 +86,15 @@ export function ProgressProvider({ children }) {
   }, []);
 
   return (
-    <ProgressContext.Provider value={{
-      progress, loading,
-      markLessonComplete, markQuizScore,
-      isLessonComplete, getQuizScore,
-      getCourseProgress, resetProgress
-    }}>
+    <ProgressContext.Provider value={value}>
       {children}
     </ProgressContext.Provider>
   );
 }
+
+ProgressProvider.propTypes = {
+  children: PropTypes.node,
+};
 
 export function useProgress() {
   const context = useContext(ProgressContext);
