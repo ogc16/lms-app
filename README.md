@@ -1,34 +1,31 @@
-# 📚 CodeLMS - Learn Python & C++
+# 📚 MyLec
 
-A mobile learning app built with [Expo React Native](https://expo.dev) that teaches Python and C++ programming through interactive lessons, code examples, and quizzes — similar to SoloLearn.
+A mobile learning app built with [Expo React Native](https://expo.dev) that teaches programming and computer science through interactive lessons, code examples, and quizzes.
 
 ## Features
 
-- **Two Courses**: Python and C++ with structured chapters
+- **13 Courses**: Python, C++, Cybersecurity, Ethical Hacker, BIT Core Units, Go, Swift, C#, Visual Basic, Web Development, SQL, Next.js, and React Native
 - **Interactive Lessons**: Step-by-step lessons with code examples
-- **Dark-mode Code Blocks**: Syntax-highlighted code examples
 - **Chapter Quizzes**: Multiple-choice quizzes with instant feedback and review
 - **Progress Tracking**: Auto-saves completed lessons and quiz scores locally
 - **Progress Dashboard**: Visual progress bars and chapter completion indicators
-
-## Screenshots
-
-| Home | Course Detail | Lesson | Quiz |
-|------|--------------|--------|------|
-| Course selection & progress | Chapter & lesson list | Content + code examples | Interactive quiz |
+- **Profile Screen**: Stats, course breakdown, dark mode toggle
+- **Theme Toggle**: Light/dark mode across all screens
+- **Certificates**: View and download PDF certificates on course completion
 
 ## Tech Stack
 
 - **Framework**: [Expo](https://expo.dev) (SDK 54) + React Native
-- **Navigation**: React Navigation (Stack)
+- **Navigation**: React Navigation (Stack + Bottom Tabs)
 - **Storage**: AsyncStorage (local progress persistence)
-- **Build**: EAS Build (Android APK)
+- **Build**: EAS Build
+- **PDF Generation**: expo-print
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - [Expo CLI](https://docs.expo.dev/get-started/installation/)
 - Android device/emulator (for APK) or Expo Go app
 
@@ -56,29 +53,23 @@ npm install -g eas-cli
 npx eas build --platform android --profile preview
 ```
 
-## Download APK
+## Courses
 
-Download the latest APK from the [Releases](https://github.com/ogc16/lms-app/releases) page.
-
-## Course Structure
-
-### Python
-1. Introduction to Python
-2. Variables & Data Types
-3. Control Flow
-4. Functions
-5. Lists & Dictionaries
-6. Object-Oriented Programming
-7. Advanced Topics
-
-### C++
-1. Introduction to C++
-2. Variables & Data Types
-3. Control Flow
-4. Functions
-5. Arrays & Strings
-6. Object-Oriented Programming
-7. Pointers & Memory
+| Course | Icon | Chapters |
+|--------|------|----------|
+| Python | 🐍 | 7 |
+| C++ | ⚡ | 7 |
+| Introduction to Cybersecurity | 🔒 | 5 |
+| Ethical Hacker | 🛡️ | 5 |
+| BIT Core Units | 🎓 | 8 |
+| Go | 💙 | 3 |
+| Swift | 🕊️ | 3 |
+| C# | 🔷 | 3 |
+| Visual Basic | 💠 | 3 |
+| Web Development | 🌐 | 4 |
+| Database - SQL | 🗄️ | 3 |
+| Next.js | ▲ | 4 |
+| React Native | 📱 | 4 |
 
 ## License
 

@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "CodeLMS - Learn Python & C++",
-    "slug": "lms-app",
+    "name": "MyLec",
+    "slug": "mylec",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "scheme": "codelms",
+    "scheme": "mylec",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.codelms.app"
+      "bundleIdentifier": "com.mylec.app"
     },
     "android": {
       "adaptiveIcon": {
@@ -18,7 +18,7 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "package": "com.codelms.app",
+      "package": "com.mylec.app",
       "versionCode": 1,
       "permissions": []
     },

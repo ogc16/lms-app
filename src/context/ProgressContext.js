@@ -7,12 +7,6 @@ const ProgressContext = createContext();
 const STORAGE_KEY = '@lms_progress';
 
 export function ProgressProvider({ children }) {
-  const value = useMemo(() => ({
-    progress, loading,
-    markLessonComplete, markQuizScore,
-    isLessonComplete, getQuizScore,
-    getCourseProgress, resetProgress
-  }), [progress, loading, markLessonComplete, markQuizScore, isLessonComplete, getQuizScore, getCourseProgress, resetProgress]);
   const [progress, setProgress] = useState({});
   const [loading, setLoading] = useState(true);
 
@@ -80,10 +74,27 @@ export function ProgressProvider({ children }) {
     return total > 0 ? Math.round((completed / total) * 100) : 0;
   }, [progress]);
 
+  const isCourseComplete = useCallback((courseId, chapters) => {
+    for (const ch of chapters) {
+      for (const lesson of ch.lessons) {
+        if (!progress[`${courseId}_${lesson.id}`]) return false;
+      }
+      if (ch.quiz && !progress[`quiz_${courseId}_${ch.id}`]) return false;
+    }
+    return true;
+  }, [progress]);
+
   const resetProgress = useCallback(async () => {
     setProgress({});
     await AsyncStorage.removeItem(STORAGE_KEY);
   }, []);
+
+  const value = useMemo(() => ({
+    progress, loading,
+    markLessonComplete, markQuizScore,
+    isLessonComplete, getQuizScore,
+    getCourseProgress, isCourseComplete, resetProgress
+  }), [progress, loading, markLessonComplete, markQuizScore, isLessonComplete, getQuizScore, getCourseProgress, isCourseComplete, resetProgress]);
 
   return (
     <ProgressContext.Provider value={value}>

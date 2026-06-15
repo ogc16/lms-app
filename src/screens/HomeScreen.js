@@ -2,58 +2,78 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
 import { useProgress } from '../context/ProgressContext';
+import { useTheme } from '../context/ThemeContext';
 import { pythonCourse } from '../data/pythonCourse';
 import { cppCourse } from '../data/cppCourse';
+import { cybersecurityCourse } from '../data/cybersecurityCourse';
+import { ethicalhackerCourse } from '../data/ethicalhackerCourse';
+import { bitCoreCourse } from '../data/bitCoreCourse';
+import { goCourse } from '../data/goCourse';
+import { swiftCourse } from '../data/swiftCourse';
+import { csharpCourse } from '../data/csharpCourse';
+import { vbCourse } from '../data/vbCourse';
+import { webDevCourse } from '../data/webDevCourse';
+import { sqlCourse } from '../data/sqlCourse';
+import { nextjsCourse } from '../data/nextjsCourse';
+import { reactNativeCourse } from '../data/reactNativeCourse';
 
-const courses = [pythonCourse, cppCourse];
+const courses = [pythonCourse, cppCourse, cybersecurityCourse, ethicalhackerCourse, bitCoreCourse, goCourse, swiftCourse, csharpCourse, vbCourse, webDevCourse, sqlCourse, nextjsCourse, reactNativeCourse];
 
 export default function HomeScreen({ navigation }) {
+  const { theme } = useTheme();
   const { getCourseProgress } = useProgress();
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.logo}>📚 CodeLMS</Text>
+    <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
+      <View style={[styles.header, { backgroundColor: theme.headerBg }]}>
+        <Text style={styles.logo}>📚 MyLec</Text>
         <Text style={styles.tagline}>Learn Python & C++</Text>
         <Text style={styles.subtitle}>Interactive courses with lessons and quizzes</Text>
       </View>
 
       <View style={styles.coursesSection}>
-        <Text style={styles.sectionTitle}>Available Courses</Text>
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>Available Courses</Text>
         {courses.map((course) => {
           const progress = getCourseProgress(course.id, course.chapters);
           return (
             <TouchableOpacity
               key={course.id}
-              style={[styles.courseCard, { borderLeftColor: course.color }]}
+              style={[styles.courseCard, { backgroundColor: theme.surface, borderLeftColor: course.color }]}
               onPress={() => navigation.navigate('CourseDetail', { courseId: course.id })}
               activeOpacity={0.7}
             >
               <View style={styles.courseHeader}>
                 <Text style={styles.courseIcon}>{course.icon}</Text>
                 <View style={styles.courseInfo}>
-                  <Text style={styles.courseTitle}>{course.title}</Text>
-                  <Text style={styles.courseSubtitle}>{course.subtitle}</Text>
+                  <Text style={[styles.courseTitle, { color: theme.text }]}>{course.title}</Text>
+                  <Text style={[styles.courseSubtitle, { color: theme.textSecondary }]}>{course.subtitle}</Text>
                 </View>
               </View>
-              <Text style={styles.courseDesc} numberOfLines={2}>{course.description}</Text>
-              <View style={styles.progressBarContainer}>
+              <Text style={[styles.courseDesc, { color: theme.textSecondary }]} numberOfLines={2}>{course.description}</Text>
+              <View style={[styles.progressBarContainer, { backgroundColor: theme.border }]}>
                 <View style={[styles.progressBar, { width: `${progress}%`, backgroundColor: course.color }]} />
               </View>
-              <Text style={styles.progressText}>{progress}% complete</Text>
+              <Text style={[styles.progressText, { color: theme.textSecondary }]}>{progress}% complete</Text>
             </TouchableOpacity>
           );
         })}
       </View>
 
       <View style={styles.quickActions}>
-        <Text style={styles.sectionTitle}>Quick Actions</Text>
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>Quick Actions</Text>
         <TouchableOpacity
-          style={styles.actionButton}
+          style={[styles.actionButton, { backgroundColor: theme.surface }]}
           onPress={() => navigation.navigate('Progress')}
         >
           <Text style={styles.actionIcon}>📊</Text>
-          <Text style={styles.actionText}>View My Progress</Text>
+          <Text style={[styles.actionText, { color: theme.text }]}>View My Progress</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.actionButton, { backgroundColor: theme.surface }]}
+          onPress={() => navigation.navigate('Profile')}
+        >
+          <Text style={styles.actionIcon}>👤</Text>
+          <Text style={[styles.actionText, { color: theme.text }]}>My Profile</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -63,10 +83,8 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F7FA',
   },
   header: {
-    backgroundColor: '#4A90D9',
     paddingHorizontal: 24,
     paddingTop: 60,
     paddingBottom: 32,
@@ -94,11 +112,9 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#2C3E50',
     marginBottom: 16,
   },
   courseCard: {
-    backgroundColor: '#fff',
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
@@ -121,22 +137,18 @@ const styles = StyleSheet.create({
   courseTitle: {
     fontSize: 22,
     fontWeight: '700',
-    color: '#2C3E50',
   },
   courseSubtitle: {
     fontSize: 14,
-    color: '#7F8C8D',
     marginTop: 2,
   },
   courseDesc: {
     fontSize: 14,
-    color: '#666',
     lineHeight: 20,
     marginBottom: 12,
   },
   progressBarContainer: {
     height: 6,
-    backgroundColor: '#E8EDF2',
     borderRadius: 3,
     marginBottom: 6,
   },
@@ -146,7 +158,6 @@ const styles = StyleSheet.create({
   },
   progressText: {
     fontSize: 12,
-    color: '#95A5A6',
   },
   quickActions: {
     paddingHorizontal: 20,
@@ -155,7 +166,6 @@ const styles = StyleSheet.create({
   actionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 16,
     boxShadow: '0px 1px 4px rgba(0, 0, 0, 0.08)',
@@ -168,7 +178,6 @@ const styles = StyleSheet.create({
   actionText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2C3E50',
   },
 });
 

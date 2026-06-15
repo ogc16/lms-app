@@ -2,15 +2,28 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
 import { useProgress } from '../context/ProgressContext';
+import { useTheme } from '../context/ThemeContext';
 import { pythonCourse } from '../data/pythonCourse';
 import { cppCourse } from '../data/cppCourse';
+import { cybersecurityCourse } from '../data/cybersecurityCourse';
+import { ethicalhackerCourse } from '../data/ethicalhackerCourse';
+import { bitCoreCourse } from '../data/bitCoreCourse';
+import { goCourse } from '../data/goCourse';
+import { swiftCourse } from '../data/swiftCourse';
+import { csharpCourse } from '../data/csharpCourse';
+import { vbCourse } from '../data/vbCourse';
+import { webDevCourse } from '../data/webDevCourse';
+import { sqlCourse } from '../data/sqlCourse';
+import { nextjsCourse } from '../data/nextjsCourse';
+import { reactNativeCourse } from '../data/reactNativeCourse';
 
-const courses = { python: pythonCourse, cpp: cppCourse };
+const courses = { python: pythonCourse, cpp: cppCourse, cybersecurity: cybersecurityCourse, ethicalhacker: ethicalhackerCourse, bit_core: bitCoreCourse, go: goCourse, swift: swiftCourse, csharp: csharpCourse, vb: vbCourse, web_dev: webDevCourse, sql: sqlCourse, nextjs: nextjsCourse, react_native: reactNativeCourse };
 
 export default function CourseDetailScreen({ route, navigation }) {
   const { courseId } = route.params;
   const course = courses[courseId];
-  const { isLessonComplete, getQuizScore, getCourseProgress } = useProgress();
+  const { isLessonComplete, getQuizScore, getCourseProgress, isCourseComplete } = useProgress();
+  const { theme } = useTheme();
 
   if (!course) {
     return (
@@ -21,9 +34,10 @@ export default function CourseDetailScreen({ route, navigation }) {
   }
 
   const overallProgress = getCourseProgress(course.id, course.chapters);
+  const completed = isCourseComplete(course.id, course.chapters);
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={[styles.header, { backgroundColor: course.color }]}>
         <Text style={styles.courseIcon}>{course.icon}</Text>
         <Text style={styles.courseTitle}>{course.title}</Text>
@@ -33,6 +47,21 @@ export default function CourseDetailScreen({ route, navigation }) {
         </View>
         <Text style={styles.progressText}>{overallProgress}% complete</Text>
       </View>
+
+      {completed && (
+        <TouchableOpacity
+          style={styles.certificateBanner}
+          onPress={() => navigation.navigate('Certificate', { courseId: course.id })}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.certificateIcon}>🏆</Text>
+          <View style={styles.certificateBannerText}>
+            <Text style={styles.certificateBannerTitle}>Course Completed!</Text>
+            <Text style={styles.certificateBannerSubtitle}>Tap to view your certificate</Text>
+          </View>
+          <Text style={styles.certificateArrow}>›</Text>
+        </TouchableOpacity>
+      )}
 
       <View style={styles.chaptersContainer}>
         {course.chapters.map((chapter, chIndex) => {
@@ -101,7 +130,6 @@ export default function CourseDetailScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F7FA',
   },
   errorContainer: {
     flex: 1,
@@ -145,6 +173,43 @@ const styles = StyleSheet.create({
   progressText: {
     fontSize: 13,
     color: '#E8F0FE',
+  },
+  certificateBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 16,
+    marginTop: 16,
+    padding: 16,
+    backgroundColor: '#f0ebc2',
+    borderRadius: 16,
+    borderWidth: 2,
+    borderColor: '#5e0e08',
+    elevation: 4,
+    boxShadow: '0px 2px 12px rgba(94, 14, 8, 0.15)',
+  },
+  certificateIcon: {
+    fontSize: 36,
+    marginRight: 14,
+  },
+  certificateBannerText: {
+    flex: 1,
+  },
+  certificateBannerTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#5e0e08',
+  },
+  certificateBannerSubtitle: {
+    fontSize: 13,
+    color: '#5e0e08',
+    marginTop: 2,
+    opacity: 0.8,
+  },
+  certificateArrow: {
+    fontSize: 24,
+    color: '#5e0e08',
+    fontWeight: '700',
+    marginLeft: 8,
   },
   chaptersContainer: {
     padding: 16,
