@@ -2,6 +2,7 @@
 
 # dependencies
 node_modules/
+deploy.tar.gz
 
 # Expo
 .expo/
