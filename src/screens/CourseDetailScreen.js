@@ -16,8 +16,11 @@ import { webDevCourse } from '../data/webDevCourse';
 import { sqlCourse } from '../data/sqlCourse';
 import { nextjsCourse } from '../data/nextjsCourse';
 import { reactNativeCourse } from '../data/reactNativeCourse';
+import { financialRecordsCourse } from '../data/financialRecordsCourse';
+import { operationsManagementCourse } from '../data/operationsManagementCourse';
+import { financialAccountingCourse } from '../data/financialAccountingCourse';
 
-const courses = { python: pythonCourse, cpp: cppCourse, cybersecurity: cybersecurityCourse, ethicalhacker: ethicalhackerCourse, bit_core: bitCoreCourse, go: goCourse, swift: swiftCourse, csharp: csharpCourse, vb: vbCourse, web_dev: webDevCourse, sql: sqlCourse, nextjs: nextjsCourse, react_native: reactNativeCourse };
+const courses = { python: pythonCourse, cpp: cppCourse, cybersecurity: cybersecurityCourse, ethicalhacker: ethicalhackerCourse, bit_core: bitCoreCourse, go: goCourse, swift: swiftCourse, csharp: csharpCourse, vb: vbCourse, web_dev: webDevCourse, sql: sqlCourse, nextjs: nextjsCourse, react_native: reactNativeCourse, financial_records: financialRecordsCourse, operations_management: operationsManagementCourse, financial_accounting: financialAccountingCourse };
 
 export default function CourseDetailScreen({ route, navigation }) {
   const { courseId } = route.params;

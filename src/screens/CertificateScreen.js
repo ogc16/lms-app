@@ -16,8 +16,11 @@ import { webDevCourse } from '../data/webDevCourse';
 import { sqlCourse } from '../data/sqlCourse';
 import { nextjsCourse } from '../data/nextjsCourse';
 import { reactNativeCourse } from '../data/reactNativeCourse';
+import { financialRecordsCourse } from '../data/financialRecordsCourse';
+import { operationsManagementCourse } from '../data/operationsManagementCourse';
+import { financialAccountingCourse } from '../data/financialAccountingCourse';
 
-const courses = { python: pythonCourse, cpp: cppCourse, cybersecurity: cybersecurityCourse, ethicalhacker: ethicalhackerCourse, bit_core: bitCoreCourse, go: goCourse, swift: swiftCourse, csharp: csharpCourse, vb: vbCourse, web_dev: webDevCourse, sql: sqlCourse, nextjs: nextjsCourse, react_native: reactNativeCourse };
+const courses = { python: pythonCourse, cpp: cppCourse, cybersecurity: cybersecurityCourse, ethicalhacker: ethicalhackerCourse, bit_core: bitCoreCourse, go: goCourse, swift: swiftCourse, csharp: csharpCourse, vb: vbCourse, web_dev: webDevCourse, sql: sqlCourse, nextjs: nextjsCourse, react_native: reactNativeCourse, financial_records: financialRecordsCourse, operations_management: operationsManagementCourse, financial_accounting: financialAccountingCourse };
 
 function generateCertificateHTML(course, date) {
   return `<!DOCTYPE html>
@@ -25,38 +28,38 @@ function generateCertificateHTML(course, date) {
 <head>
   <meta charset="utf-8">
   <style>
-    @page { margin: 0; size: landscape; }
+    @page { margin: 0; size: A4 portrait; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
-      width: 100%; height: 100%;
+      width: 210mm; height: 297mm;
       background: #f0ebc2;
       font-family: 'Georgia', 'Times New Roman', serif;
       display: flex; align-items: center; justify-content: center;
     }
     .certificate {
-      width: 88vmin; height: 66vmin;
+      width: 180mm; height: 255mm;
       border: 8px double #5e0e08;
       border-radius: 16px;
       display: flex; flex-direction: column; align-items: center;
       justify-content: center;
-      padding: 3vmin 5vmin;
+      padding: 20mm 15mm;
     }
     .ribbon {
-      font-size: 1.4vmin; letter-spacing: 4px; text-transform: uppercase;
-      color: #5e0e08; border: 1px solid #5e0e08;
-      padding: 0.6vmin 2vmin; border-radius: 4px; margin-bottom: 1.6vmin;
+      font-size: 14pt; letter-spacing: 4px; text-transform: uppercase;
+      color: #5e0e08; border: 2px solid #5e0e08;
+      padding: 6px 24px; border-radius: 4px; margin-bottom: 20px;
       font-family: 'Arial', sans-serif;
     }
-    h1 { font-size: 2vmin; color: #5e0e08; font-weight: 400; margin-bottom: 0.8vmin; letter-spacing: 1px; }
-    .recipient { font-size: 5vmin; font-weight: 700; color: #5e0e08; margin-bottom: 0.8vmin; }
-    .course-name { font-size: 3.2vmin; font-weight: 700; color: #5e0e08; margin-bottom: 1.4vmin; text-align: center; }
-    p { font-size: 1.6vmin; color: #5e0e08; line-height: 1.5; text-align: center; max-width: 70vmin; margin-bottom: 1.6vmin; }
-    .seal { font-size: 5vmin; margin-bottom: 1.2vmin; color: #5e0e08; }
-    .date { font-size: 1.4vmin; color: #5e0e08; opacity: 0.8; margin-bottom: 1.4vmin; }
+    h1 { font-size: 18pt; color: #5e0e08; font-weight: 400; margin-bottom: 10px; letter-spacing: 1px; }
+    .recipient { font-size: 48pt; font-weight: 700; color: #5e0e08; margin-bottom: 10px; }
+    .course-name { font-size: 28pt; font-weight: 700; color: #5e0e08; margin-bottom: 20px; text-align: center; }
+    p { font-size: 14pt; color: #5e0e08; line-height: 1.5; text-align: center; max-width: 150mm; margin-bottom: 20px; }
+    .seal { font-size: 60pt; margin-bottom: 16px; color: #5e0e08; }
+    .date { font-size: 14pt; color: #5e0e08; opacity: 0.8; margin-bottom: 16px; }
     .signature-line {
       border-top: 2px solid #5e0e08;
-      width: 22vmin; text-align: center; padding-top: 0.8vmin;
-      font-size: 1.4vmin; color: #5e0e08;
+      width: 50mm; text-align: center; padding-top: 8px;
+      font-size: 14pt; color: #5e0e08;
     }
   </style>
 </head>
@@ -148,8 +151,8 @@ const styles = StyleSheet.create({
   },
   certificateContainer: {
     width: '92%',
-    maxWidth: 600,
-    aspectRatio: 1.4,
+    maxWidth: 500,
+    aspectRatio: 0.707,
     marginVertical: 16,
   },
   borderDouble: {

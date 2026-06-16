@@ -43,8 +43,8 @@ function HomeStack() {
         component={CourseDetailScreen}
         options={({ route }) => {
           const courseId = route.params?.courseId;
-          const titles = { python: 'Python Course', cpp: 'C++ Course', cybersecurity: 'Cybersecurity', ethicalhacker: 'Ethical Hacker', bit_core: 'BIT Core Units', go: 'Go', swift: 'Swift', csharp: 'C#', vb: 'Visual Basic', web_dev: 'Web Development', sql: 'Database - SQL', nextjs: 'Next.js', react_native: 'React Native' };
-          const colors = { python: '#3776AB', cpp: '#00599C', cybersecurity: '#2E7D32', ethicalhacker: '#C62828', bit_core: '#6C3483', go: '#00ADD8', swift: '#F05138', csharp: '#9B4F96', vb: '#945DB7', web_dev: '#E44D26', sql: '#336791', nextjs: '#000000', react_native: '#61DAFB' };
+          const titles = { python: 'Python Course', cpp: 'C++ Course', cybersecurity: 'Cybersecurity', ethicalhacker: 'Ethical Hacker', bit_core: 'BIT Core Units', go: 'Go', swift: 'Swift', csharp: 'C#', vb: 'Visual Basic', web_dev: 'Web Development', sql: 'Database - SQL', nextjs: 'Next.js', react_native: 'React Native', financial_records: 'Financial Records', operations_management: 'Operations Management', financial_accounting: 'Financial Accounting (ACCA)' };
+          const colors = { python: '#3776AB', cpp: '#00599C', cybersecurity: '#2E7D32', ethicalhacker: '#C62828', bit_core: '#6C3483', go: '#00ADD8', swift: '#F05138', csharp: '#9B4F96', vb: '#945DB7', web_dev: '#E44D26', sql: '#336791', nextjs: '#000000', react_native: '#61DAFB', financial_records: '#1B5E20', operations_management: '#E65100', financial_accounting: '#0D47A1' };
           return {
             title: titles[courseId] || 'Course',
             headerStyle: { backgroundColor: colors[courseId] || '#2C3E50', elevation: 0, boxShadow: 'none' },

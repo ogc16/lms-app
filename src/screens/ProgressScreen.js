@@ -16,8 +16,11 @@ import { webDevCourse } from '../data/webDevCourse';
 import { sqlCourse } from '../data/sqlCourse';
 import { nextjsCourse } from '../data/nextjsCourse';
 import { reactNativeCourse } from '../data/reactNativeCourse';
+import { financialRecordsCourse } from '../data/financialRecordsCourse';
+import { operationsManagementCourse } from '../data/operationsManagementCourse';
+import { financialAccountingCourse } from '../data/financialAccountingCourse';
 
-const courses = [pythonCourse, cppCourse, cybersecurityCourse, ethicalhackerCourse, bitCoreCourse, goCourse, swiftCourse, csharpCourse, vbCourse, webDevCourse, sqlCourse, nextjsCourse, reactNativeCourse];
+const courses = [pythonCourse, cppCourse, cybersecurityCourse, ethicalhackerCourse, bitCoreCourse, goCourse, swiftCourse, csharpCourse, vbCourse, webDevCourse, sqlCourse, nextjsCourse, reactNativeCourse, financialRecordsCourse, operationsManagementCourse, financialAccountingCourse];
 
 export default function ProgressScreen({ navigation }) {
   const { theme } = useTheme();
