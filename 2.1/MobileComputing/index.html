@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile &amp; Wireless Computing</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #f0f2f5;
+      color: #1a1a2e;
+      line-height: 1.7;
+    }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+    header {
+      background: linear-gradient(135deg, #0f3460 0%, #16213e 50%, #1a1a2e 100%);
+      color: #fff;
+      padding: 50px 0 40px;
+      text-align: center;
+    }
+    header h1 { font-size: 2.5rem; margin-bottom: 8px; }
+    header p { font-size: 1.1rem; opacity: 0.85; }
+
+    nav {
+      background: #16213e;
+      padding: 12px 0;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.15);
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px 4px;
+    }
+    nav a {
+      color: #a8b2d1;
+      text-decoration: none;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: .9rem;
+      transition: all .2s;
+    }
+    nav a:hover, nav a.active { color: #fff; background: #0f3460; }
+
+    main { padding: 40px 0; }
+    section { display: none; }
+    section.active { display: block; }
+
+    .hero {
+      text-align: center;
+      padding: 40px 0 20px;
+    }
+    .hero h2 { font-size: 2rem; color: #0f3460; }
+    .hero p { font-size: 1.1rem; color: #555; margin-top: 10px; }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 30px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 28px 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+    .card h3 { color: #0f3460; margin-bottom: 10px; }
+    .card p { color: #555; font-size: .95rem; }
+    .card .badge {
+      display: inline-block;
+      background: #e8f0fe;
+      color: #0f3460;
+      font-size: .75rem;
+      padding: 2px 10px;
+      border-radius: 12px;
+      margin-top: 10px;
+    }
+
+    .topic-content h2 {
+      color: #0f3460;
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      padding-bottom: 8px;
+      border-bottom: 3px solid #0f3460;
+    }
+    .topic-content h3 {
+      color: #16213e;
+      margin: 24px 0 10px;
+    }
+    .topic-content p, .topic-content li {
+      color: #444;
+      margin-bottom: 8px;
+    }
+    .topic-content ul { padding-left: 24px; }
+    .topic-content .highlight {
+      background: #e8f0fe;
+      border-left: 4px solid #0f3460;
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+    }
+
+    .quiz-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      margin: 16px 0;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+    .quiz-box h4 { margin-bottom: 10px; color: #0f3460; }
+    .quiz-box .options label {
+      display: block;
+      padding: 8px 12px;
+      margin: 4px 0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .quiz-box .options label:hover { background: #f0f2f5; }
+    .quiz-box .options input { margin-right: 10px; }
+    .quiz-box .feedback {
+      margin-top: 10px;
+      font-weight: 600;
+    }
+    .quiz-box .feedback.correct { color: #2e7d32; }
+    .quiz-box .feedback.incorrect { color: #c62828; }
+    .quiz-box button {
+      background: #0f3460;
+      color: #fff;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .quiz-box button:hover { background: #16213e; }
+
+    footer {
+      text-align: center;
+      padding: 30px 0;
+      color: #777;
+      font-size: .9rem;
+    }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.8rem; }
+      nav a { font-size: .8rem; padding: 4px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Mobile &amp; Wireless Computing</h1>
+      <p>Study notes, resources &amp; practice — JKUAT BIT 2.1</p>
+    </div>
+  </header>
+
+  <nav>
+    <div class="container">
+      <ul>
+        <li><a href="#" data-section="home" class="active">Home</a></li>
+        <li><a href="#" data-section="intro">Introduction</a></li>
+        <li><a href="#" data-section="evolution">Evolution</a></li>
+        <li><a href="#" data-section="wireless">Wireless Networks</a></li>
+        <li><a href="#" data-section="cellular">Cellular Systems</a></li>
+        <li><a href="#" data-section="mobileip">Mobile IP</a></li>
+        <li><a href="#" data-section="security">Security</a></li>
+        <li><a href="#" data-section="quiz">Quiz</a></li>
+      </ul>
+      <ul style="justify-content:center;gap:4px 2px;margin-top:4px;border-top:1px solid rgba(255,255,255,.1);padding-top:6px">
+        <li><a href="#" data-section="lesson1">L1</a></li>
+        <li><a href="#" data-section="lesson2">L2</a></li>
+        <li><a href="#" data-section="lesson3">L3</a></li>
+        <li><a href="#" data-section="lesson4">L4</a></li>
+        <li><a href="#" data-section="lesson5">L5</a></li>
+        <li><a href="#" data-section="lesson6">L6</a></li>
+        <li><a href="#" data-section="lesson7">L7</a></li>
+        <li><a href="#" data-section="lesson8">L8</a></li>
+        <li><a href="#" data-section="lesson9">L9</a></li>
+        <li><a href="#" data-section="lesson10">L10</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <!-- HOME -->
+    <section id="home" class="active">
+      <div class="hero">
+        <h2>Welcome</h2>
+        <p>Explore the fundamentals of mobile and wireless computing — from cellular evolution to modern wireless networks.</p>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <h3>What is Mobile Computing?</h3>
+          <p>Mobile computing enables users to access computing resources and information from anywhere using portable devices over wireless networks.</p>
+          <span class="badge">Core Concept</span>
+        </div>
+        <div class="card">
+          <h3>What is Wireless Communication?</h3>
+          <p>Wireless communication transfers information between devices without physical cables, using radio waves, infrared, or satellite signals.</p>
+          <span class="badge">Core Concept</span>
+        </div>
+        <div class="card">
+          <h3>Why It Matters</h3>
+          <p>From 5G to IoT, mobile and wireless technologies power modern connectivity — smartphones, smart homes, autonomous vehicles, and more.</p>
+          <span class="badge">Real World</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTRODUCTION -->
+    <section id="intro" class="topic-content">
+      <h2>Introduction to Mobile &amp; Wireless Computing</h2>
+      <p><strong>Mobile Computing</strong> is a technology that allows transmission of data, voice, and video via a computer or any other wireless-enabled device without being connected to a fixed physical link.</p>
+
+      <h3>Key Characteristics</h3>
+      <ul>
+        <li><strong>Mobility</strong> — users can move and still communicate</li>
+        <li><strong>Portability</strong> — devices are compact and easy to carry</li>
+        <li><strong>Wireless Connectivity</strong> — no physical cabling required</li>
+        <li><strong>Network Diversity</strong> — connects via cellular, Wi-Fi, Bluetooth, satellite, etc.</li>
+        <li><strong>Context Awareness</strong> — devices can adapt based on location and environment</li>
+      </ul>
+
+      <div class="highlight">
+        <strong>Limitations:</strong> Limited battery life, lower bandwidth compared to wired, security concerns, signal interference, and higher latency.
+      </div>
+
+      <h3>Mobile Computing vs Wireless Networking</h3>
+      <p><strong>Wireless networking</strong> refers to the medium (radio waves, microwaves) used to transmit data. <strong>Mobile computing</strong> is broader — it encompasses the devices, software, and infrastructure enabling untethered access to computing resources.</p>
+    </section>
+
+    <!-- EVOLUTION -->
+    <section id="evolution" class="topic-content">
+      <h2>Evolution of Mobile Services</h2>
+
+      <h3>1G — First Generation (1980s)</h3>
+      <ul>
+        <li>Analog voice communication</li>
+        <li>Used FDMA (Frequency Division Multiple Access)</li>
+        <li>Poor battery life, large devices, no security</li>
+      </ul>
+
+      <h3>2G — Second Generation (1990s)</h3>
+      <ul>
+        <li>Digital voice (GSM — Global System for Mobile)</li>
+        <li>Used TDMA and CDMA</li>
+        <li>Introduced SMS text messaging</li>
+        <li>Better voice quality, capacity, and security</li>
+      </ul>
+
+      <h3>2.5G / GPRS</h3>
+      <ul>
+        <li>General Packet Radio Service</li>
+        <li>"Always on" data connectivity</li>
+        <li>Packet-switched data (not circuit-switched)</li>
+      </ul>
+
+      <h3>3G — Third Generation (2000s)</h3>
+      <ul>
+        <li>High-speed internet, video calls, mobile TV</li>
+        <li>Technologies: UMTS, WCDMA, HSDPA</li>
+        <li>Data rates: up to 2 Mbps stationary, 384 kbps moving</li>
+      </ul>
+
+      <h3>4G / LTE — Fourth Generation (2010s)</h3>
+      <ul>
+        <li>All-IP network (no circuit switching)</li>
+        <li>OFDMA and MIMO technologies</li>
+        <li>Peak data rates: 100 Mbps – 1 Gbps</li>
+        <li>Low latency (~50ms)</li>
+      </ul>
+
+      <h3>5G — Fifth Generation (2020s)</h3>
+      <ul>
+        <li>Extreme data rates (1–20 Gbps)</li>
+        <li>Ultra-low latency (&lt;1ms)</li>
+        <li>Massive device connectivity (IoT)</li>
+        <li>Network slicing, beamforming, mmWave</li>
+      </ul>
+
+      <div class="highlight">
+        <strong>Key Trend:</strong> Each generation brings higher data rates, lower latency, better spectral efficiency, and support for more devices.
+      </div>
+    </section>
+
+    <!-- WIRELESS NETWORKS -->
+    <section id="wireless" class="topic-content">
+      <h2>Wireless Networks</h2>
+
+      <h3>Wireless Local Area Networks (WLAN)</h3>
+      <p>Based on IEEE 802.11 standards (Wi-Fi). Operates in 2.4 GHz and 5 GHz bands. Range: ~100m indoors. Used for local connectivity in homes, offices, and public hotspots.</p>
+
+      <h3>Wireless Personal Area Networks (WPAN)</h3>
+      <p>Short-range networks (10–100m). Examples:</p>
+      <ul>
+        <li><strong>Bluetooth</strong> — v4.0+ (BLE low energy), v5.0 (2 Mbps, 240m range)</li>
+        <li><strong>ZigBee</strong> — low data rate, low power, IoT applications</li>
+        <li><strong>UWB</strong> — Ultra-Wideband, high precision positioning</li>
+      </ul>
+
+      <h3>Wireless Wide Area Networks (WWAN)</h3>
+      <p>Cellular networks (2G–5G) covering vast geographic areas. Handled by mobile network operators with infrastructure of base stations and core networks.</p>
+
+      <h3>Wireless Metropolitan Area Networks (WMAN)</h3>
+      <p>Cover a city or campus. IEEE 802.16 (WiMAX) is a well-known standard. Bridges the gap between WLANs and WWANs.</p>
+
+      <h3>Satellite Networks</h3>
+      <p>Used for global coverage — GPS, satellite TV, broadband in remote areas. Categories: LEO, MEO, GEO (based on orbit altitude).</p>
+
+      <div class="highlight">
+        <strong>Comparison:</strong> WLAN = short range, high speed; WPAN = very short range, low power; WWAN = long range, carrier-managed; WMAN = city-wide, backhaul role.
+      </div>
+    </section>
+
+    <!-- CELLULAR SYSTEMS -->
+    <section id="cellular" class="topic-content">
+      <h2>Cellular Systems</h2>
+
+      <p>A <strong>cellular network</strong> divides a region into <em>cells</em>, each served by a base station. Cells are grouped into clusters to reuse frequencies — the fundamental concept enabling massive capacity.</p>
+
+      <h3>Key Concepts</h3>
+      <ul>
+        <li><strong>Frequency Reuse</strong> — same frequencies reused in non-adjacent cells</li>
+        <li><strong>Handoff / Handover</strong> — seamless transfer of a call from one cell to another</li>
+        <li><strong>Cell Splitting</strong> — subdividing congested cells to increase capacity</li>
+        <li><strong>Sectoring</strong> — using directional antennas to reduce interference</li>
+      </ul>
+
+      <h3>GSM Architecture</h3>
+      <ul>
+        <li><strong>MS</strong> — Mobile Station (phone + SIM)</li>
+        <li><strong>BSS</strong> — Base Station Subsystem (BTS + BSC)</li>
+        <li><strong>NSS</strong> — Network &amp; Switching Subsystem (MSC, HLR, VLR, AuC, EIR)</li>
+        <li><strong>OSS</strong> — Operations Support Subsystem</li>
+      </ul>
+
+      <h3>Multiple Access Techniques</h3>
+      <ul>
+        <li><strong>FDMA</strong> — Frequency Division Multiple Access</li>
+        <li><strong>TDMA</strong> — Time Division Multiple Access</li>
+        <li><strong>CDMA</strong> — Code Division Multiple Access</li>
+        <li><strong>OFDMA</strong> — Orthogonal FDMA (used in 4G/5G)</li>
+      </ul>
+    </section>
+
+    <!-- MOBILE IP -->
+    <section id="mobileip" class="topic-content">
+      <h2>Mobile IP &amp; Mobility Management</h2>
+
+      <p>Mobile IP allows devices to move between networks while maintaining a permanent IP address. Key entities:</p>
+      <ul>
+        <li><strong>Home Agent (HA)</strong> — located on the device's home network</li>
+        <li><strong>Foreign Agent (FA)</strong> — located on the visited network</li>
+        <li><strong>Care-of Address (CoA)</strong> — temporary address on the foreign network</li>
+      </ul>
+
+      <h3>How It Works</h3>
+      <ol>
+        <li>Device moves to a foreign network and gets a CoA from the FA</li>
+        <li>Device registers its CoA with the HA</li>
+        <li>Packets sent to the home address are intercepted by the HA</li>
+        <li>HA tunnels packets to the CoA (FA)</li>
+        <li>FA delivers packets to the device (reverse path optional)</li>
+      </ol>
+
+      <div class="highlight">
+        <strong>Note:</strong> Mobile IP is used for network-layer mobility. For application-layer mobility, protocols like SIP are used.
+      </div>
+
+      <h3>Mobility Management</h3>
+      <ul>
+        <li><strong>Location Management</strong> — tracking device location (HLR/VLR in GSM)</li>
+        <li><strong>Handoff Management</strong> — maintaining connectivity during movement</li>
+        <li><strong>Types:</strong> Hard handoff (break-before-make) vs. Soft handoff (make-before-break)</li>
+      </ul>
+    </section>
+
+    <!-- SECURITY -->
+    <section id="security" class="topic-content">
+      <h2>Wireless Security</h2>
+
+      <p>Wireless networks are inherently less secure than wired due to the broadcast nature of radio waves. Attacks can come from anywhere within range.</p>
+
+      <h3>Common Threats</h3>
+      <ul>
+        <li><strong>Eavesdropping</strong> — intercepting wireless signals</li>
+        <li><strong>Man-in-the-Middle</strong> — attacker relays and alters communication</li>
+        <li><strong>Replay Attack</strong> — capturing and retransmitting valid data</li>
+        <li><strong>Denial of Service (DoS)</strong> — jamming or flooding</li>
+        <li><strong>Rogue Access Points</strong> — unauthorized APs mimicking legitimate ones</li>
+        <li><strong>War Driving</strong> — searching for open Wi-Fi networks</li>
+      </ul>
+
+      <h3>Security Mechanisms</h3>
+      <ul>
+        <li><strong>WEP</strong> — Wired Equivalent Privacy (broken, deprecated)</li>
+        <li><strong>WPA / WPA2</strong> — Wi-Fi Protected Access (TKIP, AES-CCMP)</li>
+        <li><strong>WPA3</strong> — latest standard (SAE handshake, forward secrecy)</li>
+        <li><strong>802.1X / EAP</strong> — enterprise authentication</li>
+        <li><strong>VPNs</strong> — secure tunnels over public networks</li>
+        <li><strong>GSM Security</strong> — A3/A5/A8 algorithms (COMP128)</li>
+      </ul>
+
+      <div class="highlight">
+        <strong>Best Practices:</strong> Use WPA3 or WPA2, disable WPS, change default credentials, use strong passphrases, enable network monitoring, and always use encryption (HTTPS, VPN).
+      </div>
+    </section>
+
+    <!-- LESSON 1 -->
+    <section id="lesson1" class="topic-content">
+      <h2>Lesson 1: Introduction to Mobile Computing</h2>
+      <p><strong>Mobile computing</strong> enables users to access information and computing resources from anywhere using portable devices over wireless networks. It combines three key elements: mobile communication (the network), mobile hardware (the device), and mobile software (applications).</p>
+      <h3>Key Concepts</h3>
+      <ul>
+        <li><strong>Mobility</strong> — users move freely while staying connected</li>
+        <li><strong>Portability</strong> — devices are lightweight and battery-powered</li>
+        <li><strong>Wireless connectivity</strong> — communication via radio waves, infrared, or satellite</li>
+        <li><strong>Context awareness</strong> — devices adapt to location, environment, and user state</li>
+      </ul>
+      <h3>Categories of Mobile Computing</h3>
+      <ul>
+        <li><strong>Fixed and wired</strong> — traditional desktop computing</li>
+        <li><strong>Mobile and wired</strong> — laptops connected via Ethernet</li>
+        <li><strong>Fixed and wireless</strong> — desktop with wireless connection</li>
+        <li><strong>Mobile and wireless</strong> — smartphone, tablet, laptop with cellular/Wi-Fi</li>
+      </ul>
+      <div class="highlight">
+        <strong>Limitations:</strong> Limited battery life, lower bandwidth and higher latency than wired networks, security vulnerabilities, signal interference and fading, and higher power consumption for RF components.
+      </div>
+      <h3>Applications</h3>
+      <p>Mobile computing is used in emergency services, healthcare (telemedicine), navigation (GPS), e-commerce (mobile banking), education (e-learning), transportation (fleet management), and entertainment (streaming, gaming).</p>
+    </section>
+
+    <!-- LESSON 2 -->
+    <section id="lesson2" class="topic-content">
+      <h2>Lesson 2: Mobile Computing Architecture</h2>
+      <p>Mobile computing architecture defines the structure and interaction between mobile devices, networks, and backend services. It follows a layered approach similar to the OSI model but with adaptations for mobility.</p>
+      <h3>Three-Tier Architecture</h3>
+      <ul>
+        <li><strong>Presentation Tier (Client)</strong> — mobile device with user interface, handles display and input</li>
+        <li><strong>Application Tier (Middleware)</strong> — application servers, logic processing, data transformation</li>
+        <li><strong>Data Tier (Backend)</strong> — databases, file servers, enterprise systems</li>
+      </ul>
+      <h3>Mobile Client Types</h3>
+      <ul>
+        <li><strong>Thin client</strong> — minimal processing; relies on server for computation (browser-based)</li>
+        <li><strong>Thick client</strong> — significant local processing; app installed on device (native app)</li>
+        <li><strong>Hybrid client</strong> — combines local and server processing (Progressive Web Apps)</li>
+      </ul>
+      <h3>Wireless Middleware</h3>
+      <p>Wireless middleware bridges mobile clients and backend systems. It handles session management, data synchronization, compression, protocol translation, and offline support. Examples include WAP gateway and mobile application servers.</p>
+      <div class="highlight">
+        <strong>Key Challenges:</strong> Intermittent connectivity, varying bandwidth, device heterogeneity, and synchronization of data across multiple devices and the cloud.
+      </div>
+    </section>
+
+    <!-- LESSON 3 -->
+    <section id="lesson3" class="topic-content">
+      <h2>Lesson 3: Wireless Communication Fundamentals</h2>
+      <p>Wireless communication transfers information between devices without physical conductors. It uses electromagnetic waves — radio waves, microwaves, and infrared — to propagate signals through free space.</p>
+      <h3>Electromagnetic Spectrum for Wireless</h3>
+      <ul>
+        <li><strong>Radio waves</strong> (3 kHz – 300 MHz) — AM/FM radio, TV, cellular (penetrates buildings well)</li>
+        <li><strong>Microwaves</strong> (300 MHz – 300 GHz) — Wi-Fi, Bluetooth, satellite, radar, 5G mmWave</li>
+        <li><strong>Infrared</strong> (300 GHz – 400 THz) — remote controls, short-range line-of-sight</li>
+      </ul>
+      <h3>Signal Propagation Phenomena</h3>
+      <ul>
+        <li><strong>Free-space path loss</strong> — signal attenuates with distance (proportional to d²)</li>
+        <li><strong>Reflection</strong> — signal bounces off large surfaces (buildings, walls, ground)</li>
+        <li><strong>Diffraction</strong> — signal bends around obstacles (edges of buildings, hills)</li>
+        <li><strong>Scattering</strong> — signal disperses off rough surfaces or small objects</li>
+        <li><strong>Multipath fading</strong> — multiple signal paths arrive at receiver with different phases, causing cancellation or reinforcement</li>
+      </ul>
+      <h3>Modulation Techniques</h3>
+      <p>Modulation encodes digital data onto analog carrier waves. Common schemes used in mobile networks:</p>
+      <ul>
+        <li><strong>GMSK</strong> (Gaussian Minimum Shift Keying) — used in GSM</li>
+        <li><strong>QPSK / 16-QAM / 64-QAM / 256-QAM</strong> — used in 3G/4G/5G, higher QAM = more bits/symbol</li>
+        <li><strong>OFDM</strong> (Orthogonal Frequency Division Multiplexing) — divides spectrum into orthogonal subcarriers, resistant to multipath fading</li>
+      </ul>
+    </section>
+
+    <!-- LESSON 4 -->
+    <section id="lesson4" class="topic-content">
+      <h2>Lesson 4: Cellular Networks — 1G, 2G, GSM</h2>
+      <p>Cellular networks divide a geographic area into <strong>cells</strong>, each served by a Base Transceiver Station (BTS). The cellular concept, invented by Bell Labs in 1947, enables frequency reuse and massive capacity scaling.</p>
+      <h3>1G — First Generation (1980s)</h3>
+      <ul>
+        <li>Analog voice using FDMA (AMPS, TACS, NMT standards)</li>
+        <li>No encryption — vulnerable to eavesdropping</li>
+        <li>Low capacity, large phones, poor battery life</li>
+      </ul>
+      <h3>2G — Second Generation (1990s)</h3>
+      <ul>
+        <li>Digital voice using TDMA and CDMA</li>
+        <li><strong>GSM</strong> (Global System for Mobile Communications) became the global standard</li>
+        <li>Introduced SMS (Short Message Service), SIM cards, and digital encryption (A5 algorithm)</li>
+        <li>Data rates: 9.6 – 14.4 kbps (circuit-switched)</li>
+      </ul>
+      <h3>2.5G — GPRS &amp; EDGE</h3>
+      <ul>
+        <li><strong>GPRS</strong> (General Packet Radio Service) — packet-switched data, "always on", up to 114 kbps</li>
+        <li><strong>EDGE</strong> (Enhanced Data rates for GSM Evolution) — up to 384 kbps using 8-PSK modulation</li>
+      </ul>
+      <h3>GSM Architecture</h3>
+      <ul>
+        <li><strong>Mobile Station (MS)</strong> — Mobile Equipment (ME) + Subscriber Identity Module (SIM)</li>
+        <li><strong>Base Station Subsystem (BSS)</strong> — BTS (radio transceivers) + BSC (Base Station Controller)</li>
+        <li><strong>Network Switching Subsystem (NSS)</strong> — MSC (switching), HLR (home database), VLR (visitor database), AuC (authentication), EIR (equipment identity)</li>
+        <li><strong>Operations Support Subsystem (OSS)</strong> — network management and maintenance</li>
+      </ul>
+    </section>
+
+    <!-- LESSON 5 -->
+    <section id="lesson5" class="topic-content">
+      <h2>Lesson 5: 3G — UMTS Networks</h2>
+      <p>3G networks, based on IMT-2000 standard, brought high-speed data and multimedia services to mobile devices. The dominant 3G technology is <strong>UMTS</strong> (Universal Mobile Telecommunications System).</p>
+      <h3>UMTS Key Features</h3>
+      <ul>
+        <li>Data rates: up to 2 Mbps (stationary), 384 kbps (moving), 144 kbps (high-speed)</li>
+        <li>Uses <strong>WCDMA</strong> (Wideband Code Division Multiple Access) air interface</li>
+        <li>Circuit-switched for voice, packet-switched for data</li>
+        <li>Supports video calls, mobile TV, and high-speed internet</li>
+      </ul>
+      <h3>UMTS Architecture</h3>
+      <ul>
+        <li><strong>User Equipment (UE)</strong> — mobile device</li>
+        <li><strong>UTRAN</strong> (UMTS Terrestrial Radio Access Network) — Node B (base station) + RNC (Radio Network Controller)</li>
+        <li><strong>Core Network</strong> — evolved from GSM NSS; includes SGSN (Serving GPRS Support Node) and GGSN (Gateway GPRS Support Node) for packet data</li>
+      </ul>
+      <h3>HSPA Evolution</h3>
+      <ul>
+        <li><strong>HSDPA</strong> (High Speed Downlink Packet Access) — up to 14.4 Mbps downlink</li>
+        <li><strong>HSUPA</strong> — up to 5.76 Mbps uplink</li>
+        <li><strong>HSPA+</strong> — up to 42 Mbps using MIMO and higher-order modulation</li>
+      </ul>
+      <div class="highlight">
+        <strong>Key Standard:</strong> 3GPP Release 99 defined UMTS. Later releases (5, 6, 7) introduced HSDPA, HSUPA, and HSPA+.
+      </div>
+    </section>
+
+    <!-- LESSON 6 -->
+    <section id="lesson6" class="topic-content">
+      <h2>Lesson 6: 4G — LTE and WiMAX</h2>
+      <p>4G was defined by ITU's IMT-Advanced requirements: peak data rates of 100 Mbps (high mobility) to 1 Gbps (low mobility). Two technologies met these requirements: LTE-Advanced and WiMAX 802.16m.</p>
+      <h3>LTE Key Features</h3>
+      <ul>
+        <li><strong>All-IP network</strong> — no circuit-switched component; voice over LTE (VoLTE)</li>
+        <li>Uses <strong>OFDMA</strong> on downlink and <strong>SC-FDMA</strong> on uplink (better power efficiency)</li>
+        <li><strong>MIMO</strong> (Multiple Input Multiple Output) — multiple antennas for spatial multiplexing</li>
+        <li>Peak rates: 300 Mbps downlink (LTE Cat 4), 1 Gbps (LTE-Advanced)</li>
+        <li>Low latency: ~50ms (LTE), ~10ms (LTE-Advanced)</li>
+      </ul>
+      <h3>LTE Architecture (EPS)</h3>
+      <ul>
+        <li><strong>eNodeB</strong> — evolved Node B, combines BTS and BSC functions</li>
+        <li><strong>MME</strong> (Mobility Management Entity) — signaling, authentication, mobility</li>
+        <li><strong>S-GW</strong> (Serving Gateway) — user data routing and forwarding</li>
+        <li><strong>P-GW</strong> (Packet Data Network Gateway) — connects to external IP networks</li>
+        <li><strong>HSS</strong> (Home Subscriber Service) — evolved HLR</li>
+      </ul>
+      <h3>WiMAX (IEEE 802.16)</h3>
+      <p>WiMAX (Worldwide Interoperability for Microwave Access) was developed as an alternative to LTE. It offered broadband wireless access over metropolitan areas (up to 50 km range). Mobile WiMAX (802.16e-2005) supported up to 100 Mbps. WiMAX lost the market to LTE and was largely phased out.</p>
+    </section>
+
+    <!-- LESSON 7 -->
+    <section id="lesson7" class="topic-content">
+      <h2>Lesson 7: 5G and Beyond</h2>
+      <p>5G (Fifth Generation) is designed for extreme performance and massive connectivity. 3GPP Release 15 defined the initial 5G NR (New Radio) standard, with Release 16 and 17 adding enhancements.</p>
+      <h3>5G Usage Scenarios</h3>
+      <ul>
+        <li><strong>eMBB</strong> (Enhanced Mobile Broadband) — high-speed internet, 4K/8K streaming, VR/AR</li>
+        <li><strong>URLLC</strong> (Ultra-Reliable Low-Latency Communications) — autonomous vehicles, remote surgery, industrial automation</li>
+        <li><strong>mMTC</strong> (Massive Machine-Type Communications) — IoT, smart cities, sensor networks</li>
+      </ul>
+      <h3>Key 5G Technologies</h3>
+      <ul>
+        <li><strong>mmWave</strong> (24–100 GHz) — large bandwidth but short range, needs beamforming</li>
+        <li><strong>Beamforming</strong> — focuses signal directionally to a specific device</li>
+        <li><strong>Network Slicing</strong> — multiple virtual networks on shared physical infrastructure</li>
+        <li><strong>Massive MIMO</strong> — arrays of 64+, 128+, or 256 antenna elements</li>
+        <li><strong>Small Cells</strong> — dense deployment of low-power base stations</li>
+      </ul>
+      <h3>5G Architecture</h3>
+      <ul>
+        <li><strong>5G NR gNB</strong> — next-generation base station</li>
+        <li><strong>Service-Based Architecture (SBA)</strong> — cloud-native core network functions</li>
+        <li><strong>AMF</strong> (Access and Mobility Management Function) — evolved MME</li>
+        <li><strong>UPF</strong> (User Plane Function) — evolved S-GW/P-GW</li>
+        <li><strong>Edge Computing</strong> — processing closer to the user for low latency</li>
+      </ul>
+      <div class="highlight">
+        <strong>6G Vision:</strong> Research is underway for 6G (2030+), targeting terabit speeds, sub-ms latency, integrated sensing and communication, and AI-native network design.
+      </div>
+    </section>
+
+    <!-- LESSON 8 -->
+    <section id="lesson8" class="topic-content">
+      <h2>Lesson 8: Wireless LANs and WPANs</h2>
+      <h3>Wireless LAN — IEEE 802.11 (Wi-Fi)</h3>
+      <p>Wi-Fi is the dominant WLAN technology, operating in unlicensed ISM bands (2.4 GHz and 5 GHz). The 802.11 standard defines the MAC and PHY layers.</p>
+      <ul>
+        <li><strong>802.11a</strong> — 5 GHz, OFDM, up to 54 Mbps</li>
+        <li><strong>802.11b</strong> — 2.4 GHz, DSSS, up to 11 Mbps</li>
+        <li><strong>802.11g</strong> — 2.4 GHz, OFDM, up to 54 Mbps (backward-compatible with b)</li>
+        <li><strong>802.11n (Wi-Fi 4)</strong> — 2.4/5 GHz, MIMO (up to 4×4), up to 600 Mbps</li>
+        <li><strong>802.11ac (Wi-Fi 5)</strong> — 5 GHz only, wider channels (80/160 MHz), MU-MIMO, up to 3.5 Gbps</li>
+        <li><strong>802.11ax (Wi-Fi 6)</strong> — 2.4/5 GHz, OFDMA, 1024-QAM, up to 9.6 Gbps</li>
+      </ul>
+      <h3>Wi-Fi MAC Protocol — CSMA/CA</h3>
+      <p>Carrier Sense Multiple Access with Collision Avoidance: before transmitting, a station senses the channel. If busy, it waits a random backoff period. RTS/CTS (Request to Send / Clear to Send) mechanism reduces hidden node collisions.</p>
+      <h3>Wireless PAN — Bluetooth (IEEE 802.15.1)</h3>
+      <ul>
+        <li>Operates in 2.4 GHz ISM band using frequency-hopping spread spectrum (FHSS)</li>
+        <li>Piconet: up to 8 devices (1 master, 7 slaves)</li>
+        <li><strong>Bluetooth 4.0</strong> — introduced BLE (Bluetooth Low Energy) for IoT</li>
+        <li><strong>Bluetooth 5.0</strong> — 2 Mbps data rate, 240m range, mesh networking</li>
+      </ul>
+      <h3>Other WPAN Technologies</h3>
+      <ul>
+        <li><strong>NFC</strong> (Near Field Communication) — ~4 cm range for contactless payments</li>
+        <li><strong>ZigBee</strong> (802.15.4) — low data rate, low power, mesh topology for home automation</li>
+        <li><strong>UWB</strong> (Ultra-Wideband) — high precision positioning, short-range high-speed data</li>
+      </ul>
+    </section>
+
+    <!-- LESSON 9 -->
+    <section id="lesson9" class="topic-content">
+      <h2>Lesson 9: Mobile IP and Mobility Management</h2>
+      <p>Mobile IP (RFC 5944 / RFC 6275) allows devices to change network attachment points while maintaining a permanent IP address. It operates at the Network Layer (Layer 3) of the OSI model.</p>
+      <h3>Mobile IP Entities</h3>
+      <ul>
+        <li><strong>Home Agent (HA)</strong> — a router on the mobile node's home network that tunnels packets to the current location</li>
+        <li><strong>Foreign Agent (FA)</strong> — a router on the visited network that provides routing services and a Care-of Address</li>
+        <li><strong>Care-of Address (CoA)</strong> — temporary IP address assigned when the mobile node is on a foreign network</li>
+        <li><strong>Correspondent Node (CN)</strong> — the peer device communicating with the mobile node</li>
+      </ul>
+      <h3>Mobile IP Operation</h3>
+      <ol>
+        <li><strong>Agent Discovery</strong> — mobile node detects whether it is on home or foreign network via ICMP Router Advertisement messages</li>
+        <li><strong>Registration</strong> — on a foreign network, the mobile node registers its CoA with its Home Agent using UDP</li>
+        <li><strong>Tunneling</strong> — HA intercepts packets destined for the mobile node's home address and encapsulates them (IP-in-IP, GRE) to the CoA</li>
+        <li><strong>Delivery</strong> — FA decapsulates and forwards to the mobile node, or the mobile node acts as its own FA (co-located CoA)</li>
+      </ol>
+      <h3>Mobility Management in Cellular Networks</h3>
+      <ul>
+        <li><strong>Location Management</strong> — HLR/VLR databases track subscriber location; location update and paging procedures</li>
+        <li><strong>Handoff Management</strong> — maintaining active connection during cell changes; hard handoff (break-before-make) vs. soft handoff (make-before-break)</li>
+        <li><strong>Handoff Types:</strong> intra-BSC, inter-BSC, inter-MSC for GSM; X2 and S1 handovers for LTE</li>
+      </ul>
+      <div class="highlight">
+        <strong>Note:</strong> Mobile IP handles macro-mobility (between networks). For micro-mobility within a network, protocols like Cellular IP, HAWAII, and Proxy Mobile IPv6 are more efficient.
+      </div>
+    </section>
+
+    <!-- LESSON 10 -->
+    <section id="lesson10" class="topic-content">
+      <h2>Lesson 10: Mobile Security and Pervasive Computing</h2>
+      <h3>Wireless Security Threats</h3>
+      <ul>
+        <li><strong>Eavesdropping</strong> — passive interception of radio signals using spectrum analyzers</li>
+        <li><strong>Man-in-the-Middle (MitM)</strong> — attacker relays communication between two parties</li>
+        <li><strong>Replay attack</strong> — capturing and retransmitting valid authentication packets</li>
+        <li><strong>DoS/Jamming</strong> — overwhelming the channel with noise or traffic</li>
+        <li><strong>Evil Twin / Rogue AP</strong> — fake access point mimicking a legitimate one</li>
+      </ul>
+      <h3>Wi-Fi Security Protocols</h3>
+      <ul>
+        <li><strong>WEP</strong> — 64/128-bit RC4 encryption; broken in minutes (FMS attack)</li>
+        <li><strong>WPA</strong> — TKIP with Michael integrity check; improved but still vulnerable</li>
+        <li><strong>WPA2 (802.11i)</strong> — AES-CCMP encryption; current minimum standard</li>
+        <li><strong>WPA3 (2018)</strong> — SAE handshake (replaces PSK), forward secrecy, 192-bit security mode, OWE (Opportunistic Wireless Encryption) for open networks</li>
+      </ul>
+      <h3>GSM Security</h3>
+      <ul>
+        <li><strong>A3 algorithm</strong> — authentication (challenge-response using Ki on SIM)</li>
+        <li><strong>A5/1, A5/2, A5/3</strong> — stream ciphers for over-the-air encryption</li>
+        <li><strong>A8 algorithm</strong> — generates session key (Kc) from Ki</li>
+        <li><strong>Vulnerability:</strong> A5/1 can be cracked in minutes with rainbow tables</li>
+      </ul>
+      <h3>Pervasive (Ubiquitous) Computing</h3>
+      <p>Pervasive computing, coined by Mark Weiser (1991), envisions computing embedded into everyday objects and environments, invisible to the user. Key characteristics:</p>
+      <ul>
+        <li><strong>Invisibility</strong> — computers disappear into the background</li>
+        <li><strong>Context awareness</strong> — systems sense and respond to environment</li>
+        <li><strong>Ad-hoc networking</strong> — devices discover and communicate spontaneously</li>
+        <li><strong>Smart environments</strong> — smart homes, smart cities, smart healthcare</li>
+      </ul>
+      <div class="highlight">
+        <strong>Example:</strong> A smart refrigerator that detects grocery depletion, checks inventory via RFID, and automatically places an online order — all without user intervention.
+      </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section id="quiz" class="topic-content">
+      <h2>Practice Quiz</h2>
+      <p>Test your understanding of key concepts.</p>
+      <div id="quizContainer"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      Mobile &amp; Wireless Computing &middot; JKUAT BIT 2.1
+    </div>
+  </footer>
+
+  <script>
+    // --- NAVIGATION ---
+    const navLinks = document.querySelectorAll('nav a');
+    const sections = document.querySelectorAll('section');
+
+    function showSection(id) {
+      sections.forEach(s => s.classList.remove('active'));
+      document.getElementById(id)?.classList.add('active');
+      navLinks.forEach(a => a.classList.toggle('active', a.dataset.section === id));
+    }
+
+    navLinks.forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        showSection(a.dataset.section);
+      });
+    });
+
+    // --- QUIZ ---
+    const questions = [
+      { q: "Which generation introduced digital voice and SMS?", options: ["1G", "2G", "3G", "4G"], answer: 1, e: "2G (GSM) replaced analog 1G with digital voice and introduced SMS as a data service." },
+      { q: "What does GSM stand for?", options: ["Global System for Mobile", "General Service Mobile", "Global Spectrum Mobile", "General System for Messaging"], answer: 0, e: "GSM stands for Global System for Mobile Communications, the dominant 2G standard." },
+      { q: "Which multiple access technique is used in 4G LTE?", options: ["FDMA", "TDMA", "CDMA", "OFDMA"], answer: 3, e: "4G LTE uses OFDMA (Orthogonal Frequency Division Multiple Access) on the downlink for high spectral efficiency." },
+      { q: "What does the Home Agent do in Mobile IP?", options: ["Routes packets to device's current location", "Assigns IP addresses to visitors", "Encrypts all mobile traffic", "Manages the SIM card"], answer: 0, e: "The Home Agent intercepts packets addressed to the mobile node's home address and tunnels them to the Care-of Address." },
+      { q: "Which Wi-Fi security standard is currently the most secure?", options: ["WEP", "WPA", "WPA2", "WPA3"], answer: 3, e: "WPA3 (2018) is the latest with SAE handshake, forward secrecy, and 192-bit security mode." },
+      { q: "What is the primary purpose of frequency reuse in cellular networks?", options: ["Reduce battery drain", "Increase network capacity", "Improve voice quality", "Enable global roaming"], answer: 1, e: "Frequency reuse allows the same frequencies to be used in non-adjacent cells, massively increasing network capacity." },
+      { q: "Which network type covers the largest geographic area?", options: ["WPAN", "WLAN", "WMAN", "WWAN"], answer: 3, e: "WWAN (Wireless Wide Area Network) covers the largest area via cellular infrastructure spanning cities and countries." },
+      { q: "What is a handoff in cellular networks?", options: ["Turning off the device", "Transferring a call between cells", "Encrypting voice data", "Registering on the network"], answer: 1, e: "Handoff (or handover) seamlessly transfers an active call from one cell to another as the user moves." },
+      { q: "What frequency band does most WLAN (Wi-Fi) operate in?", options: ["900 MHz", "2.4 GHz", "60 GHz", "700 MHz"], answer: 1, e: "Most Wi-Fi operates in the 2.4 GHz ISM band (and also 5 GHz for 802.11a/n/ac/ax)." },
+      { q: "Which IEEE standard defines Wi-Fi?", options: ["802.3", "802.11", "802.15", "802.16"], answer: 1, e: "IEEE 802.11 defines Wireless LAN (Wi-Fi). 802.3 is Ethernet, 802.15 is WPAN, 802.16 is WiMAX." },
+      { q: "What does CDMA stand for?", options: ["Code Division Multiple Access", "Carrier Data Mobile Access", "Cellular Digital Modulation Algorithm", "Code Domain Multiple Allocation"], answer: 0, e: "CDMA uses unique code sequences to allow multiple users to share the same frequency simultaneously." },
+      { q: "Which layer of the OSI model does Mobile IP operate at?", options: ["Physical", "Data Link", "Network", "Application"], answer: 2, e: "Mobile IP operates at Layer 3 (Network Layer), handling IP address mobility across different networks." },
+      { q: "What is the maximum data rate of 5G?", options: ["100 Mbps", "1 Gbps", "10 Gbps", "20 Gbps"], answer: 3, e: "5G targets peak data rates of up to 20 Gbps downlink using mmWave and massive MIMO." },
+      { q: "What technology replaced circuit switching in 4G?", options: ["Message switching", "Packet switching (All-IP)", "Frequency switching", "Analog switching"], answer: 1, e: "4G is an All-IP network — everything (including voice via VoLTE) uses packet switching." },
+      { q: "What does BTS stand for in GSM?", options: ["Base Transceiver Station", "Broadband Transmission System", "Basic Telephone Switch", "Base Terminal Server"], answer: 0, e: "BTS (Base Transceiver Station) houses the radio transceivers that communicate with mobile devices." },
+      { q: "Which device stores subscriber information permanently in GSM?", options: ["VLR", "HLR", "MSC", "BSC"], answer: 1, e: "HLR (Home Location Register) permanently stores subscriber data like IMSI, phone numbers, and subscribed services." },
+      { q: "What is the range of Bluetooth Class 2 devices?", options: ["1m", "10m", "100m", "1km"], answer: 1, e: "Class 2 Bluetooth devices have a typical range of ~10 meters (most common in phones and headphones)." },
+      { q: "Which protocol provides secure remote terminal access?", options: ["HTTP", "FTP", "SSH", "SMTP"], answer: 2, e: "SSH (Secure Shell) provides encrypted remote terminal access, commonly used for network device management." },
+      { q: "What does MIMO stand for?", options: ["Multiple Input Multiple Output", "Mobile Integrated Mobile Output", "Multi-Interface Mobile Operation", "Modulated Input Modulated Output"], answer: 0, e: "MIMO uses multiple antennas at both transmitter and receiver to improve throughput via spatial multiplexing." },
+      { q: "Which generation uses mmWave frequencies?", options: ["3G", "4G", "5G", "2G"], answer: 2, e: "5G is the first generation to use mmWave (24–100 GHz) for extremely high bandwidth." },
+      { q: "What is the typical latency in 4G networks?", options: ["~10ms", "~50ms", "~1ms", "~200ms"], answer: 1, e: "4G LTE typical latency is ~50ms, while 5G targets ~1-10ms and LTE-Advanced can achieve ~10ms." },
+      { q: "What does AuC stand for in GSM security?", options: ["Authentication Center", "Audio Controller", "Access Unit Circuit", "Automated User Check"], answer: 0, e: "AuC (Authentication Center) stores the Ki key and generates authentication triplets (RAND, SRES, Kc)." },
+      { q: "Which type of handoff is make-before-break?", options: ["Hard handoff", "Soft handoff", "Forced handoff", "Delayed handoff"], answer: 1, e: "Soft handoff (make-before-break) connects to the new cell before disconnecting from the old one, avoiding data loss." },
+      { q: "What does WLAN stand for?", options: ["Wireless Local Area Network", "Wide Local Access Network", "Wired Local Area Network", "Wireless Long Area Network"], answer: 0, e: "WLAN stands for Wireless Local Area Network, typically Wi-Fi based on IEEE 802.11." },
+      { q: "Which encryption standard does WPA2 use?", options: ["DES", "AES-CCMP", "MD5", "RSA"], answer: 1, e: "WPA2 uses AES-CCMP (Counter Mode Cipher Block Chaining Message Authentication Code Protocol) for strong encryption." },
+      { q: "What is the main advantage of cell splitting?", options: ["Reduces cost", "Increases capacity", "Improves security", "Extends battery life"], answer: 1, e: "Cell splitting divides a congested cell into smaller cells, each with its own BTS, increasing overall capacity." },
+      { q: "Which satellite orbit is used for GPS?", options: ["GEO", "MEO", "LEO", "HEO"], answer: 1, e: "GPS uses MEO (Medium Earth Orbit) at ~20,200 km altitude. GEO is at 35,786 km, LEO is below 2,000 km." },
+      { q: "What does GPRS stand for?", options: ["General Packet Radio Service", "Global Packet Radio System", "General Purpose Radio Service", "Global Public Radio Service"], answer: 0, e: "GPRS (General Packet Radio Service) introduced packet-switched data to GSM, enabling 'always-on' mobile internet." },
+      { q: "Which technology is used for contactless payments?", options: ["Bluetooth", "NFC", "Wi-Fi", "Infrared"], answer: 1, e: "NFC (Near Field Communication) operates at ~4 cm range and is used for contactless payments like Apple Pay and Google Pay." },
+      { q: "What is a rogue access point?", options: ["A weak signal AP", "An unauthorized AP on the network", "A dual-band AP", "A mesh AP"], answer: 1, e: "A rogue AP is an unauthorized wireless access point installed on a network without permission, creating a security risk." },
+      { q: "What does WEP stand for?", options: ["Wired Equivalent Privacy", "Wireless Encryption Protocol", "Wide Encryption Privacy", "Wired Encryption Protocol"], answer: 0, e: "WEP (Wired Equivalent Privacy) was the original Wi-Fi security standard but is now completely broken." },
+      { q: "Which TCP version is designed for wireless networks?", options: ["TCP Reno", "TCP Tahoe", "TCP Vegas", "TCP Westwood"], answer: 3, e: "TCP Westwood uses end-to-end bandwidth estimation to handle the high packet loss rates typical in wireless links." },
+      { q: "What is the frequency reuse factor in a cluster of 7 cells?", options: ["1/4", "1/7", "1/3", "1/12"], answer: 1, e: "In a 7-cell cluster, each cell uses 1/7 of the available frequencies, giving a reuse factor of 1/7." },
+      { q: "What does VLR store temporarily?", options: ["SIM card data", "Subscriber location and info in visited network", "Encryption keys", "Voicemail messages"], answer: 1, e: "VLR (Visitor Location Register) temporarily stores data about subscribers currently in the visited network's area." },
+      { q: "Which protocol tunnels packets in Mobile IP?", options: ["HTTP", "IPsec", "GRE", "FTP"], answer: 2, e: "Mobile IP uses GRE (Generic Routing Encapsulation) or IP-in-IP tunneling to forward packets to the Care-of Address." },
+      { q: "What is the range of NFC?", options: ["~4 cm", "~1 m", "~10 m", "~100 m"], answer: 0, e: "NFC has a very short range of ~4 cm, which is intentional for security in contactless payments." },
+      { q: "What does OFDMA stand for?", options: ["Orthogonal Frequency Division Multiple Access", "Optical Frequency Data Multiple Access", "Offset Frequency Division Modulation Access", "Orthogonal Full Duplex Multiple Access"], answer: 0, e: "OFDMA divides the spectrum into orthogonal subcarriers, allowing multiple users to share the channel efficiently." },
+      { q: "Which attack involves intercepting wireless signals?", options: ["Phishing", "Eavesdropping", "SQL injection", "Buffer overflow"], answer: 1, e: "Eavesdropping (or sniffing) passively intercepts wireless signals using tools like spectrum analyzers or Wireshark." },
+      { q: "What is the purpose of a VPN?", options: ["Boost signal strength", "Encrypt traffic over public networks", "Increase data speed", "Reduce latency"], answer: 1, e: "A VPN creates an encrypted tunnel over public networks, protecting data confidentiality and integrity." },
+      { q: "Which GSM component manages call switching?", options: ["BTS", "BSC", "MSC", "HLR"], answer: 2, e: "MSC (Mobile Switching Center) handles call switching, routing voice calls between mobile and PSTN networks." },
+      { q: "What is cell sectoring?", options: ["Dividing cells into sectors using directional antennas", "Merging multiple cells", "Installing more BTS", "Power control"], answer: 0, e: "Sectoring uses directional antennas to divide a cell into sectors (typically 3 x 120°), reducing interference." },
+      { q: "What does MANET stand for?", options: ["Mobile Ad-hoc Network", "Metropolitan Area Network", "Managed Network", "Multiple Access Network"], answer: 0, e: "MANET (Mobile Ad-hoc Network) is a self-configuring network of mobile devices connected wirelessly without infrastructure." },
+      { q: "Which frequency does 5G mmWave use?", options: ["Sub-1 GHz", "1-2 GHz", "24-100 GHz", "2.4 GHz"], answer: 2, e: "5G mmWave operates in 24–100 GHz range, offering huge bandwidth but limited range requiring beamforming." },
+      { q: "What is a Care-of Address in Mobile IP?", options: ["Home IP address", "Temporary IP in visited network", "MAC address", "SIM serial number"], answer: 1, e: "The Care-of Address (CoA) is a temporary IP address assigned to the mobile node when connected to a foreign network." },
+      { q: "What is a primary limitation of WEP?", options: ["High speed", "Weak encryption (easily cracked)", "Short range", "Expensive hardware"], answer: 1, e: "WEP uses weak RC4 encryption with a 24-bit IV that repeats quickly, allowing cracking in minutes with tools like aircrack-ng." },
+      { q: "What does MSC stand for?", options: ["Mobile Switching Center", "Master Signal Controller", "Mobile Service Channel", "Main System Computer"], answer: 0, e: "MSC (Mobile Switching Center) is the core switching node in GSM that routes calls and manages mobility." },
+      { q: "Which standard defines Bluetooth?", options: ["802.11", "802.15", "802.3", "802.16"], answer: 1, e: "Bluetooth is defined by IEEE 802.15.1 (WPAN). 802.11 is Wi-Fi, 802.3 is Ethernet, 802.16 is WiMAX." },
+      { q: "What is war driving?", options: ["Testing cellular signals from a vehicle", "Searching for Wi-Fi networks while moving", "Jamming wireless signals", "Encrypting wireless traffic"], answer: 1, e: "War driving involves driving around to discover and map Wi-Fi networks, often using GPS and a wireless scanner." },
+      { q: "What does WPA use instead of WEP's RC4?", options: ["TKIP", "AES", "DES", "MD5"], answer: 0, e: "WPA uses TKIP (Temporal Key Integrity Protocol) which still uses RC4 but adds per-packet key mixing and IV sequencing." },
+      { q: "How do GSM networks authenticate subscribers?", options: ["Using passwords", "Using A3 algorithm and Ki on SIM", "Using biometrics", "Using MAC filtering"], answer: 1, e: "GSM uses a challenge-response mechanism: the network sends RAND, and the SIM computes SRES using the A3 algorithm and Ki key." },
+      { q: "What does BSC stand for?", options: ["Base Station Controller", "Broadband Service Center", "Basic Signal Controller", "Base Switching Circuit"], answer: 0, e: "BSC (Base Station Controller) manages multiple BTSs, handling radio resource allocation and handoffs." },
+      { q: "Which satellite orbit is at ~35,786 km?", options: ["LEO", "MEO", "GEO", "HEO"], answer: 2, e: "GEO (Geostationary Earth Orbit) at ~35,786 km keeps satellites fixed relative to Earth, ideal for TV and weather." },
+      { q: "What is the maximum range of Wi-Fi 6 at 2.4 GHz?", options: ["~30m", "~100m", "~500m", "~1km"], answer: 1, e: "Wi-Fi 6 at 2.4 GHz has a typical range of ~100m indoors, similar to previous generations at this frequency." },
+      { q: "What is the primary benefit of network slicing in 5G?", options: ["Lower cost", "Custom virtual networks for different use cases", "Higher frequency", "Smaller cell size"], answer: 1, e: "Network slicing creates multiple virtual end-to-end networks on shared infrastructure, each tailored for specific needs (eMBB, URLLC, mMTC)." },
+      { q: "Which type of interference affects CDMA networks?", options: ["Near-far problem", "Adjacent channel interference", "Co-channel interference", "Thermal noise"], answer: 0, e: "The near-far problem in CDMA occurs when a nearby transmitter drowns out a distant one; solved by power control." },
+      { q: "What does EIR stand for in GSM?", options: ["Equipment Identity Register", "Encrypted Information Relay", "Extended Interface Router", "Electronic Identity Record"], answer: 0, e: "EIR (Equipment Identity Register) stores IMEI numbers to block stolen or unauthorized phones from the network." },
+      { q: "What is the typical latency of 5G?", options: ["~50ms", "~20ms", "~1-10ms", "~100ms"], answer: 2, e: "5G targets ultra-low latency of 1-10ms (URLLC scenario), critical for autonomous driving and remote surgery." },
+      { q: "Which modulation does GSM use?", options: ["QPSK", "GMSK", "16-QAM", "BPSK"], answer: 1, e: "GSM uses GMSK (Gaussian Minimum Shift Keying), a constant-envelope modulation that is power-efficient." },
+      { q: "What is a femtocell?", options: ["A very large macro cell", "A small home/office cellular base station", "A satellite transceiver", "A Wi-Fi repeater"], answer: 1, e: "A femtocell is a low-power, small-range cellular base station designed for home or small office use." },
+      { q: "What does the SIM card store?", options: ["Only contacts", "IMSI, Ki, authentication data", "Only SMS messages", "The entire OS"], answer: 1, e: "The SIM stores the IMSI, Ki (authentication key), and performs A3/A8 algorithm computations for network authentication." },
+      { q: "Which type of IP addressing is used by IoT devices in 5G?", options: ["IPv4 only", "IPv6", "IPX/SPX", "AppleTalk"], answer: 1, e: "IPv6 is essential for 5G IoT due to the massive number of devices requiring unique IP addresses." },
+      { q: "What is the main challenge of wireless communication?", options: ["Cost", "Signal fading and interference", "Cable management", "Power supply"], answer: 1, e: "Signal fading (multipath, shadowing) and interference (co-channel, adjacent channel) are fundamental challenges in wireless." },
+      { q: "Which 802.11 amendment introduced OFDM?", options: ["802.11a", "802.11b", "802.11g", "802.11n"], answer: 0, e: "802.11a (1999) was the first to use OFDM, operating at 5 GHz with up to 54 Mbps." },
+      { q: "What does the Foreign Agent do in Mobile IP?", options: ["Assigns CoA and delivers packets", "Authenticates the user", "Manages billing", "Connects to the Internet"], answer: 0, e: "The Foreign Agent provides a Care-of Address and delivers decapsulated packets to the mobile node on the visited network." },
+      { q: "What is frequency division duplex (FDD)?", options: ["Same frequency for up/down", "Different frequencies for uplink and downlink", "Time-based sharing", "Code-based sharing"], answer: 1, e: "FDD uses paired frequency bands — one for uplink, one for downlink — enabling simultaneous transmission in both directions." },
+      { q: "What is the main advantage of soft handoff?", options: ["Simpler to implement", "No data loss during transition", "Uses less power", "Cheaper equipment"], answer: 1, e: "Soft handoff (make-before-break) maintains multiple connections simultaneously, preventing data loss during cell transitions." },
+      { q: "Which generation first used MIMO technology?", options: ["3G", "4G (LTE)", "2G", "5G"], answer: 1, e: "4G LTE was the first generation to standardize MIMO (Multiple Input Multiple Output) for commercial mobile networks." },
+      { q: "What does SSID stand for?", options: ["Service Set Identifier", "Signal Strength Indicator", "System Service ID", "Secure Session ID"], answer: 0, e: "SSID (Service Set Identifier) is the human-readable name of a Wi-Fi network." },
+      { q: "What is the primary cause of multipath fading?", options: ["Atmospheric absorption", "Signal reflection off surfaces", "Device battery level", "Network congestion"], answer: 1, e: "Multipath fading occurs when signals reflect off buildings, walls, and other surfaces, creating multiple delayed copies at the receiver." },
+      { q: "Which protocol provides mobile node registration in Mobile IP?", options: ["DHCP", "ICMP", "UDP", "TCP"], answer: 2, e: "Mobile IP registration uses UDP for efficiency — it avoids TCP's connection setup overhead and retransmission delays." },
+      { q: "What does IMSI stand for?", options: ["International Mobile Subscriber Identity", "Integrated Mobile System Interface", "International Mobile Station Identifier", "Internal Mobile Subscriber Index"], answer: 0, e: "IMSI (International Mobile Subscriber Identity) is a unique 15-digit number stored on the SIM that identifies the subscriber." },
+      { q: "Which network topology does cellular networking use?", options: ["Star", "Mesh", "Hexagonal cells", "Ring"], answer: 2, e: "Cellular networks use hexagonal cell topology (theoretical model) for optimal coverage without gaps or overlap." },
+      { q: "What is beamforming in 5G?", options: ["A construction technique", "Directing signal toward a specific device", "Splitting a beam of light", "Creating multiple beams of equal power"], answer: 1, e: "Beamforming uses phased antenna arrays to steer radio signals precisely toward a specific device, improving range and reducing interference." },
+      { q: "What does EDGE stand for?", options: ["Enhanced Data rates for GSM Evolution", "Efficient Digital Global Exchange", "Extended Data GSM Equipment", "Enhanced Digital GPRS Engine"], answer: 0, e: "EDGE (Enhanced Data rates for GSM Evolution) uses 8-PSK modulation to triple GSM data rates up to 384 kbps." },
+      { q: "Which layer does WPA operate at?", options: ["Physical", "Data Link", "Network", "Application"], answer: 1, e: "WPA operates at Layer 2 (Data Link), encrypting the frame body of 802.11 frames after the MAC header." },
+      { q: "What is the radius of a typical macro cell?", options: ["~10m", "~100m", "~1-30 km", "~100 km"], answer: 2, e: "Macro cells typically have a radius of 1–30 km, providing wide-area coverage from tall tower-mounted antennas." },
+      { q: "What does HSPA stand for?", options: ["High Speed Packet Access", "High Signal Processing Algorithm", "Hybrid System Protocol Architecture", "High Speed Public Access"], answer: 0, e: "HSPA (High Speed Packet Access) is a 3.5G technology combining HSDPA (downlink) and HSUPA (uplink) for faster data." },
+      { q: "What is the purpose of interleaving in wireless communication?", options: ["Reduce power consumption", "Spread burst errors across multiple bits", "Increase data rate", "Encrypt data"], answer: 1, e: "Interleaving rearranges bit order before transmission so that burst errors are spread out, making them correctable by FEC." },
+      { q: "Which type of fading occurs due to large obstacles?", options: ["Fast fading", "Slow fading (shadowing)", "Multipath fading", "Flat fading"], answer: 1, e: "Slow fading (shadowing) is caused by large obstacles like buildings or hills blocking the signal path." },
+      { q: "What is the main purpose of a MAC address in Wi-Fi?", options: ["Route packets to the Internet", "Uniquely identify a device on the local network", "Encrypt data", "Authenticate users"], answer: 1, e: "The MAC address is a hardware identifier that uniquely identifies a network interface on the local network segment." },
+      { q: "What does 802.1X provide in wireless security?", options: ["Encryption", "Port-based network access control", "Data compression", "Power management"], answer: 1, e: "802.1X provides port-based authentication (EAP over LAN), commonly used in enterprise Wi-Fi with a RADIUS server." },
+      { q: "Which version of Bluetooth introduced Low Energy (BLE)?", options: ["v2.0", "v3.0", "v4.0", "v5.0"], answer: 2, e: "Bluetooth v4.0 (2010) introduced BLE (Bluetooth Low Energy), enabling IoT devices to run on coin cells for years." },
+      { q: "What is the primary advantage of micro cells?", options: ["Longer range", "Higher capacity in dense areas", "Lower cost", "Simpler installation"], answer: 1, e: "Micro cells provide additional capacity in dense urban areas by offloading traffic from macro cells in small coverage zones." },
+      { q: "What does CSMA/CA stand for?", options: ["Carrier Sense Multiple Access with Collision Avoidance", "Code Sequence Multiple Access with Collision Arbitration", "Carrier Sense Mobile Access with Collision Avoidance", "Circuit Switched Multiple Access with Code Allocation"], answer: 0, e: "CSMA/CA is the Wi-Fi MAC protocol that listens before transmitting and uses random backoff to avoid collisions." },
+      { q: "Which standard defines WiMAX?", options: ["802.11", "802.15", "802.16", "802.3"], answer: 2, e: "IEEE 802.16 defines WiMAX (Worldwide Interoperability for Microwave Access) for broadband wireless metropolitan networks." },
+      { q: "What is the main difference between WPA and WPA2?", options: ["WPA2 uses AES-CCMP, WPA uses TKIP/RC4", "WPA2 is slower", "WPA2 has shorter range", "WPA uses AES"], answer: 0, e: "WPA2 uses AES-CCMP which is far more secure than WPA's TKIP (which still relied on the weaker RC4 cipher)." },
+      { q: "What is a picocell?", options: ["A very large cell", "A small cell for indoor coverage (~100m)", "A satellite cell", "A nationwide cell"], answer: 1, e: "A picocell is a small, low-power base station covering ~100m indoors, used in offices, malls, and airports." },
+      { q: "Which device in GSM handles encryption/decryption?", options: ["MS (Mobile Station)", "BTS", "MSC", "HLR"], answer: 0, e: "The Mobile Station (phone + SIM) handles encryption/decryption using the A5 algorithm and session key Kc." },
+      { q: "What is the main advantage of Orthogonal Frequency Division Multiplexing?", options: ["Simpler circuit design", "Resistance to multipath interference", "Higher power output", "Lower cost"], answer: 1, e: "OFDM splits the channel into many narrow orthogonal subcarriers, making it highly resistant to multipath fading." },
+      { q: "What is the role of the EIR in GSM?", options: ["Track stolen/unauthorized phones", "Manage billing", "Route voice calls", "Store voicemail"], answer: 0, e: "The EIR maintains a database of IMEI numbers to identify and block stolen, unauthorized, or faulty devices." },
+      { q: "Which attack involves an attacker impersonating a legitimate AP?", options: ["Evil Twin attack", "DoS attack", "Brute force attack", "Man-in-the-middle attack"], answer: 0, e: "An Evil Twin attack sets up a fake AP with the same SSID as a legitimate one to capture user credentials." },
+      { q: "What is the typical uplink frequency of GSM-900?", options: ["935-960 MHz", "890-915 MHz", "1800 MHz", "2100 MHz"], answer: 1, e: "GSM-900 uplink is 890-915 MHz (mobile to BTS) and downlink is 935-960 MHz (BTS to mobile)." },
+      { q: "What does UMTS stand for?", options: ["Universal Mobile Telecommunications System", "Unified Mobile Transmission Service", "Universal Message Transfer System", "User Mobile Telecommunication Standard"], answer: 0, e: "UMTS (Universal Mobile Telecommunications System) is the 3G standard using WCDMA air interface." },
+      { q: "Which transport protocol is typically used for streaming media?", options: ["TCP", "UDP", "HTTP", "FTP"], answer: 1, e: "UDP is preferred for streaming because it has low overhead and no retransmission delays, accepting some packet loss." },
+      { q: "What is the maximum number of devices a Bluetooth piconet supports?", options: ["7", "8", "16", "32"], answer: 0, e: "A Bluetooth piconet supports up to 8 devices (1 master + 7 active slaves)." },
+      { q: "What is the primary function of a BSC in GSM?", options: ["Manage radio resources for multiple BTSs", "Connect to the PSTN", "Store subscriber data", "Authenticate users"], answer: 0, e: "The BSC manages radio resources (frequency assignment, handoffs) for multiple BTSs under its control." },
+      { q: "Which protocol is used for VoIP signaling?", options: ["SIP", "HTTP", "FTP", "SMTP"], answer: 0, e: "SIP (Session Initiation Protocol) is the standard signaling protocol for setting up and tearing down VoIP calls." },
+      { q: "What does QoS stand for in networking?", options: ["Quality of Service", "Quantity of Signal", "Query of System", "Quick Operating Standard"], answer: 0, e: "QoS (Quality of Service) prioritizes certain types of traffic (e.g., voice, video) to ensure performance guarantees." },
+      { q: "Which technology allows a single AP to serve multiple VLANs?", options: ["SSID", "MIMO", "Multiple BSSID", "Beamforming"], answer: 2, e: "Multiple BSSID allows a single AP to broadcast multiple virtual APs, each associated with a different VLAN." },
+      { q: "What is the primary advantage of IPv6 over IPv4 in mobile networks?", options: ["Larger address space for billions of devices", "Faster routing", "Better encryption", "Smaller packet size"], answer: 0, e: "IPv6's 128-bit address space (vs. IPv4's 32-bit) is essential for the billions of mobile and IoT devices needing unique addresses." },
+    ];
+
+    const quizContainer = document.getElementById('quizContainer');
+
+    questions.forEach((q, idx) => {
+      const box = document.createElement('div');
+      box.className = 'quiz-box';
+      let optsHtml = q.options.map((o, i) =>
+        `<label><input type="radio" name="q${idx}" value="${i}">${o}</label>`
+      ).join('');
+      box.innerHTML = `
+        <h4>${idx + 1}. ${q.q}</h4>
+        <div class="options">${optsHtml}</div>
+        <button onclick="checkAnswer(${idx})">Check</button>
+        <div class="feedback" id="fb${idx}"></div>
+        <div class="explanation" id="exp${idx}" style="display:none;margin-top:10px;padding:12px;background:#f0f8ff;border-radius:8px;border-left:4px solid #0f3460;"></div>
+      `;
+      quizContainer.appendChild(box);
+    });
+
+    window.checkAnswer = function(qIdx) {
+      const q = questions[qIdx];
+      const selected = document.querySelector(`input[name="q${qIdx}"]:checked`);
+      const fb = document.getElementById(`fb${qIdx}`);
+      const exp = document.getElementById(`exp${qIdx}`);
+      if (!selected) { fb.textContent = 'Please select an answer.'; fb.className = 'feedback incorrect'; return; }
+      const val = parseInt(selected.value);
+      const correct = val === q.answer;
+      fb.textContent = correct ? '✓ Correct!' : '✗ Incorrect.';
+      fb.className = `feedback ${correct ? 'correct' : 'incorrect'}`;
+      exp.style.display = 'block';
+      exp.innerHTML = `<strong>Explanation:</strong> ${q.e}`;
+    };
+  </script>
+</body>
+</html>

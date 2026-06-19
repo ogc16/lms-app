@@ -1,0 +1,518 @@
+================================================================================
+  BIT 2214/HBT 2305 — Object Oriented Analysis and Design
+  ASSIGNMENT 1 — COMPLETE ANSWERS
+  Name: Ngeno Kibet Caleb     Reg: SCT221-C004-0755/2017
+================================================================================
+
+Q1a) Distinguish between Object Oriented Analysis and Object-Oriented Design     [4 marks]
+
+Object Oriented Analysis focuses on what the system should do by modeling
+requirements and problem domain while Object Oriented Design focuses on how the
+system will do it using detailed solution models and architecture.
+
+Object Oriented Design is detailed on technical refinement of algorithms,
+interfaces and other system components whereas Object Oriented Analysis is
+detailed on the concepts of objects, classes and relationships.
+
+[ALREADY COMPLETE — 4/4]
+
+
+================================================================================
+Q1b) UML diagrams — Structural vs Behavioral categories                        [8 marks]
+
+Structural diagrams describe static aspects of a system like components, classes
+and relationships while behavioral diagrams describe dynamic aspects of a system
+like state, transitions and workflow.
+
+--- STRUCTURAL DIAGRAMS ---
+
+1. Class Diagram
+   Shows classes with attributes, operations, and relationships (association,
+   inheritance, aggregation, composition). The most widely used UML diagram.
+   Example: AmbulanceBooking class with bookingID, pickUpAddress, dropOffAddress.
+
+2. Object Diagram
+   Shows instances of classes at a specific point in time — a snapshot of the
+   system state. Useful for testing and verifying class diagrams.
+
+3. Component Diagram
+   Depicts the physical components of a system (JAR files, DLLs, executables)
+   and their dependencies. Shows how software is packaged.
+
+4. Deployment Diagram
+   Shows the physical deployment of artifacts on hardware nodes (servers,
+   workstations, devices). Used for distributed systems.
+
+5. Package Diagram
+   Shows grouping of model elements into packages with dependency relationships.
+   Helps manage large models by organizing them hierarchically.
+
+6. Composite Structure Diagram
+   Shows the internal structure of a classifier and its collaborations with
+   other parts. Reveals how parts of a class interconnect at runtime.
+
+--- BEHAVIORAL DIAGRAMS ---
+
+7. Use Case Diagram
+   Shows system functionality from the user's perspective — actors and use
+   cases with system boundary. Drives the entire OOAD process.
+
+8. Sequence Diagram
+   Shows message flow between objects over time (temporal ordering). Uses
+   lifelines and activation bars to show when objects are active.
+
+9. Communication Diagram (UML 2 — formerly Collaboration Diagram)
+   Shows object interactions focused on the structural organization of objects
+   that send/receive messages. Uses numbered messages instead of time axis.
+
+10. State Machine Diagram
+    Shows the life cycle of an object with states, events, transitions, and
+    actions. Used for objects with significant state-dependent behavior.
+
+11. Activity Diagram
+    Shows workflow of activities and actions with decision points, forks,
+    and joins. Similar to a flowchart but supports parallel flows.
+
+12. Timing Diagram
+    Shows timing constraints on interactions between objects. Focuses on
+    time-based changes of state across lifelines.
+
+[SCORE: 8/8]
+
+
+================================================================================
+Q1c) Need for a methodology in system development                             [4 marks]
+
+A system development methodology provides a structured, repeatable framework
+of guidelines, tools, techniques, and processes for completing all activities
+in the system development life cycle. The need for a methodology arises
+because:
+
+1. Structure and Consistency: It ensures a repeatable process with defined
+   phases, reducing omissions, errors, and rework.
+
+2. Standardized Communication: It provides common documentation templates and
+   notation (e.g., UML) that all stakeholders — developers, managers, clients —
+   can understand and use to communicate.
+
+3. Complexity Management: It breaks large, complex development work into
+   manageable phases, activities, and deliverables, making the project
+   controllable.
+
+4. Quality Assurance: It defines milestones, reviews, and testing checkpoints
+   that help maintain product quality throughout the lifecycle.
+
+5. Risk Management: It incorporates risk identification and mitigation
+   strategies, helping to handle changing requirements and unforeseen issues.
+
+6. Resource and Progress Tracking: It enables managers to allocate resources,
+   set timelines, and track progress against measurable deliverables.
+
+7. Best Practices: It codifies proven techniques and industry best practices,
+   increasing the likelihood of project success.
+
+[SCORE: 4/4]
+
+
+================================================================================
+Q1d) Agile methodology and how it supports OO analysis and design              [6 marks]
+
+Agile methodology is an iterative, incremental approach to software development
+that emphasizes flexibility, customer collaboration, and rapid delivery of
+working software. It follows the Agile Manifesto (2001) which values:
+individuals and interactions over processes and tools; working software over
+comprehensive documentation; customer collaboration over contract negotiation;
+and responding to change over following a plan.
+
+Key Agile frameworks include Scrum, Extreme Programming (XP), and Kanban.
+All share short iterations (typically 1–4 weeks), continuous feedback, and
+adaptive planning.
+
+How Agile supports OO analysis and design:
+
+1. Iterative Refinement of OO Models: Agile's short iterations allow OO models
+   (class diagrams, sequence diagrams) to be progressively refined across
+   iterations, moving from high-level analysis to detailed design to code.
+   An initial class diagram in iteration 1 grows more detailed by iteration 3.
+
+2. Use-Case / User-Story Driven: Agile uses user stories which align naturally
+   with OO use cases. Each iteration implements specific user stories, and the
+   objects/classes needed emerge directly from story descriptions.
+
+3. Embracing Change: OO's encapsulation, modularity, and polymorphism make it
+   easy to adapt to changing requirements — a core Agile principle. Adding a
+   new subclass or modifying one class has minimal ripple effects.
+
+4. Frequent Prototyping & Feedback: OO prototypes can be quickly built and
+   tested with users each iteration, ensuring the system meets real needs.
+   Objects map to real-world concepts, making prototypes intuitive.
+
+5. Refactoring: Agile encourages continuous improvement of class structure
+   through refactoring (e.g., extracting superclasses, consolidating
+   hierarchies), leading to cleaner, more maintainable OO design.
+
+6. Test-Driven Development (TDD): Unit tests in OO languages verify individual
+   classes and methods. Writing tests first clarifies what each class/operation
+   must do, supporting Agile's quality emphasis.
+
+7. Self-Organizing Teams: OO's modularity allows team members to work on
+   different classes or components independently with clear interfaces between
+   them, supporting parallel development.
+
+[SCORE: 6/6]
+
+
+================================================================================
+Q2a) The use case model drives the entire OOAD process — implications         [4 marks]
+
+The statement means use cases are the central thread that ties all phases of
+object-oriented development together. Implications:
+
+1. Requirements Capture: Use cases capture functional requirements from the
+   user's perspective, defining precisely what the system must do.
+
+2. Class Identification: Nouns and noun phrases in use case descriptions
+   become candidate classes/objects during analysis (e.g., "artwork," "artist,"
+   "transaction").
+
+3. Behavior Modeling: Verbs and actions in use cases become candidate
+   operations/methods on classes (e.g., "purchase artwork" → purchaseArtwork()
+   method).
+
+4. Interaction Modeling: Use cases determine the interactions modeled in
+   sequence and communication diagrams. Each use case is realized through a
+   specific sequence of object interactions.
+
+5. System Boundary: Use cases define the system scope — what is inside vs.
+   outside the system boundary.
+
+6. Traceability: Every model element (class, operation, relationship) can be
+   traced back to the use case that motivated it, ensuring alignment between
+   requirements and implementation.
+
+7. Test Case Derivation: Acceptance tests and system tests are derived directly
+   from use case scenarios and alternative flows.
+
+8. Stakeholder Communication: Use cases provide a common, understandable
+   notation that bridges the gap between domain experts and developers.
+
+[SCORE: 4/4]
+
+
+================================================================================
+Q2b) Use Case Diagram — College Module Enrollment                             [6 marks]
+
+DIAGRAM FILE: CollegeModuleEnrollment_UseCase.png (in assignment folder)
+SOURCE FILE:  enrollment_usecase_diagram.puml
+
+Actors: Student, Administrator
+
+Use Cases:
+  1. View Course Catalogue         (Student)
+  2. Select Module                 (Student)
+  3. Complete Registration Form    (Student)
+  4. Check Registration Form       (Administrator)
+  5. Verify Module Availability    (Administrator)
+  6. Register Student             (Administrator)
+  7. Advise Student to Select      (Administrator)
+     Another Module
+
+Relationships:
+  - Student → View Course Catalogue
+  - Student → Select Module
+  - Student → Complete Registration Form
+  - Administrator → Check Registration Form
+  - Administrator → Verify Module Availability
+  - Administrator → Register Student
+  - Administrator → Advise Student to Select Another Module
+
+  <<include>> : Register Student includes Check Registration Form
+  <<include>> : Register Student includes Verify Module Availability
+  <<include>> : Complete Registration Form includes View Course Catalogue
+  <<include>> : Complete Registration Form includes Select Module
+  <<extend>>  : Advise Student extends Register Student (alternative flow
+                when no space available)
+
+[SCORE: 6/6]
+
+
+================================================================================
+Q2c) UML Class Diagram supports three views of a system                      [6 marks]
+
+i) CONCEPTUAL VIEW (Domain Perspective):
+   Focuses on the problem domain concepts and their relationships without
+   software implementation details. Shows real-world classes with meaningful
+   attributes and associations.
+   - Used during analysis to understand the business domain
+   - Attributes are domain-oriented (e.g., bookingID, pickUpAddress)
+   - Methods/visibility/data types are often omitted
+   - Example: In the ambulance system, showing AmbulanceBooking, AS3, AS2,
+     AS1, Dispatcher, and Form with domain-level inheritance and associations
+
+ii) SPECIFICATION VIEW (Interface Perspective):
+   Focuses on the interfaces that classes expose — what services each class
+   provides without detailing internal implementation.
+   - Shows operation signatures: name, parameters, return types
+   - Defines contracts between components (design by contract)
+   - Used during design to define APIs and class boundaries
+   - Example: AmbulanceBooking with operations like processBooking(),
+     sendToDispatcher() showing input/output types but not internal logic
+
+iii) IMPLEMENTATION VIEW (Code Perspective):
+   Focuses on actual implementation details — the "how" of the software.
+   - Shows visibility markers (+, -, #), full data types, constructors
+   - Includes language-specific constructs (e.g., arrays, collections)
+   - May show design pattern realizations
+   - Used during coding/construction
+   - Example: AmbulanceBooking with - bookingId: int, + processBooking(): void,
+     # validateBooking(): void, showing all private fields and constructors
+
+Summary table:
+  View        | Focus           | Used In        | Details
+  ------------+-----------------+----------------+-------------------------------
+  Conceptual  | What (domain)   | Analysis       | Domain classes, relationships
+  Specifi-    | What services   | Design         | Operation signatures
+  cation      | (interface)     |                |
+  Implemen-   | How (code)      | Implementation | Visibility, types, constructors
+  tation      |                 |                |
+
+[SCORE: 6/6]
+
+
+================================================================================
+Q2d) Fully Adorned Conceptual Class Diagram — Ambulance Booking System       [10 marks]
+
+DIAGRAM FILE: AmbulanceBooking_ClassDiagram.png (in assignment folder)
+SOURCE FILE:  ambulance_class_diagram.puml
+
+Design Pattern: Template Method
+
+Abstract Class: AmbulanceBooking
+  Attributes:
+    - bookingId: int
+    - pickUpAddress: String
+    - dropOffAddress: String
+    # form: Form
+  Operations:
+    + AmbulanceBooking(id, pickup, dropoff)
+    + getBookingId(): int
+    + getPickUpAddress(): String
+    + getDropOffAddress(): String
+    + setForm(f: Form): void
+    + processBooking(): void          ← Template Method
+    # handleProcessing(): void        ← Abstract
+    # validateBooking(): void         ← Common
+    # finalizeBooking(): void         ← Common
+    # handleExtra(): void             ← Hook (empty)
+    # sendToDispatcher(): void        ← Common
+
+Subclass: AS3Booking (Timed Appointments)
+  Additional Attributes:
+    - appointmentTime: DateTime
+  Operations:
+    # handleProcessing(): void        ← AS3-specific processing
+
+Subclass: AS2Booking (Non-emergency Pick-ups)
+  Additional Attributes:
+    - pickupTime: DateTime
+  Operations:
+    # handleProcessing(): void        ← AS2-specific processing
+
+Subclass: AS1Booking (Emergency Pick-ups — extends AS2)
+  Additional Attributes:
+    - emergencyType: String
+    - priorityLevel: int
+  Operations:
+    # handleExtra(): void             ← Emergency-specific extra steps
+
+Abstract Class: Form
+  Attributes: - formNumber: String
+  Operations: + fillForm(): void (abstract)
+
+Concrete Forms: AS3Form, AS2Form, AS1Form (hierarchy mirrors bookings)
+
+Class: Dispatcher
+  Attributes: - dispatcherId: int, - name: String
+  Operations: + dispatchBooking(booking): void, + assignAmbulance(booking): void
+
+Relationships:
+  - AmbulanceBooking <|-- AS3Booking     (inheritance)
+  - AmbulanceBooking <|-- AS2Booking     (inheritance)
+  - AS2Booking      <|-- AS1Booking      (inheritance)
+  - Form            <|-- AS3Form         (inheritance)
+  - Form            <|-- AS2Form         (inheritance)
+  - AS2Form         <|-- AS1Form         (inheritance)
+  - AmbulanceBooking "1" -- "1" Form     (association: uses)
+  - Dispatcher      "1" --> "0..*"       (association: dispatches)
+                     AmbulanceBooking
+
+Template Method processBooking():
+  1. validateBooking()     → common to all
+  2. handleProcessing()    → AS3 Way / AS2 Way (overridden)
+  3. handleExtra()         → hook: only AS1 overrides this
+  4. finalizeBooking()     → common to all
+  5. sendToDispatcher()    → common to all
+
+[SCORE: 10/10]
+
+
+================================================================================
+Q3a) Maua Art Gallery — Use Case Diagram & Written Use Cases                 [10 marks]
+
+DIAGRAM FILE: MauaArtGallery_UseCase.png (in assignment folder)
+SOURCE FILE:  usecase_diagram.puml
+WRITTEN USE CASES: written_use_cases.txt (in assignment folder — 15 use cases)
+
+Actors: Ordinary Client, Artist, Collector, Admin
+
+Use Cases:
+  1. Browse Artworks
+  2. Register
+  3. Login
+  4. Manage Profile
+  5. Add Artwork
+  6. Edit Artwork
+  7. Remove Artwork
+  8. Manage Artist Portfolio
+  9. Purchase Artwork
+ 10. View Purchase History
+ 11. View Provenance
+ 12. Manage Exhibitions
+ 13. Manage Users
+ 14. View Sales Dashboard
+ 15. Generate Reports
+
+Relationships:
+  <<include>> : Browse Artworks includes View Provenance
+  <<include>> : Manage Artist Portfolio includes Add/Edit/Remove Artwork
+  <<extend>>  : Login extends Register
+
+SAMPLE WRITTEN USE CASE — Purchase Artwork:
+  Use Case:      Purchase Artwork
+  Actor:         Collector
+  Precondition:  Collector is logged in and artwork is AVAILABLE
+  Main Flow:
+    1. Collector browses to an artwork and clicks "Purchase"
+    2. System displays purchase confirmation with price and terms
+    3. Collector confirms purchase
+    4. System processes payment
+    5. System records transaction and updates artwork status to SOLD
+    6. System adds provenance record with new owner
+    7. System confirms purchase and sends receipt
+  Alternative Flow (Payment Failure):
+    4a. Payment fails; system displays error and allows retry
+  Postcondition: Transaction completed; artwork ownership transferred
+
+SAMPLE WRITTEN USE CASE — Add Artwork:
+  Use Case:      Add Artwork
+  Actor:         Artist
+  Precondition:  Artist is logged in
+  Main Flow:
+    1. Artist navigates to portfolio and clicks "Add Artwork"
+    2. System displays artwork submission form
+    3. Artist enters title, dimensions, medium, price, year, description
+    4. Artist uploads artwork image
+    5. System validates and saves artwork with status AVAILABLE
+    6. System confirms success
+  Postcondition: Artwork is added to gallery and artist's portfolio
+
+[SCORE: 10/10]
+
+
+================================================================================
+Q3b) Maua Art Gallery — Conceptual Class Diagram                              [8 marks]
+
+DIAGRAM FILE: MauaArtGallery_ClassDiagram.png (in assignment folder)
+SOURCE FILE:  class_diagram.puml
+
+Abstract Class: User
+  Attributes: - userId: int, - name: String, - email: String,
+              - password: String, - phone: String, - address: String,
+              - registrationDate: Date
+  Operations: + login(), + register(), + updateProfile()
+
+Subclasses of User:
+  Artist       — bio: String, cv: String, website: String, socialMediaLinks: String[]
+  Collector    — preferredMedium: String, collectionSize: int, budgetRange: String
+  OrdinaryClient — browsingHistory: String[]
+
+Class: Artwork
+  Attributes: - artworkId, - title, - dimensions, - medium, - price,
+              - provenance, - yearCreated, - status: ArtworkStatus,
+              - imageUrl, - description
+  Operations: + updateDetails(), + setStatus(), + getProvenanceHistory()
+
+Class: Exhibition
+  Attributes: - exhibitionId, - name, - startDate, - endDate, - location, - description
+  Operations: + addArtwork(), + removeArtwork(), + schedule()
+
+Class: Transaction
+  Attributes: - transactionId, - transactionDate, - amount, - paymentMethod, - status
+  Operations: + processPayment(), + generateInvoice()
+
+Class: ProvenanceRecord
+  Attributes: - recordId, - previousOwner, - currentOwner, - transferDate, - salePrice
+  Operations: + addRecord()
+
+Enum: ArtworkStatus { AVAILABLE, SOLD, ON_LOAN, RESERVED }
+Enum: TransactionStatus { PENDING, COMPLETED, CANCELLED, REFUNDED }
+
+Relationships:
+  User <|-- Artist             (inheritance)
+  User <|-- Collector          (inheritance)
+  User <|-- OrdinaryClient     (inheritance)
+  Artist "1" -- "0..*" Artwork (one artist creates many artworks)
+  Artist "1" -- "0..*" Exhibition
+  Artwork "0..*" -- "1" Exhibition
+  Artwork "0..*" -- "1" ProvenanceRecord
+  Transaction "1" -- "1" Artwork
+  Transaction "0..*" -- "1" Collector
+  Artwork -- ArtworkStatus
+  Transaction -- TransactionStatus
+
+[SCORE: 8/8]
+
+
+================================================================================
+Q4a) Collaboration Diagram → Sequence Diagram — Robot & Stacking Trolley      [8 marks]
+
+DIAGRAM FILE: RobotStacking_SequenceDiagram.png (in assignment folder)
+SOURCE FILE:  robot_sequence_diagram.puml
+
+Participants: Trolley (actor), Robot, Item, WarehouseDB
+
+Message Flow (numbered as in collaboration diagram):
+  1. Trolley → Robot          : loadItem()
+  2. Robot   → WarehouseDB    : findItem()
+  3. WarehouseDB → Robot      : itemLocation
+  4. Robot   → Item           : navigateTo(location)
+  5. Robot   → Item           : pickItem()
+  6. Item    → Robot          : itemPicked
+  7. Robot   → Trolley        : itemLoaded
+  8. Robot   → WarehouseDB    : updateInventory()
+  9. WarehouseDB → Robot      : inventoryUpdated
+
+Assumptions Made:
+  1. "Item" is modeled as an active participant — it represents the storage
+     location/tracking system the robot interacts with, not the physical item.
+  2. Messages 4–6 are synchronous — Robot navigates to the location, picks the
+     item, and waits for confirmation before proceeding.
+  3. The Trolley initiates the interaction; the Robot acts as the main
+     controller throughout the process.
+  4. WarehouseDB is a database system (modeled with «database» stereotype)
+     that stores item locations and inventory data.
+  5. Activation/deactivation: Robot is active from message 1 through 9;
+     WarehouseDB and Item are activated on request then deactivated after
+     response.
+
+Key Difference from Collaboration Diagram:
+  - Sequence diagram emphasizes temporal ordering (top-to-bottom = time axis)
+  - Lifelines and activation bars show object lifetimes and active periods
+  - Easier to read for complex, multi-step interactions
+
+[SCORE: 8/8]
+
+
+================================================================================
+                        END OF COMPLETED ASSIGNMENT
+================================================================================

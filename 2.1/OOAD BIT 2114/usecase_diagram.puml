@@ -1,0 +1,58 @@
+@startuml MauaArtGallery_UseCase
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Ordinary Client" as OC
+actor "Artist" as A
+actor "Collector" as C
+actor "Admin" as Ad
+
+rectangle "Maua Art Gallery Management System" {
+  (Browse Artworks) as BA
+  (Register) as Reg
+  (Login) as Lgn
+  (Manage Profile) as MP
+  (Add Artwork) as AA
+  (Edit Artwork) as EA
+  (Remove Artwork) as RA
+  (Purchase Artwork) as PA
+  (View Purchase History) as VPH
+  (Manage Users) as MU
+  (Generate Reports) as GR
+  (Manage Exhibitions) as ME
+  (View Sales Dashboard) as VSD
+  (View Provenance) as VP
+  (Manage Artist Portfolio) as MAP
+
+  OC --> BA
+  OC --> Reg
+  OC --> Lgn
+
+  A --> Lgn
+  A --> MP
+  A --> MAP
+  A --> AA
+  A --> EA
+  A --> RA
+  A --> BA
+  A --> VP
+
+  C --> Lgn
+  C --> BA
+  C --> PA
+  C --> VP
+  C --> VPH
+
+  Ad --> Lgn
+  Ad --> MU
+  Ad --> GR
+  Ad --> VSD
+  Ad --> ME
+
+  Lgn .> Reg : <<extend>>
+  MAP .> AA : <<include>>
+  MAP .> EA : <<include>>
+  MAP .> RA : <<include>>
+  BA .> VP : <<include>>
+}
+@enduml

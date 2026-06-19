@@ -3,30 +3,15 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import PropTypes from 'prop-types';
 import { useProgress } from '../context/ProgressContext';
 import { useTheme } from '../context/ThemeContext';
-import { pythonCourse } from '../data/pythonCourse';
-import { cppCourse } from '../data/cppCourse';
-import { cybersecurityCourse } from '../data/cybersecurityCourse';
-import { ethicalhackerCourse } from '../data/ethicalhackerCourse';
-import { bitCoreCourse } from '../data/bitCoreCourse';
-import { goCourse } from '../data/goCourse';
-import { swiftCourse } from '../data/swiftCourse';
-import { csharpCourse } from '../data/csharpCourse';
-import { vbCourse } from '../data/vbCourse';
-import { webDevCourse } from '../data/webDevCourse';
-import { sqlCourse } from '../data/sqlCourse';
-import { nextjsCourse } from '../data/nextjsCourse';
-import { reactNativeCourse } from '../data/reactNativeCourse';
-import { financialRecordsCourse } from '../data/financialRecordsCourse';
-import { operationsManagementCourse } from '../data/operationsManagementCourse';
-import { financialAccountingCourse } from '../data/financialAccountingCourse';
+import { coursesMap } from '../data/courses';
 
-const courses = { python: pythonCourse, cpp: cppCourse, cybersecurity: cybersecurityCourse, ethicalhacker: ethicalhackerCourse, bit_core: bitCoreCourse, go: goCourse, swift: swiftCourse, csharp: csharpCourse, vb: vbCourse, web_dev: webDevCourse, sql: sqlCourse, nextjs: nextjsCourse, react_native: reactNativeCourse, financial_records: financialRecordsCourse, operations_management: operationsManagementCourse, financial_accounting: financialAccountingCourse };
+const courses = coursesMap;
 
 export default function CourseDetailScreen({ route, navigation }) {
   const { courseId } = route.params;
   const course = courses[courseId];
   const { isLessonComplete, getQuizScore, getCourseProgress, isCourseComplete } = useProgress();
-  const { theme } = useTheme();
+  const { theme, isDark } = useTheme();
 
   if (!course) {
     return (
@@ -53,16 +38,16 @@ export default function CourseDetailScreen({ route, navigation }) {
 
       {completed && (
         <TouchableOpacity
-          style={styles.certificateBanner}
+          style={[styles.certificateBanner, { backgroundColor: isDark ? '#2C2416' : '#f0ebc2', borderColor: isDark ? '#D4B896' : '#5e0e08' }]}
           onPress={() => navigation.navigate('Certificate', { courseId: course.id })}
           activeOpacity={0.7}
         >
           <Text style={styles.certificateIcon}>🏆</Text>
           <View style={styles.certificateBannerText}>
-            <Text style={styles.certificateBannerTitle}>Course Completed!</Text>
-            <Text style={styles.certificateBannerSubtitle}>Tap to view your certificate</Text>
+            <Text style={[styles.certificateBannerTitle, { color: isDark ? '#D4B896' : '#5e0e08' }]}>Course Completed!</Text>
+            <Text style={[styles.certificateBannerSubtitle, { color: isDark ? '#B89B72' : '#5e0e08' }]}>Tap to view your certificate</Text>
           </View>
-          <Text style={styles.certificateArrow}>›</Text>
+          <Text style={[styles.certificateArrow, { color: isDark ? '#D4B896' : '#5e0e08' }]}>›</Text>
         </TouchableOpacity>
       )}
 

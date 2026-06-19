@@ -9,6 +9,7 @@ const STORAGE_KEY = '@lms_progress';
 export function ProgressProvider({ children }) {
   const [progress, setProgress] = useState({});
   const [loading, setLoading] = useState(true);
+  const [userName, setUserNameState] = useState('Learner');
 
   useEffect(() => {
     loadProgress();
@@ -17,7 +18,11 @@ export function ProgressProvider({ children }) {
   const loadProgress = async () => {
     try {
       const stored = await AsyncStorage.getItem(STORAGE_KEY);
-      if (stored) setProgress(JSON.parse(stored));
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        setProgress(parsed);
+        if (parsed._userName) setUserNameState(parsed._userName);
+      }
     } catch (e) {
       console.warn('Failed to load progress', e);
     } finally {
@@ -84,17 +89,45 @@ export function ProgressProvider({ children }) {
     return true;
   }, [progress]);
 
+  const setUserName = useCallback((name) => {
+    setProgress(prev => {
+      const next = { ...prev, _userName: name };
+      saveProgress(next);
+      return next;
+    });
+    setUserNameState(name);
+  }, []);
+
+  const setCourseCompletionDate = useCallback((courseId) => {
+    setProgress(prev => {
+      const key = `completedDate_${courseId}`;
+      if (prev[key]) return prev;
+      const next = { ...prev, [key]: new Date().toISOString() };
+      saveProgress(next);
+      return next;
+    });
+  }, []);
+
+  const getCourseCompletionDate = useCallback((courseId) => {
+    const dateStr = progress[`completedDate_${courseId}`];
+    return dateStr ? new Date(dateStr) : null;
+  }, [progress]);
+
   const resetProgress = useCallback(async () => {
     setProgress({});
+    setUserNameState('Learner');
     await AsyncStorage.removeItem(STORAGE_KEY);
   }, []);
 
   const value = useMemo(() => ({
-    progress, loading,
+    progress, loading, userName,
+    setUserName,
     markLessonComplete, markQuizScore,
     isLessonComplete, getQuizScore,
-    getCourseProgress, isCourseComplete, resetProgress
-  }), [progress, loading, markLessonComplete, markQuizScore, isLessonComplete, getQuizScore, getCourseProgress, isCourseComplete, resetProgress]);
+    getCourseProgress, isCourseComplete,
+    setCourseCompletionDate, getCourseCompletionDate,
+    resetProgress
+  }), [progress, loading, userName, setUserName, markLessonComplete, markQuizScore, isLessonComplete, getQuizScore, getCourseProgress, isCourseComplete, setCourseCompletionDate, getCourseCompletionDate, resetProgress]);
 
   return (
     <ProgressContext.Provider value={value}>

@@ -3,24 +3,9 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import PropTypes from 'prop-types';
 import { useProgress } from '../context/ProgressContext';
 import { useTheme } from '../context/ThemeContext';
-import { pythonCourse } from '../data/pythonCourse';
-import { cppCourse } from '../data/cppCourse';
-import { cybersecurityCourse } from '../data/cybersecurityCourse';
-import { ethicalhackerCourse } from '../data/ethicalhackerCourse';
-import { bitCoreCourse } from '../data/bitCoreCourse';
-import { goCourse } from '../data/goCourse';
-import { swiftCourse } from '../data/swiftCourse';
-import { csharpCourse } from '../data/csharpCourse';
-import { vbCourse } from '../data/vbCourse';
-import { webDevCourse } from '../data/webDevCourse';
-import { sqlCourse } from '../data/sqlCourse';
-import { nextjsCourse } from '../data/nextjsCourse';
-import { reactNativeCourse } from '../data/reactNativeCourse';
-import { financialRecordsCourse } from '../data/financialRecordsCourse';
-import { operationsManagementCourse } from '../data/operationsManagementCourse';
-import { financialAccountingCourse } from '../data/financialAccountingCourse';
+import { coursesArray } from '../data/courses';
 
-const courses = [pythonCourse, cppCourse, cybersecurityCourse, ethicalhackerCourse, bitCoreCourse, goCourse, swiftCourse, csharpCourse, vbCourse, webDevCourse, sqlCourse, nextjsCourse, reactNativeCourse, financialRecordsCourse, operationsManagementCourse, financialAccountingCourse];
+const courses = coursesArray;
 
 export default function HomeScreen({ navigation }) {
   const { theme } = useTheme();

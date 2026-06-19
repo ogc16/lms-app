@@ -1,0 +1,32 @@
+@startuml CollegeModuleEnrollment_UseCase
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Student" as S
+actor "Administrator" as A
+
+rectangle "College Module Enrollment System" {
+  (View Course Catalogue) as VCC
+  (Select Module) as SM
+  (Complete Registration Form) as CRF
+  (Check Registration Form) as ChkRF
+  (Verify Module Availability) as VMA
+  (Register Student) as RS
+  (Advise Student to\nSelect Another Module) as ASM
+
+  S --> VCC
+  S --> SM
+  S --> CRF
+
+  A --> ChkRF
+  A --> VMA
+  A --> RS
+  A --> ASM
+
+  RS .> ChkRF : <<include>>
+  RS .> VMA : <<include>>
+  ASM .> RS : <<extend>>
+  CRF .> VCC : <<include>>
+  CRF .> SM : <<include>>
+}
+@enduml

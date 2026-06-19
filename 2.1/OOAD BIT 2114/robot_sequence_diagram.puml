@@ -1,0 +1,32 @@
+@startuml RobotStacking_SequenceDiagram
+
+title Sequence Diagram: Robot & Stacking Trolley Interaction
+
+actor "Trolley" as T
+participant "Robot" as R
+participant "Item" as I
+database "WarehouseDB" as DB
+
+T -> R: 1: loadItem()
+activate R
+
+R -> DB: 2: findItem()
+activate DB
+DB --> R: 3: itemLocation
+deactivate DB
+
+R -> I: 4: navigateTo(location)
+activate I
+R -> I: 5: pickItem()
+I --> R: 6: itemPicked
+deactivate I
+
+R --> T: 7: itemLoaded
+deactivate R
+
+R -> DB: 8: updateInventory()
+activate DB
+DB --> R: 9: inventoryUpdated
+deactivate DB
+
+@enduml

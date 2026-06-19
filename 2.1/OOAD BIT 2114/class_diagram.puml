@@ -1,0 +1,119 @@
+@startuml MauaArtGallery_ClassDiagram
+
+abstract class User {
+  - userId: int
+  - name: String
+  - email: String
+  - password: String
+  - phone: String
+  - address: String
+  - registrationDate: Date
+  + login(): void
+  + register(): void
+  + updateProfile(): void
+}
+
+class Artist {
+  - bio: String
+  - cv: String
+  - website: String
+  - socialMediaLinks: String[]
+  + addArtwork(a: Artwork): void
+  + removeArtwork(artworkId: int): void
+  + updateArtwork(a: Artwork): void
+  + managePortfolio(): void
+  + viewSalesReport(): void
+}
+
+class Collector {
+  - preferredMedium: String
+  - collectionSize: int
+  - budgetRange: String
+  + purchaseArtwork(a: Artwork): Transaction
+  + viewCollection(): Artwork[]
+  + viewPurchaseHistory(): Transaction[]
+}
+
+class OrdinaryClient {
+  - browsingHistory: String[]
+  + browseArtworks(): Artwork[]
+  + registerAsArtist(): Artist
+  + registerAsCollector(): Collector
+}
+
+class Artwork {
+  - artworkId: int
+  - title: String
+  - dimensions: String
+  - medium: String
+  - price: double
+  - provenance: String
+  - yearCreated: int
+  - status: ArtworkStatus
+  - imageUrl: String
+  - description: String
+  + updateDetails(): void
+  + setStatus(status: ArtworkStatus): void
+  + getProvenanceHistory(): ProvenanceRecord[]
+}
+
+class Exhibition {
+  - exhibitionId: int
+  - name: String
+  - startDate: Date
+  - endDate: Date
+  - location: String
+  - description: String
+  + addArtwork(a: Artwork): void
+  + removeArtwork(a: Artwork): void
+  + schedule(): void
+}
+
+class Transaction {
+  - transactionId: int
+  - transactionDate: Date
+  - amount: double
+  - paymentMethod: String
+  - status: TransactionStatus
+  + processPayment(): void
+  + generateInvoice(): void
+}
+
+class ProvenanceRecord {
+  - recordId: int
+  - previousOwner: String
+  - currentOwner: String
+  - transferDate: Date
+  - salePrice: double
+  + addRecord(): void
+}
+
+enum ArtworkStatus {
+  AVAILABLE
+  SOLD
+  ON_LOAN
+  RESERVED
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}
+
+User <|-- Artist
+User <|-- Collector
+User <|-- OrdinaryClient
+
+Artist "1" -- "0..*" Artwork : creates >
+Artist "1" -- "0..*" Exhibition : participates in >
+
+Artwork "0..*" -- "1" Exhibition : displayed in >
+Artwork "0..*" -- "1" ProvenanceRecord : has >
+Artwork -- ArtworkStatus
+
+Transaction "1" -- "1" Artwork : involves >
+Transaction "0..*" -- "1" Collector : made by >
+Transaction -- TransactionStatus
+@enduml

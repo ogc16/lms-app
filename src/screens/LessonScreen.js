@@ -2,24 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import { useProgress } from '../context/ProgressContext';
-import { pythonCourse } from '../data/pythonCourse';
-import { cppCourse } from '../data/cppCourse';
-import { cybersecurityCourse } from '../data/cybersecurityCourse';
-import { ethicalhackerCourse } from '../data/ethicalhackerCourse';
-import { bitCoreCourse } from '../data/bitCoreCourse';
-import { goCourse } from '../data/goCourse';
-import { swiftCourse } from '../data/swiftCourse';
-import { csharpCourse } from '../data/csharpCourse';
-import { vbCourse } from '../data/vbCourse';
-import { webDevCourse } from '../data/webDevCourse';
-import { sqlCourse } from '../data/sqlCourse';
-import { nextjsCourse } from '../data/nextjsCourse';
-import { reactNativeCourse } from '../data/reactNativeCourse';
-import { financialRecordsCourse } from '../data/financialRecordsCourse';
-import { operationsManagementCourse } from '../data/operationsManagementCourse';
-import { financialAccountingCourse } from '../data/financialAccountingCourse';
+import { coursesMap } from '../data/courses';
 
-const courses = { python: pythonCourse, cpp: cppCourse, cybersecurity: cybersecurityCourse, ethicalhacker: ethicalhackerCourse, bit_core: bitCoreCourse, go: goCourse, swift: swiftCourse, csharp: csharpCourse, vb: vbCourse, web_dev: webDevCourse, sql: sqlCourse, nextjs: nextjsCourse, react_native: reactNativeCourse, financial_records: financialRecordsCourse, operations_management: operationsManagementCourse, financial_accounting: financialAccountingCourse };
+const courses = coursesMap;
 
 export default function LessonScreen({ route, navigation }) {
   const { courseId, chapterId, lessonId } = route.params;

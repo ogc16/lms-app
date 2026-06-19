@@ -1,28 +1,15 @@
-import React, { useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
-import { pythonCourse } from '../data/pythonCourse';
-import { cppCourse } from '../data/cppCourse';
-import { cybersecurityCourse } from '../data/cybersecurityCourse';
-import { ethicalhackerCourse } from '../data/ethicalhackerCourse';
-import { bitCoreCourse } from '../data/bitCoreCourse';
-import { goCourse } from '../data/goCourse';
-import { swiftCourse } from '../data/swiftCourse';
-import { csharpCourse } from '../data/csharpCourse';
-import { vbCourse } from '../data/vbCourse';
-import { webDevCourse } from '../data/webDevCourse';
-import { sqlCourse } from '../data/sqlCourse';
-import { nextjsCourse } from '../data/nextjsCourse';
-import { reactNativeCourse } from '../data/reactNativeCourse';
-import { financialRecordsCourse } from '../data/financialRecordsCourse';
-import { operationsManagementCourse } from '../data/operationsManagementCourse';
-import { financialAccountingCourse } from '../data/financialAccountingCourse';
+import { useProgress } from '../context/ProgressContext';
+import { useTheme } from '../context/ThemeContext';
+import { coursesMap } from '../data/courses';
 
-const courses = { python: pythonCourse, cpp: cppCourse, cybersecurity: cybersecurityCourse, ethicalhacker: ethicalhackerCourse, bit_core: bitCoreCourse, go: goCourse, swift: swiftCourse, csharp: csharpCourse, vb: vbCourse, web_dev: webDevCourse, sql: sqlCourse, nextjs: nextjsCourse, react_native: reactNativeCourse, financial_records: financialRecordsCourse, operations_management: operationsManagementCourse, financial_accounting: financialAccountingCourse };
-
-function generateCertificateHTML(course, date) {
+function generateCertificateHTML(course, date, recipientName, isDark) {
+  const parchment = isDark ? '#2C2416' : '#f0ebc2';
+  const ink = isDark ? '#D4B896' : '#5e0e08';
   return `<!DOCTYPE html>
 <html>
 <head>
@@ -32,48 +19,53 @@ function generateCertificateHTML(course, date) {
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
       width: 210mm; height: 297mm;
-      background: #f0ebc2;
+      background: ${parchment};
       font-family: 'Georgia', 'Times New Roman', serif;
+    }
+    .certificate-outer {
+      width: 188mm; height: 275mm;
+      margin: 11mm auto;
+      border: 4px solid ${ink};
       display: flex; align-items: center; justify-content: center;
     }
-    .certificate {
-      width: 180mm; height: 255mm;
-      border: 8px double #5e0e08;
-      border-radius: 16px;
+    .certificate-inner {
+      width: 174mm; height: 261mm;
+      border: 2px solid ${ink};
       display: flex; flex-direction: column; align-items: center;
       justify-content: center;
-      padding: 20mm 15mm;
+      padding: 12mm 10mm;
     }
     .ribbon {
-      font-size: 14pt; letter-spacing: 4px; text-transform: uppercase;
-      color: #5e0e08; border: 2px solid #5e0e08;
-      padding: 6px 24px; border-radius: 4px; margin-bottom: 20px;
-      font-family: 'Arial', sans-serif;
+      font-size: 13pt; letter-spacing: 4px; text-transform: uppercase;
+      color: ${ink}; border: 2px solid ${ink};
+      padding: 5px 20px; margin-bottom: 12px;
     }
-    h1 { font-size: 18pt; color: #5e0e08; font-weight: 400; margin-bottom: 10px; letter-spacing: 1px; }
-    .recipient { font-size: 48pt; font-weight: 700; color: #5e0e08; margin-bottom: 10px; }
-    .course-name { font-size: 28pt; font-weight: 700; color: #5e0e08; margin-bottom: 20px; text-align: center; }
-    p { font-size: 14pt; color: #5e0e08; line-height: 1.5; text-align: center; max-width: 150mm; margin-bottom: 20px; }
-    .seal { font-size: 60pt; margin-bottom: 16px; color: #5e0e08; }
-    .date { font-size: 14pt; color: #5e0e08; opacity: 0.8; margin-bottom: 16px; }
+    h1 { font-size: 16pt; color: ${ink}; font-weight: 400; margin-bottom: 6px; letter-spacing: 1px; }
+    .recipient { font-size: 40pt; font-weight: 700; color: ${ink}; margin-bottom: 6px; text-align: center; word-break: break-word; }
+    .course-name { font-size: 24pt; font-weight: 700; color: ${ink}; margin-bottom: 12px; text-align: center; word-break: break-word; }
+    p { font-size: 13pt; color: ${ink}; line-height: 1.4; text-align: center; max-width: 140mm; margin-bottom: 12px; word-break: break-word; }
+    .seal { font-size: 50pt; margin-bottom: 10px; color: ${ink}; }
+    .date { font-size: 13pt; color: ${ink}; opacity: 0.8; margin-bottom: 10px; }
     .signature-line {
-      border-top: 2px solid #5e0e08;
-      width: 50mm; text-align: center; padding-top: 8px;
-      font-size: 14pt; color: #5e0e08;
+      border-top: 2px solid ${ink};
+      width: 50mm; text-align: center; padding-top: 6px;
+      font-size: 13pt; color: ${ink};
     }
   </style>
 </head>
 <body>
-  <div class="certificate">
-    <div class="ribbon">Certificate of Completion</div>
-    <h1>This certifies that</h1>
-    <div class="recipient">Learner</div>
-    <h1>has successfully completed the course</h1>
-    <div class="course-name">${course.title}</div>
-    <p>${course.description}</p>
-    <div class="seal">&#10003;</div>
-    <div class="date">Completed on ${date}</div>
-    <div class="signature-line">MyLec</div>
+  <div class="certificate-outer">
+    <div class="certificate-inner">
+      <div class="ribbon">Certificate of Completion</div>
+      <h1>This certifies that</h1>
+      <div class="recipient">${recipientName}</div>
+      <h1>has successfully completed the course</h1>
+      <div class="course-name">${course.title}</div>
+      <p>${course.description}</p>
+      <div class="seal">&#10003;</div>
+      <div class="date">Completed on ${date}</div>
+      <div class="signature-line">MyLec</div>
+    </div>
   </div>
 </body>
 </html>`;
@@ -81,27 +73,66 @@ function generateCertificateHTML(course, date) {
 
 export default function CertificateScreen({ route, navigation }) {
   const { courseId } = route.params;
-  const course = courses[courseId];
-  const certificateRef = useRef(null);
+  const { isCourseComplete, setCourseCompletionDate, getCourseCompletionDate, userName } = useProgress();
+  const { theme, isDark } = useTheme();
+  const [saving, setSaving] = useState(false);
 
-  const today = new Date();
-  const dateStr = today.toLocaleDateString('en-US', {
-    year: 'numeric', month: 'long', day: 'numeric',
-  });
+  const course = coursesMap[courseId];
+  const completed = course ? isCourseComplete(course.id, course.chapters) : false;
+
+  const completionDate = course ? getCourseCompletionDate(course.id) : null;
+  const dateStr = completionDate
+    ? completionDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+    : '';
 
   if (!course) {
     return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>Course not found</Text>
+      <View style={[styles.centerContainer, { backgroundColor: theme.background }]}>
+        <Text style={[styles.centerText, { color: theme.text }]}>Course not found</Text>
       </View>
     );
   }
 
+  if (!completed) {
+    return (
+      <View style={[styles.centerContainer, { backgroundColor: theme.background }]}>
+        <Text style={styles.lockIcon}>🔒</Text>
+        <Text style={[styles.centerText, { color: theme.text }]}>Course not yet completed</Text>
+        <Text style={[styles.centerSubtext, { color: theme.textSecondary }]}>
+          Complete all lessons and quizzes to unlock your certificate
+        </Text>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={styles.backButtonText}>Back to Course</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  useEffect(() => {
+    if (completed && !completionDate) {
+      setCourseCompletionDate(course.id);
+    }
+  }, [completed, completionDate, course, setCourseCompletionDate]);
+
   const handleSavePDF = async () => {
+    setSaving(true);
     try {
-      const html = generateCertificateHTML(course, dateStr);
+      const html = generateCertificateHTML(course, dateStr, userName, isDark);
       if (Platform.OS === 'web') {
-        await Print.printAsync({ html });
+        const iframe = document.createElement('iframe');
+        iframe.style.position = 'fixed';
+        iframe.style.right = '-9999px';
+        iframe.style.top = '-9999px';
+        document.body.appendChild(iframe);
+        const doc = iframe.contentWindow.document;
+        doc.open();
+        doc.write(html);
+        doc.close();
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
       } else {
         const { uri } = await Print.printToFileAsync({ html });
         if (await Sharing.isAvailableAsync()) {
@@ -110,31 +141,44 @@ export default function CertificateScreen({ route, navigation }) {
       }
     } catch (e) {
       console.warn('PDF export failed', e);
+    } finally {
+      setSaving(false);
     }
   };
 
+  const parchment = isDark ? '#2C2416' : '#f0ebc2';
+  const ink = isDark ? '#D4B896' : '#5e0e08';
+
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.screenContent}>
-      <View style={styles.certificateContainer} ref={certificateRef}>
-        <View style={styles.borderDouble}>
-          <View style={styles.inner}>
-            <Text style={styles.ribbon}>Certificate of Completion</Text>
-            <Text style={styles.certifies}>This certifies that</Text>
-            <Text style={styles.recipient}>Learner</Text>
-            <Text style={styles.certifies}>has successfully completed the course</Text>
-            <Text style={styles.courseName}>{course.title}</Text>
-            <Text style={styles.description}>{course.description}</Text>
-            <Text style={styles.seal}>✓</Text>
-            <Text style={styles.date}>Completed on {dateStr}</Text>
-            <View style={styles.signatureLine}>
-              <Text style={styles.signatureText}>MyLec</Text>
+    <ScrollView style={[styles.screen, { backgroundColor: parchment }]} contentContainerStyle={styles.screenContent}>
+      <View style={styles.certificateContainer}>
+        <View style={[styles.borderDouble, { borderColor: ink }]}>
+          <View style={[styles.inner, { borderColor: ink }]}>
+            <Text style={[styles.ribbon, { color: ink, borderColor: ink }]}>Certificate of Completion</Text>
+            <Text style={[styles.certifies, { color: ink }]}>This certifies that</Text>
+            <Text style={[styles.recipient, { color: ink }]}>{userName}</Text>
+            <Text style={[styles.certifies, { color: ink }]}>has successfully completed the course</Text>
+            <Text style={[styles.courseName, { color: ink }]}>{course.title}</Text>
+            <Text style={[styles.description, { color: ink }]}>{course.description}</Text>
+            <Text style={[styles.seal, { color: ink }]}>✓</Text>
+            <Text style={[styles.date, { color: ink }]}>Completed on {dateStr}</Text>
+            <View style={[styles.signatureLine, { borderColor: ink }]}>
+              <Text style={[styles.signatureText, { color: ink }]}>MyLec</Text>
             </View>
           </View>
         </View>
       </View>
 
-      <TouchableOpacity style={styles.downloadButton} onPress={handleSavePDF}>
-        <Text style={styles.downloadText}>Save as PDF</Text>
+      <TouchableOpacity
+        style={[styles.downloadButton, saving && styles.downloadButtonDisabled, { backgroundColor: ink }]}
+        onPress={handleSavePDF}
+        disabled={saving}
+      >
+        {saving ? (
+          <ActivityIndicator color={parchment} size="small" />
+        ) : (
+          <Text style={[styles.downloadText, { color: parchment }]}>Save as PDF</Text>
+        )}
       </TouchableOpacity>
     </ScrollView>
   );
@@ -143,7 +187,6 @@ export default function CertificateScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: '#f0ebc2',
   },
   screenContent: {
     alignItems: 'center',
@@ -158,14 +201,12 @@ const styles = StyleSheet.create({
   borderDouble: {
     flex: 1,
     borderWidth: 6,
-    borderColor: '#5e0e08',
     borderRadius: 16,
     padding: 12,
   },
   inner: {
     flex: 1,
     borderWidth: 2,
-    borderColor: '#5e0e08',
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
@@ -175,9 +216,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     letterSpacing: 4,
     textTransform: 'uppercase',
-    color: '#5e0e08',
     borderWidth: 1,
-    borderColor: '#5e0e08',
     paddingHorizontal: 20,
     paddingVertical: 5,
     borderRadius: 4,
@@ -186,26 +225,22 @@ const styles = StyleSheet.create({
   },
   certifies: {
     fontSize: 16,
-    color: '#5e0e08',
     marginBottom: 6,
     textAlign: 'center',
   },
   recipient: {
     fontSize: 36,
     fontWeight: '800',
-    color: '#5e0e08',
     marginBottom: 6,
   },
   courseName: {
     fontSize: 26,
     fontWeight: '700',
-    color: '#5e0e08',
     marginBottom: 14,
     textAlign: 'center',
   },
   description: {
     fontSize: 13,
-    color: '#5e0e08',
     textAlign: 'center',
     lineHeight: 20,
     marginBottom: 18,
@@ -214,63 +249,73 @@ const styles = StyleSheet.create({
   },
   seal: {
     fontSize: 50,
-    color: '#5e0e08',
     marginBottom: 10,
     fontWeight: '700',
   },
   date: {
     fontSize: 13,
-    color: '#5e0e08',
     opacity: 0.8,
     marginBottom: 14,
   },
   signatureLine: {
     borderTopWidth: 2,
-    borderColor: '#5e0e08',
     width: 200,
     alignItems: 'center',
     paddingTop: 8,
   },
   signatureText: {
     fontSize: 13,
-    color: '#5e0e08',
     letterSpacing: 1,
   },
   downloadButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#5e0e08',
+    justifyContent: 'center',
     paddingVertical: 14,
     paddingHorizontal: 32,
     borderRadius: 12,
     marginBottom: 32,
+    minWidth: 180,
     elevation: 4,
     boxShadow: '0px 4px 12px rgba(94, 14, 8, 0.3)',
+  },
+  downloadButtonDisabled: {
+    opacity: 0.7,
   },
   downloadText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#f0ebc2',
   },
-  errorContainer: {
+  centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f0ebc2',
+    padding: 24,
   },
-  errorText: {
-    color: '#5e0e08',
-    fontSize: 18,
+  centerText: {
+    fontSize: 20,
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  centerSubtext: {
+    fontSize: 14,
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 24,
+  },
+  lockIcon: {
+    fontSize: 48,
+    marginBottom: 16,
+  },
+  backButton: {
+    backgroundColor: '#4A90D9',
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 32,
+  },
+  backButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
   },
 });
-
-CertificateScreen.propTypes = {
-  route: PropTypes.shape({
-    params: PropTypes.shape({
-      courseId: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-  }).isRequired,
-};

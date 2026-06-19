@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICS 2206 - Database Management Systems Study Guide</title>
+<style>
+  :root {
+    --primary: #2c3e50;
+    --accent: #3498db;
+    --accent2: #2980b9;
+    --success: #27ae60;
+    --warning: #f39c12;
+    --danger: #e74c3c;
+    --bg: #ecf0f1;
+    --card: #fff;
+    --text: #2c3e50;
+    --muted: #7f8c8d;
+    --border: #ddd;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .topbar {
+    background: var(--primary);
+    color: #fff;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  }
+  .topbar h1 { font-size: 1.1rem; font-weight: 600; }
+  .topbar .sub { font-size: .75rem; opacity: .8; }
+  .topbar-right { display: flex; align-items: center; gap: 16px; }
+  .progress-bar {
+    width: 160px; height: 8px; background: rgba(255,255,255,.2);
+    border-radius: 4px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; background: var(--success); width: 0%;
+    transition: width .4s ease;
+  }
+  .progress-label { font-size: .75rem; }
+  .container { display: flex; min-height: calc(100vh - 56px); }
+  .sidebar {
+    width: 260px; background: var(--card); border-right: 1px solid var(--border);
+    overflow-y: auto; flex-shrink: 0;
+    transition: width .3s ease, padding .3s ease;
+    white-space: nowrap;
+  }
+  .sidebar.collapsed { width: 0; padding: 0; overflow: hidden; border-right: none; }
+  .toggle-sidebar {
+    background: none; border: none; color: #fff; font-size: 1.3rem;
+    cursor: pointer; padding: 0 12px 0 4px; line-height: 1;
+  }
+  .toggle-sidebar:hover { opacity: .8; }
+  .sidebar .lesson {
+    padding: 12px 20px; cursor: pointer; border-bottom: 1px solid var(--border);
+    transition: all .2s; display: flex; align-items: center; gap: 10px;
+  }
+  .sidebar .lesson:hover { background: #f5f8fa; }
+  .sidebar .lesson.active {
+    background: var(--accent); color: #fff; font-weight: 600;
+  }
+  .sidebar .lesson.completed { border-left: 4px solid var(--success); }
+  .sidebar .lesson .num {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--bg); display: flex; align-items: center;
+    justify-content: center; font-size: .75rem; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .sidebar .lesson.active .num { background: rgba(255,255,255,.25); color: #fff; }
+  .sidebar .lesson.completed .num { background: var(--success); color: #fff; }
+  .sidebar .lesson .check { margin-left: auto; font-size: .85rem; }
+  .main {
+    flex: 1; padding: 32px 40px; overflow-y: auto;
+    max-width: 900px;
+  }
+  .lesson-header {
+    margin-bottom: 28px; padding-bottom: 16px;
+    border-bottom: 2px solid var(--accent);
+  }
+  .lesson-header h2 { font-size: 1.5rem; color: var(--primary); }
+  .lesson-header .badge {
+    display: inline-block; background: var(--accent); color: #fff;
+    padding: 2px 12px; border-radius: 12px; font-size: .75rem;
+    margin-top: 6px;
+  }
+  .section { margin-bottom: 28px; }
+  .section h3 {
+    font-size: 1.1rem; color: var(--accent2); margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section ul, .section ol { padding-left: 24px; }
+  .section li { margin-bottom: 4px; }
+  .outcomes {
+    background: #eaf5ff; padding: 16px 20px; border-radius: 8px;
+    border-left: 4px solid var(--accent);
+  }
+  .outcomes li { margin-bottom: 6px; }
+  .card {
+    background: var(--card); border-radius: 8px; padding: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 16px;
+  }
+  .card h4 { margin-bottom: 8px; color: var(--primary); }
+  .quiz-btn {
+    background: var(--accent); color: #fff; border: none;
+    padding: 10px 24px; border-radius: 6px; cursor: pointer;
+    font-size: .9rem; transition: background .2s;
+  }
+  .quiz-btn:hover { background: var(--accent2); }
+  .quiz-btn:disabled { background: #95a5a6; cursor: not-allowed; }
+  .quiz-question { margin-bottom: 12px; }
+  .quiz-question .q { font-weight: 600; margin-bottom: 6px; }
+  .quiz-question label {
+    display: block; padding: 6px 12px; margin: 4px 0;
+    border-radius: 4px; cursor: pointer; transition: background .2s;
+  }
+  .quiz-question label:hover { background: #f0f4f8; }
+  .quiz-question input { margin-right: 8px; }
+  .quiz-question.correct { background: #d5f5e3; border-left: 4px solid var(--success); border-radius: 4px; padding: 8px 12px; margin-bottom: 12px; }
+  .quiz-question.wrong { background: #fadbd8; border-left: 4px solid var(--danger); border-radius: 4px; padding: 8px 12px; margin-bottom: 12px; }
+  .quiz-question .fb-icon { font-weight: 700; margin-right: 6px; }
+  .quiz-question .fb-icon.correct { color: var(--success); }
+  .quiz-question .fb-icon.wrong { color: var(--danger); }
+  .quiz-question .explain-text { font-size: .85rem; color: #555; margin-top: 4px; padding-left: 20px; }
+  .quiz-question .correct-answer { font-size: .85rem; color: var(--success); font-weight: 600; margin-top: 2px; padding-left: 20px; }
+  .quiz-result {
+    margin-top: 12px; padding: 12px; border-radius: 6px;
+    font-weight: 600;
+  }
+  .quiz-result.pass { background: #d5f5e3; color: #1a6b3c; }
+  .quiz-result.fail { background: #fadbd8; color: #922b21; }
+  .flashcard-area {
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+  }
+  .flashcard {
+    width: 100%; max-width: 480px; min-height: 160px;
+    background: var(--card); border: 2px solid var(--border);
+    border-radius: 12px; display: flex; align-items: center;
+    justify-content: center; padding: 24px; cursor: pointer;
+    font-size: 1.05rem; text-align: center;
+    transition: all .3s; user-select: none; position: relative;
+  }
+  .flashcard:hover { border-color: var(--accent); box-shadow: 0 4px 16px rgba(0,0,0,.1); }
+  .flashcard .flip-hint {
+    position: absolute; bottom: 8px; right: 12px; font-size: .7rem;
+    color: var(--muted);
+  }
+  .flashcard-controls { display: flex; gap: 12px; }
+  .flashcard-controls button {
+    padding: 8px 20px; border: 1px solid var(--border); border-radius: 6px;
+    background: var(--card); cursor: pointer; transition: all .2s;
+  }
+  .flashcard-controls button:hover { background: var(--bg); }
+  .tab-bar { display: flex; gap: 4px; margin-bottom: 16px; }
+  .tab-bar button {
+    padding: 8px 18px; border: 1px solid var(--border); border-radius: 6px 6px 0 0;
+    background: var(--card); cursor: pointer; font-size: .85rem;
+    transition: all .2s; border-bottom: none;
+  }
+  .tab-bar button.active {
+    background: var(--accent); color: #fff; border-color: var(--accent);
+  }
+  .tab-bar button:not(.active):hover { background: #f0f4f8; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .code-block {
+    background: #1e293b; color: #e2e8f0; padding: 16px; border-radius: 6px;
+    overflow-x: auto; font-family: 'Cascadia Code', 'Fira Code', monospace;
+    font-size: .85rem; line-height: 1.5;
+  }
+  .code-block .kw { color: #c084fc; }
+  .code-block .str { color: #86efac; }
+  .code-block .fn { color: #60a5fa; }
+  .code-block .cm { color: #64748b; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+  th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
+  th { background: var(--primary); color: #fff; font-weight: 600; }
+  tr:nth-child(even) { background: #f8f9fa; }
+  @media (max-width: 768px) {
+    .container { flex-direction: column; }
+    .sidebar { width: 100%; max-height: 200px; border-right: none; border-bottom: 1px solid var(--border); }
+    .main { padding: 20px; }
+    .topbar h1 { font-size: .9rem; }
+    .progress-bar { width: 100px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div style="display:flex;align-items:center;">
+    <button class="toggle-sidebar" id="toggleSidebar" onclick="toggleSidebar()" title="Toggle sidebar">&#9776;</button>
+    <div>
+      <h1>ICS 2206 &mdash; Database Management Systems</h1>
+      <div class="sub">Semester II &middot; Jan&ndash;May 2026 &middot; 30% Quiz</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span class="progress-label" id="progressLabel">0 / 10</span>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+</div>
+
+<div class="container">
+  <nav class="sidebar" id="sidebar"></nav>
+  <main class="main" id="mainContent"></main>
+</div>
+
+<script>
+const lessons = [
+  {
+    id: 0,
+    title: "Introduction to DBMS",
+    badge: "Lesson 1",
+    content: `
+      <div class="section outcomes">
+        <h3>Learning Outcomes</h3>
+        <ul>
+          <li>Differentiate between a database and a DBMS</li>
+          <li>Discuss the history and motivation for database systems</li>
+          <li>Identify components of database systems</li>
+          <li>Explain DBMS Functions and Architecture</li>
+        </ul>
+      </div>
+      <div class="section card">
+        <h4>Database vs DBMS</h4>
+        <table>
+          <tr><th>Database</th><th>DBMS</th></tr>
+          <tr><td>A collection of related, logically coherent data</td><td>Software that manages, stores, retrieves, and manipulates data in databases</td></tr>
+          <tr><td>The actual data stored</td><td>The system that provides interface between data and users</td></tr>
+          <tr><td>Example: a file of student records</td><td>Example: MySQL, Oracle, PostgreSQL, MS Access</td></tr>
+        </table>
+      </div>
+      <div class="section card">
+        <h4>History &amp; Motivation</h4>
+        <ul>
+          <li><strong>1960s:</strong> File-based systems &mdash; data redundancy, inconsistency, isolation</li>
+          <li><strong>1970s:</strong> Hierarchical and network DBMS (IMS, CODASYL)</li>
+          <li><strong>1970 (Codd):</strong> Relational model proposed &mdash; tables, SQL</li>
+          <li><strong>1980s:</strong> Relational DBMS dominate (DB2, Oracle, dBase)</li>
+          <li><strong>1990s:</strong> Object-oriented, client-server, web databases</li>
+          <li><strong>2000s+:</strong> NoSQL, Big Data, cloud databases</li>
+        </ul>
+        <p><strong>Motivation:</strong> Eliminate redundancy, avoid inconsistency, enable concurrent access, enforce standards, provide security, maintain integrity.</p>
+      </div>
+      <div class="section card">
+        <h4>Components of Database Systems</h4>
+        <ol>
+          <li><strong>Hardware:</strong> storage devices, servers, network</li>
+          <li><strong>Software:</strong> DBMS, operating system, application programs</li>
+          <li><strong>Data:</strong> the actual stored information</li>
+          <li><strong>Procedures:</strong> rules and instructions for using the DBMS</li>
+          <li><strong>People:</strong> end users, DBAs, application developers, system analysts</li>
+        </ol>
+      </div>
+      <div class="section card">
+        <h4>DBMS Functions &amp; Architecture</h4>
+        <p><strong>Functions:</strong></p>
+        <ul>
+          <li>Data storage, retrieval, and update</li>
+          <li>Data dictionary / catalog management</li>
+          <li>Transaction management &amp; concurrency control</li>
+          <li>Security &amp; authorization</li>
+          <li>Backup and recovery</li>
+          <li>Data integrity enforcement</li>
+        </ul>
+        <p><strong>Three-Level Architecture (ANSI/SPARC):</strong></p>
+        <ul>
+          <li><strong>External level:</strong> user views (subschemas)</li>
+          <li><strong>Conceptual level:</strong> community view (full logical structure)</li>
+          <li><strong>Internal level:</strong> physical storage details</li>
+        </ul>
+      </div>
+    `,
+    quiz: [
+      { q: "Which of the following is an example of a DBMS?", opts: ["Excel", "MySQL", "Notepad", "Windows"], ans: 1, explain: "MySQL is a relational DBMS. Excel is a spreadsheet, Notepad a text editor, Windows an OS." },
+      { q: "What is the main motivation for using a DBMS over file systems?", opts: ["Lower cost", "Eliminate data redundancy", "Faster CPU", "Smaller files"], ans: 1, explain: "DBMS centralizes data to minimize duplication and inconsistency — the key advantage over file systems." },
+      { q: "Which level of the ANSI/SPARC architecture deals with user views?", opts: ["Internal", "Conceptual", "External", "Physical"], ans: 2, explain: "The external level handles user views (subschemas). Internal = physical storage, Conceptual = logical structure." },
+      { q: "A _____ is a collection of related data, while a _____ manages it.", opts: ["DBMS, database", "database, DBMS", "file, record", "schema, table"], ans: 1, explain: "A database is the data collection; a DBMS is the software that manages it." },
+      { q: "Which component is NOT a part of a database system?", opts: ["Hardware", "Software", "Compiler", "Procedures"], ans: 2, explain: "A compiler is not part of a DB system. Components: hardware, software, data, procedures, and people." },
+    ]
+  },
+  {
+    id: 1,
+    title: "DB Models &amp; DBLC",
+    badge: "Lesson 2",
+    content: `
+      <div class="section outcomes">
+        <h3>Learning Outcomes</h3>
+        <ul>
+          <li>Define and classify logical vs physical data models</li>
+          <li>Distinguish hierarchical, network, relational, object-based models</li>
+          <li>Describe phases of the database life cycle (DBLC)</li>
+          <li>Apply database analysis from a customer specification</li>
+        </ul>
+      </div>
+      <div class="section card">
+        <h4>Logical vs Physical Data Models</h4>
+        <table>
+          <tr><th>Logical Model</th><th>Physical Model</th></tr>
+          <tr><td>Describes data as users see it (entities, attributes, relationships)</td><td>Describes how data is stored on hardware (files, indexes, partitions)</td></tr>
+          <tr><td>Independent of DBMS</td><td>DBMS-specific</td></tr>
+          <tr><td>Example: ER diagram, relational schema</td><td>Example: B+ tree indexes, hash files, storage blocks</td></tr>
+        </table>
+      </div>
+      <div class="section card">
+        <h4>Database Models Comparison</h4>
+        <table>
+          <tr><th>Model</th><th>Structure</th><th>Example</th></tr>
+          <tr><td>Hierarchical</td><td>Tree (parent-child), one-to-many</td><td>IMS (IBM)</td></tr>
+          <tr><td>Network</td><td>Graph (sets), many-to-many via pointers</td><td>CODASYL, IDMS</td></tr>
+          <tr><td>Relational</td><td>Tables (relations), keys, SQL</td><td>MySQL, Oracle, PostgreSQL</td></tr>
+          <tr><td>Object-based</td><td>Objects, classes, inheritance</td><td>ObjectStore, MongoDB (document)</td></tr>
+        </table>
+      </div>
+      <div class="section card">
+        <h4>Database Life Cycle (DBLC)</h4>
+        <ol>
+          <li><strong>Database initial study:</strong> analyze situation, define problems and constraints</li>
+          <li><strong>Database design:</strong> conceptual, logical, and physical design</li>
+          <li><strong>Implementation and loading:</strong> create schema, load data</li>
+          <li><strong>Testing and evaluation:</strong> verify functionality and performance</li>
+          <li><strong>Operation:</strong> daily use, transactions, queries</li>
+          <li><strong>Maintenance and evolution:</strong> changes, tuning, backup</li>
+        </ol>
+      </div>
+    `,
+    quiz: [
+      { q: "Which data model organizes data in a tree structure?", opts: ["Relational", "Hierarchical", "Network", "Object-based"], ans: 1, explain: "The hierarchical model uses a tree with parent-child relationships, like IMS." },
+      { q: "The DBLC phase where the schema is created and data is loaded is called:", opts: ["Design", "Implementation", "Maintenance", "Study"], ans: 1, explain: "Implementation is the build phase — creating schema, loading data, making it operational." },
+      { q: "Which model uses tables and SQL?", opts: ["Hierarchical", "Network", "Relational", "Object"], ans: 2, explain: "The relational model uses tables (relations) with rows/columns and SQL for data access." },
+      { q: "A logical data model is _____ of the DBMS.", opts: ["dependent", "independent", "part", "the same"], ans: 1, explain: "Logical models are DBMS-independent — they describe data conceptually without physical details." },
+      { q: "Which database model uses sets and pointers to represent relationships?", opts: ["Relational", "Network", "Hierarchical", "Object"], ans: 1, explain: "The network model (CODASYL) uses sets, owner-member pointers, and a graph structure." },
+    ]
+  },
+  {
+    id: 2,
+    title: "Relational Database System",
+    badge: "Lesson 3",
+    content: `
+      <div class="section outcomes">
+        <h3>Learning Outcomes</h3>
+        <ul>
+          <li>Evaluate relational operators</li>
+          <li>Discuss the features of relational database systems</li>
+        </ul>
+      </div>
+      <div class="section card">
+        <h4>Relational Operators</h4>
+        <p><strong>Fundamental (Relational Algebra):</strong></p>
+        <ul>
+          <li><strong>SELECT (&sigma;):</strong> choose rows (horizontal subset)</li>
+          <li><strong>PROJECT (&pi;):</strong> choose columns (vertical subset)</li>
+          <li><strong>UNION (&cup;):</strong> combine rows from two relations</li>
+          <li><strong>INTERSECT (&cap;):</strong> rows common to two relations</li>
+          <li><strong>DIFFERENCE (-):</strong> rows in one but not the other</li>
+          <li><strong>JOIN (⨝):</strong> combine related rows from two tables</li>
+          <li><strong>DIVIDE (&divide;):</strong> rows matching all values in a set</li>
+          <li><strong>PRODUCT (&times;):</strong> Cartesian product</li>
+        </ul>
+      </div>
+      <div class="section card">
+        <h4>Features of Relational Database Systems</h4>
+        <ul>
+          <li>Data stored in <strong>relations (tables)</strong> with rows and columns</li>
+          <li>Each row is uniquely identified by a <strong>primary key</strong></li>
+          <li><strong>Foreign keys</strong> establish relationships between tables</li>
+          <li>Support for <strong>integrity constraints</strong> (entity, referential, domain)</li>
+          <li><strong>SQL</strong> as standard query language</li>
+          <li><strong>ACID</strong> transactions (Atomicity, Consistency, Isolation, Durability)</li>
+          <li><strong>Data independence</strong> (logical and physical)</li>
+          <li><strong>Views</strong> for security and customization</li>
+        </ul>
+      </div>
+    `,
+    quiz: [
+      { q: "Which relational operator selects rows?", opts: ["PROJECT", "SELECT", "JOIN", "UNION"], ans: 1, explain: "SELECT (σ) filters rows by a condition — a horizontal subset of the relation." },
+      { q: "Which operator combines rows from two tables based on a condition?", opts: ["UNION", "PRODUCT", "JOIN", "DIFFERENCE"], ans: 2, explain: "JOIN (⨝) combines related rows from two tables based on a join condition." },
+      { q: "A _____ key uniquely identifies each row in a table.", opts: ["foreign", "primary", "candidate", "composite"], ans: 1, explain: "A primary key uniquely identifies each row. Foreign keys reference other tables." },
+      { q: "Which of the following ensures a transaction is all-or-nothing?", opts: ["Consistency", "Atomicity", "Isolation", "Durability"], ans: 1, explain: "Atomicity ensures a transaction completes fully or not at all — all-or-nothing." },
+      { q: "What does the PROJECT operator do?", opts: ["Selects rows", "Selects columns", "Joins tables", "Sorts data"], ans: 1, explain: "PROJECT (π) selects a subset of columns — a vertical subset of the relation." },
+    ]
+  },
+  {
+    id: 3,
+    title: "Conceptual Data Model",
+    badge: "Lesson 4",
+    content: `
+      <div class="section outcomes">
+        <h3>Learning Outcomes</h3>
+        <ul>
+          <li>Differentiate between conceptual, logical and physical database design</li>
+          <li>Develop conceptual design using ER model</li>
+          <li>Map ER diagrams to conceptual schema</li>
+        </ul>
+      </div>
+      <div class="section card">
+        <h4>Three Levels of Database Design</h4>
+        <table>
+          <tr><th>Design Level</th><th>Description</th></tr>
+          <tr><td>Conceptual</td><td>High-level business view, entities, relationships (ER diagram), DBMS-independent</td></tr>
+          <tr><td>Logical</td><td>Relational schema, tables, keys, normalization applied, DBMS-independent but relational</td></tr>
+          <tr><td>Physical</td><td>Storage details, indexes, partitions, DBMS-specific implementation</td></tr>
+        </table>
+      </div>
+      <div class="section card">
+        <h4>ER Model Components</h4>
+        <ul>
+          <li><strong>Entity:</strong> real-world object (rectangle) &mdash; e.g., Student, Course</li>
+          <li><strong>Attribute:</strong> property of an entity (ellipse) &mdash; e.g., student_id, name</li>
+          <li><strong>Relationship:</strong> association between entities (diamond) &mdash; e.g., Enrolls</li>
+          <li><strong>Cardinality:</strong> 1:1, 1:M, M:N</li>
+          <li><strong>Key attribute:</strong> uniquely identifies an entity (underline)</li>
+          <li><strong>Weak entity:</strong> depends on another entity (double rectangle)</li>
+        </ul>
+      </div>
+      <div class="section card">
+        <h4>Mapping ER to Relational Schema</h4>
+        <ol>
+          <li>Each entity &rarr; a table with its attributes as columns</li>
+          <li>Primary key of entity &rarr; primary key of table</li>
+          <li>1:1 relationship &rarr; foreign key in either table</li>
+          <li>1:M relationship &rarr; foreign key in the "many" side</li>
+          <li>M:N relationship &rarr; new intersection/associative table with composite key</li>
+          <li>Weak entity &rarr; table with foreign key to parent (partial key + parent PK)</li>
+        </ol>
+      </div>
+    `,
+    quiz: [
+      { q: "Which design level is DBMS-independent and uses ER diagrams?", opts: ["Physical", "Logical", "Conceptual", "Internal"], ans: 2, explain: "Conceptual design is high-level, DBMS-independent, and uses ER diagrams for the business view." },
+      { q: "In an ER diagram, a relationship is represented by a:", opts: ["Rectangle", "Ellipse", "Diamond", "Line"], ans: 2, explain: "Diamond = relationship, rectangle = entity, ellipse = attribute in ER diagrams." },
+      { q: "An M:N relationship maps to:", opts: ["A foreign key", "A new table", "A composite attribute", "A view"], ans: 1, explain: "M:N relationships need a new intersection/associative table with a composite primary key." },
+      { q: "A weak entity is drawn with a:", opts: ["Single rectangle", "Double rectangle", "Dashed ellipse", "Double diamond"], ans: 1, explain: "Weak entities use a double rectangle. They depend on a parent entity (strong entity)." },
+      { q: "What is cardinality in an ER model?", opts: ["Number of attributes", "Number of entities in a relationship", "Key length", "Table size"], ans: 1, explain: "Cardinality defines how many instances of one entity relate to another (1:1, 1:M, M:N)." },
+    ]
+  },
+  {
+    id: 4,
+    title: "Normalization",
+    badge: "Lesson 5",
+    content: `
+      <div class="section outcomes">
+        <h3>Learning Outcomes</h3>
+        <ul>
+          <li>Differentiate between first, second and third normal forms</li>
+          <li>Apply knowledge to normalize entities to 3NF</li>
+        </ul>
+      </div>
+      <div class="section card">
+        <h4>Normal Forms Overview</h4>
+        <table>
+          <tr><th>Normal Form</th><th>Rule</th><th>Removes</th></tr>
+          <tr><td><strong>1NF</strong></td><td>Each cell has a single value (atomic); each column has unique name; rows are unique</td><td>Multivalued attributes, repeating groups</td></tr>
+          <tr><td><strong>2NF</strong></td><td>In 1NF AND every non-key attribute is fully functionally dependent on the <em>entire</em> primary key</td><td>Partial dependencies</td></tr>
+          <tr><td><strong>3NF</strong></td><td>In 2NF AND no transitive dependencies (non-key attribute depends on another non-key attribute)</td><td>Transitive dependencies</td></tr>
+        </table>
+      </div>
+      <div class="section card">
+        <h4>Example: Normalization Steps</h4>
+        <p><strong>Unnormalized:</strong> Student(stud_id, name, courses)</p>
+        <p><strong>1NF:</strong> Student(stud_id, name, course_code, course_name) &mdash; split courses into separate rows</p>
+        <p><strong>2NF:</strong> Student(stud_id, name) | Enrollment(stud_id, course_code, course_name) &mdash; remove partial dependency on course</p>
+        <p><strong>3NF:</strong> Student(stud_id, name) | Course(course_code, course_name) | Enrollment(stud_id, course_code) &mdash; remove transitive dependency of course_name on course_code</p>
+      </div>
+      <div class="section card">
+        <h4>Key Definitions</h4>
+        <ul>
+          <li><strong>Partial dependency:</strong> non-key attribute depends on part of composite key</li>
+          <li><strong>Transitive dependency:</strong> non-key attribute depends on another non-key attribute</li>
+          <li><strong>Functional dependency (FD):</strong> X &rarr; Y means X determines Y</li>
+        </ul>
+      </div>
+    `,
+    quiz: [
+      { q: "A table is in 1NF if:", opts: ["All keys are single", "All attributes are atomic", "No transitive dependencies", "Every attribute depends on the key"], ans: 1, explain: "1NF requires every column to be atomic (single, indivisible value) with no repeating groups." },
+      { q: "2NF removes:", opts: ["Transitive dependencies", "Partial dependencies", "Repeating groups", "All of the above"], ans: 1, explain: "2NF removes partial dependencies — where a non-key depends on only part of a composite PK." },
+      { q: "3NF requires that no _____ dependency exists.", opts: ["partial", "transitive", "functional", "repeating"], ans: 1, explain: "3NF removes transitive dependencies — a non-key attribute depending on another non-key attribute." },
+      { q: "In Student(stud_id, course_code, course_name), course_name depends on course_code. This is a:", opts: ["Partial dependency", "Transitive dependency", "Functional dependency", "Multivalued attribute"], ans: 1, explain: "course_code is a non-key attribute, and course_name depends on it — a transitive dependency." },
+      { q: "Which normal form eliminates repeating groups?", opts: ["1NF", "2NF", "3NF", "BCNF"], ans: 0, explain: "1NF eliminates repeating groups and multivalued attributes by making each cell atomic." },
+    ]
+  },
+  {
+    id: 5,
+    title: "SQL",
+    badge: "Lesson 6",
+    content: `
+      <div class="section outcomes">
+        <h3>Learning Outcomes</h3>
+        <ul>
+          <li>Identify the major components of SQL</li>
+          <li>Use different SQL commands to create a database with an appropriate DBMS</li>
+        </ul>
+      </div>
+      <div class="section card">
+        <h4>Major Components of SQL</h4>
+        <table>
+          <tr><th>Category</th><th>Commands</th><th>Purpose</th></tr>
+          <tr><td><strong>DDL</strong></td><td>CREATE, ALTER, DROP, TRUNCATE</td><td>Define/modify database structure</td></tr>
+          <tr><td><strong>DML</strong></td><td>SELECT, INSERT, UPDATE, DELETE</td><td>Manipulate data</td></tr>
+          <tr><td><strong>DCL</strong></td><td>GRANT, REVOKE</td><td>Control access and permissions</td></tr>
+          <tr><td><strong>TCL</strong></td><td>COMMIT, ROLLBACK, SAVEPOINT</td><td>Manage transactions</td></tr>
+        </table>
+      </div>
+      <div class="section card">
+        <h4>Key SQL Examples</h4>
+        <div class="code-block">
+<span class="cm">-- Create database</span>
+CREATE DATABASE university;
+
+<span class="cm">-- Create table</span>
+CREATE TABLE Student (
+  stud_id INT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) UNIQUE,
+  dob DATE
+);
+
+<span class="cm">-- Insert data</span>
+INSERT INTO Student VALUES (1, 'Alice', 'alice@u.edu', '2000-05-10');
+
+<span class="cm">-- Query</span>
+SELECT name, email FROM Student WHERE stud_id = 1;
+
+<span class="cm">-- Join</span>
+SELECT s.name, c.course_name
+FROM Student s
+JOIN Enrollment e ON s.stud_id = e.stud_id
+JOIN Course c ON e.course_code = c.course_code;
+
+<span class="cm">-- Update &amp; Delete</span>
+UPDATE Student SET email = 'alice@new.edu' WHERE stud_id = 1;
+DELETE FROM Student WHERE stud_id = 1;
+
+<span class="cm">-- Aggregate</span>
+SELECT course_code, COUNT(*) AS students FROM Enrollment GROUP BY course_code;
+        </div>
+      </div>
+    `,
+    quiz: [
+      { q: "Which SQL category does CREATE belong to?", opts: ["DML", "DDL", "DCL", "TCL"], ans: 1, explain: "CREATE is DDL (Data Definition Language) — used to define database structure." },
+      { q: "Which SQL command is used to retrieve data?", opts: ["GET", "FETCH", "SELECT", "RETRIEVE"], ans: 2, explain: "SELECT is the SQL command for querying/retrieving data from tables." },
+      { q: "GRANT and REVOKE belong to:", opts: ["DDL", "DML", "DCL", "TCL"], ans: 2, explain: "GRANT and REVOKE are DCL (Data Control Language) for managing user permissions." },
+      { q: "Which clause is used to group rows in SQL?", opts: ["ORDER BY", "GROUP BY", "HAVING", "WHERE"], ans: 1, explain: "GROUP BY groups rows by column values, typically used with aggregate functions like COUNT." },
+      { q: "Which SQL statement removes a table from the database?", opts: ["DELETE TABLE", "DROP TABLE", "REMOVE TABLE", "CLEAR TABLE"], ans: 1, explain: "DROP TABLE permanently removes the table and its data. DELETE removes rows, not the table." },
+    ]
+  },
+  {
+    id: 6,
+    title: "MS Access Implementation",
+    badge: "Lesson 7",
+    content: `
+      <div class="section outcomes">
+        <h3>Learning Outcomes</h3>
+        <ul>
+          <li>Create a database using MS Access</li>
+          <li>Design a table, set field properties and integrity constraints</li>
+          <li>Design and use queries</li>
+          <li>Design forms for data entry, and Reports</li>
+        </ul>
+      </div>
+      <div class="section card">
+        <h4>Creating a Database in MS Access</h4>
+        <ol>
+          <li>Open MS Access &rarr; "Blank Database" &rarr; name it and click Create</li>
+          <li>Use <strong>Table Design</strong> view to define fields, data types, and properties</li>
+          <li>Set <strong>primary key</strong> by selecting field(s) and clicking the key icon</li>
+          <li>Set <strong>field properties</strong>: Field Size, Format, Input Mask, Validation Rule, Default Value, Required, Indexed</li>
+          <li>Set <strong>relationships</strong>: Database Tools &rarr; Relationships &rarr; drag fields between tables</li>
+          <li>Enforce <strong>referential integrity</strong>, cascade update/delete</li>
+        </ol>
+      </div>
+      <div class="section card">
+        <h4>Queries, Forms, Reports</h4>
+        <ul>
+          <li><strong>Queries:</strong> Create &rarr; Query Design &rarr; add tables, select fields, set criteria. Use SQL View for raw SQL.</li>
+          <li><strong>Forms:</strong> Create &rarr; Form Wizard &rarr; select table/query &rarr; layout &rarr; finish. Used for data entry.</li>
+          <li><strong>Reports:</strong> Create &rarr; Report Wizard &rarr; select fields, grouping, sorting &rarr; finish. Used for printing/summary.</li>
+        </ul>
+      </div>
+    `,
+    quiz: [
+      { q: "To enforce referential integrity in MS Access, you use:", opts: ["Queries", "Relationships", "Forms", "Reports"], ans: 1, explain: "Referential integrity is enforced in the Relationships window by linking tables on common fields." },
+      { q: "Which view is best for defining field properties in MS Access?", opts: ["Datasheet View", "Design View", "Layout View", "SQL View"], ans: 1, explain: "Design View gives full control over field names, data types, sizes, and all field properties." },
+      { q: "Forms in MS Access are primarily used for:", opts: ["Reporting data", "Data entry", "Querying", "Storing data"], ans: 1, explain: "Forms provide an interface for data entry, editing, and viewing data record by record." },
+      { q: "Which of these is NOT a field property in MS Access?", opts: ["Field Size", "Validation Rule", "Indexed", "Auto Fit"], ans: 3, explain: "Field Size, Validation Rule, and Indexed are field properties. Auto Fit is not a field property." },
+      { q: "What tool in MS Access is used to create a printable summary of data?", opts: ["Form", "Report", "Query", "Table"], ans: 1, explain: "Reports are designed for printing and presenting formatted, summarized data." },
+    ]
+  },
+  {
+    id: 7,
+    title: "Forms &amp; Reports",
+    badge: "Lesson 8",
+    content: `
+      <div class="section outcomes">
+        <h3>Learning Outcomes</h3>
+        <ul>
+          <li>Design forms for data entry</li>
+          <li>Design reports</li>
+        </ul>
+      </div>
+      <div class="section card">
+        <h4>Designing Forms for Data Entry</h4>
+        <ul>
+          <li>Forms provide a user-friendly interface for entering, editing, and viewing data</li>
+          <li><strong>Form Wizard:</strong> quick creation based on table/query</li>
+          <li><strong>Design View:</strong> full control over layout, labels, text boxes, combo boxes, buttons</li>
+          <li><strong>Common controls:</strong> Text Box, Combo Box (dropdown), List Box, Check Box, Button, Subform</li>
+          <li><strong>Properties:</strong> set data source, default values, validation, format, visibility</li>
+          <li>Add <strong>navigation buttons</strong> to move between records</li>
+        </ul>
+      </div>
+      <div class="section card">
+        <h4>Designing Reports</h4>
+        <ul>
+          <li>Reports present data in a printed/printable format</li>
+          <li><strong>Report Wizard:</strong> step-by-step to select fields, grouping, sorting, layout</li>
+          <li><strong>Design View:</strong> add headers/footers, grouping levels, calculated fields</li>
+          <li><strong>Sections:</strong> Report Header, Page Header, Group Header, Detail, Group Footer, Page Footer, Report Footer</li>
+          <li>Use <strong>expressions</strong> for calculated totals: =Sum([field_name])</li>
+          <li>Sort and group data to create summary/subtotal sections</li>
+        </ul>
+      </div>
+    `,
+    quiz: [
+      { q: "Which form control provides a dropdown list?", opts: ["Text Box", "Combo Box", "Check Box", "Button"], ans: 1, explain: "Combo Box combines a text box with a drop-down list for selecting from predefined values." },
+      { q: "In a report, which section repeats for every record?", opts: ["Page Header", "Detail", "Report Footer", "Group Header"], ans: 1, explain: "The Detail section repeats once for each record in the data source." },
+      { q: "Which expression calculates the total of a field in a report?", opts: ["=Sum([field])", "=Total([field])", "=Count([field])", "=Avg([field])"], ans: 0, explain: "=Sum([field]) adds up all values. Total is not valid. Count counts rows, Avg averages." },
+      { q: "Which report section appears at the top of every page?", opts: ["Detail", "Page Header", "Report Header", "Group Footer"], ans: 1, explain: "The Page Header appears at the top of each printed page in a report." },
+      { q: "What is the purpose of a form in MS Access?", opts: ["Store data", "Enter and edit data", "Print summaries", "Create relationships"], ans: 1, explain: "Forms are designed for entering and editing data. Tables store data, reports print it." },
+    ]
+  },
+  {
+    id: 8,
+    title: "Creating DB with MySQL",
+    badge: "Lesson 9",
+    content: `
+      <div class="section outcomes">
+        <h3>Learning Outcomes</h3>
+        <ul>
+          <li>Create a database system using MySQL or other appropriate DBMS</li>
+          <li>Use SQL commands to manipulate data stored in databases</li>
+        </ul>
+      </div>
+      <div class="section card">
+        <h4>MySQL Basics</h4>
+        <div class="code-block">
+<span class="cm">-- Connect to MySQL</span>
+mysql -u root -p
+
+<span class="cm">-- Create database</span>
+CREATE DATABASE IF NOT EXISTS university;
+USE university;
+
+<span class="cm">-- Create tables</span>
+CREATE TABLE Student (
+  stud_id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  dob DATE,
+  enrollment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Course (
+  course_code VARCHAR(10) PRIMARY KEY,
+  course_name VARCHAR(100) NOT NULL,
+  credits INT CHECK (credits > 0)
+);
+
+CREATE TABLE Enrollment (
+  stud_id INT,
+  course_code VARCHAR(10),
+  grade CHAR(2),
+  PRIMARY KEY (stud_id, course_code),
+  FOREIGN KEY (stud_id) REFERENCES Student(stud_id)
+    ON DELETE CASCADE,
+  FOREIGN KEY (course_code) REFERENCES Course(course_code)
+    ON DELETE CASCADE
+);
+
+<span class="cm">-- Insert sample data</span>
+INSERT INTO Student (name, email, dob) VALUES
+  ('Alice', 'alice@example.com', '2000-05-10'),
+  ('Bob', 'bob@example.com', '2001-08-22');
+
+INSERT INTO Course VALUES
+  ('ICS2206', 'Database Management Systems', 3);
+
+INSERT INTO Enrollment VALUES
+  (1, 'ICS2206', 'A'),
+  (2, 'ICS2206', 'B+');
+
+<span class="cm">-- Useful queries</span>
+SHOW DATABASES;
+SHOW TABLES;
+DESCRIBE Student;
+
+<span class="cm">-- Indexes for performance</span>
+CREATE INDEX idx_student_name ON Student(name);
+
+<span class="cm">-- Views</span>
+CREATE VIEW StudentGrades AS
+SELECT s.name, c.course_name, e.grade
+FROM Student s
+JOIN Enrollment e ON s.stud_id = e.stud_id
+JOIN Course c ON e.course_code = c.course_code;
+        </div>
+      </div>
+      <div class="section card">
+        <h4>Key MySQL Data Types</h4>
+        <ul>
+          <li><strong>INT, BIGINT</strong> &mdash; integers</li>
+          <li><strong>DECIMAL(p,s)</strong> &mdash; exact numeric</li>
+          <li><strong>VARCHAR(n)</strong> &mdash; variable-length string</li>
+          <li><strong>CHAR(n)</strong> &mdash; fixed-length string</li>
+          <li><strong>DATE, DATETIME, TIMESTAMP</strong> &mdash; date and time</li>
+          <li><strong>TEXT, BLOB</strong> &mdash; large text / binary</li>
+          <li><strong>BOOLEAN</strong> &mdash; true/false (actually TINYINT)</li>
+        </ul>
+      </div>
+    `,
+    quiz: [
+      { q: "Which MySQL command shows all tables in the current database?", opts: ["LIST TABLES", "SHOW TABLES", "DISPLAY TABLES", "GET TABLES"], ans: 1, explain: "SHOW TABLES lists all tables in the active MySQL database." },
+      { q: "What does AUTO_INCREMENT do in MySQL?", opts: ["Creates an index", "Automatically increments a unique number", "Updates timestamps", "Checks constraints"], ans: 1, explain: "AUTO_INCREMENT generates sequential unique integers automatically for a column." },
+      { q: "Which keyword is used to remove duplicate rows in a SELECT?", opts: ["UNIQUE", "DISTINCT", "DIFFERENT", "ONLY"], ans: 1, explain: "SELECT DISTINCT removes duplicate rows from the query results." },
+      { q: "Which MySQL data type stores variable-length strings?", opts: ["CHAR", "VARCHAR", "TEXT", "STRING"], ans: 1, explain: "VARCHAR stores variable-length strings. CHAR is fixed-length. TEXT stores large strings." },
+      { q: "What does the ON DELETE CASCADE clause do?", opts: ["Deletes the table", "Deletes related rows automatically", "Prevents deletion", "Archives deleted data"], ans: 1, explain: "ON DELETE CASCADE automatically deletes child rows when the parent row is deleted." },
+    ]
+  },
+  {
+    id: 9,
+    title: "Using DB2 DBMS",
+    badge: "Lesson 10",
+    content: `
+      <div class="section outcomes">
+        <h3>Learning Outcomes</h3>
+        <ul>
+          <li>Create a DB2 database</li>
+          <li>Practice with DB2 commands</li>
+          <li>Connect to a remote database</li>
+        </ul>
+      </div>
+      <div class="section card">
+        <h4>DB2 Basics</h4>
+        <div class="code-block">
+<span class="cm">-- Create a database (DB2 command line processor)</span>
+CREATE DATABASE university
+  AUTOMATIC STORAGE YES
+  USING CODESET UTF-8 PAGESIZE 32768;
+
+<span class="cm">-- Connect to a database</span>
+CONNECT TO university USER db2admin USING password;
+
+<span class="cm">-- Connect to a remote database</span>
+CATALOG TCPIP NODE mynode REMOTE 192.168.1.100 SERVER 50000;
+CATALOG DATABASE mydb AS university AT NODE mynode;
+CONNECT TO university USER myuser USING mypass;
+
+<span class="cm">-- Create tables (similar to SQL standard)</span>
+CREATE TABLE Student (
+  stud_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  dob DATE,
+  PRIMARY KEY (stud_id)
+);
+
+CREATE TABLE Course (
+  course_code VARCHAR(10) NOT NULL,
+  course_name VARCHAR(100) NOT NULL,
+  credits INTEGER,
+  PRIMARY KEY (course_code)
+);
+
+CREATE TABLE Enrollment (
+  stud_id INTEGER NOT NULL,
+  course_code VARCHAR(10) NOT NULL,
+  grade CHAR(2),
+  PRIMARY KEY (stud_id, course_code),
+  FOREIGN KEY (stud_id) REFERENCES Student(stud_id),
+  FOREIGN KEY (course_code) REFERENCES Course(course_code)
+);
+
+<span class="cm">-- Insert, update, delete (same SQL standard)</span>
+INSERT INTO Student (name, email, dob)
+  VALUES ('Alice', 'alice@example.com', '2000-05-10');
+
+<span class="cm">-- Useful DB2 commands</span>
+LIST DATABASE DIRECTORY;
+LIST TABLES;
+DESCRIBE TABLE Student;
+SELECT * FROM Student;
+
+<span class="cm">-- Backup</span>
+BACKUP DATABASE university TO 'C:\\backups\\';
+
+<span class="cm">-- Terminate connection</span>
+TERMINATE;
+        </div>
+      </div>
+      <div class="section card">
+        <h4>DB2 Command Line Processor (CLP)</h4>
+        <ul>
+          <li>Launch: <strong>db2cmd</strong> (Windows) or <strong>db2</strong> (Linux)</li>
+          <li>Interactive mode: just type <code>db2</code> at command prompt</li>
+          <li>Batch mode: <code>db2 -f script.sql</code></li>
+          <li>Quiet mode: <code>db2 -tvf script.sql</code> (t=terminate with ;, v=verbose)</li>
+          <li>Use <strong>GET SNAPSHOT</strong> for monitoring, <strong>RUNSTATS</strong> for optimizer, <strong>REORG</strong> for table maintenance</li>
+        </ul>
+      </div>
+    `,
+    quiz: [
+      { q: "Which command connects to a DB2 database?", opts: ["USE", "OPEN", "CONNECT TO", "ATTACH"], ans: 2, explain: "CONNECT TO establishes a connection to a named DB2 database." },
+      { q: "To list databases in DB2, use:", opts: ["SHOW DATABASES", "LIST DATABASE DIRECTORY", "DISPLAY DATABASES", "GET DATABASES"], ans: 1, explain: "LIST DATABASE DIRECTORY shows all databases accessible to the DB2 instance." },
+      { q: "Which command is used to back up a DB2 database?", opts: ["DUMP", "BACKUP DATABASE", "EXPORT", "SAVE"], ans: 1, explain: "BACKUP DATABASE creates a backup copy for recovery purposes." },
+      { q: "In DB2, what command catalogs a remote node?", opts: ["CATALOG TCPIP NODE", "ADD NODE", "CONNECT NODE", "REGISTER NODE"], ans: 0, explain: "CATALOG TCPIP NODE registers a remote server for connecting to remote databases." },
+      { q: "Which DB2 utility updates table statistics for the optimizer?", opts: ["REORG", "RUNSTATS", "BACKUP", "GET SNAPSHOT"], ans: 1, explain: "RUNSTATS scans tables and indexes to update statistics used by DB2's query optimizer." },
+    ]
+  }
+];
+
+let currentLesson = 0;
+let completed = new Array(lessons.length).fill(false);
+let quizState = {};
+
+function renderSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  sidebar.innerHTML = lessons.map((l, i) => `
+    <div class="lesson ${i === currentLesson ? 'active' : ''} ${completed[i] ? 'completed' : ''}"
+         onclick="navigateTo(${i})">
+      <span class="num">${i + 1}</span>
+      <span>${l.title}</span>
+      <span class="check">${completed[i] ? '\u2713' : ''}</span>
+    </div>
+  `).join('');
+}
+
+function navigateTo(idx) {
+  currentLesson = idx;
+  renderSidebar();
+  renderLesson();
+}
+
+function renderLesson() {
+  const main = document.getElementById('mainContent');
+  const l = lessons[currentLesson];
+  const qkey = 'quiz_' + currentLesson;
+  const qstate = quizState[qkey] || {};
+
+  main.innerHTML = `
+    <div class="lesson-header">
+      <h2>${l.badge}: ${l.title}</h2>
+    </div>
+
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="content">Study Notes</button>
+      <button class="tab-btn" data-tab="quiz">Quiz (${l.quiz.length} questions)</button>
+      <button class="tab-btn" data-tab="flashcards">Flashcards</button>
+    </div>
+
+    <div class="tab-content active" id="tab-content">${l.content}</div>
+
+    <div class="tab-content" id="tab-quiz">
+      <div class="card">
+        <h4>Lesson ${currentLesson + 1} Quiz</h4>
+        <div id="quizContainer"></div>
+        <button class="quiz-btn" id="quizSubmitBtn" onclick="submitQuiz(${currentLesson})">Submit Answers</button>
+        <div id="quizResult"></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-flashcards">
+      <div class="card flashcard-area">
+        <h4>Key Terms &mdash; ${l.title}</h4>
+        <div class="flashcard" id="flashcard" onclick="flipFlashcard()">
+          <span id="flashcardFront"></span>
+          <span class="flip-hint">click to flip</span>
+        </div>
+        <div class="flashcard-controls">
+          <button onclick="prevFlashcard()">Prev</button>
+          <span id="flashcardCounter"></span>
+          <button onclick="nextFlashcard()">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:24px;display:flex;justify-content:space-between;align-items:center;">
+      ${currentLesson > 0 ? `<button class="quiz-btn" onclick="navigateTo(${currentLesson - 1})">&larr; Previous</button>` : '<span></span>'}
+      ${currentLesson < lessons.length - 1 ? `<button class="quiz-btn" onclick="navigateTo(${currentLesson + 1})">Next Lesson &rarr;</button>` : '<span style="color:var(--success);font-weight:600;">You completed all lessons!</span>'}
+    </div>
+  `;
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  renderQuiz(currentLesson);
+  initFlashcards(currentLesson);
+}
+
+function renderQuiz(idx) {
+  const l = lessons[idx];
+  const qkey = 'quiz_' + idx;
+  if (!quizState[qkey]) {
+    quizState[qkey] = { answers: {}, submitted: false };
+  }
+  const qs = quizState[qkey];
+  const container = document.getElementById('quizContainer');
+  const submitBtn = document.getElementById('quizSubmitBtn');
+
+  container.innerHTML = l.quiz.map((q, qi) => {
+    const chosen = qs.answers[qi];
+    const isCorrect = qs.submitted && chosen === q.ans;
+    const isWrong = qs.submitted && chosen !== undefined && chosen !== q.ans;
+    const cls = isCorrect ? 'correct' : isWrong ? 'wrong' : '';
+    const icon = isCorrect ? '\u2713' : isWrong ? '\u2717' : '';
+    return `
+      <div class="quiz-question ${cls}">
+        <div class="q">${qi + 1}. ${q.q}</div>
+        ${q.opts.map((opt, oi) => {
+          const isSelected = chosen === oi;
+          const showCorrect = qs.submitted && oi === q.ans;
+          const showWrong = qs.submitted && isSelected && oi !== q.ans;
+          let labelStyle = '';
+          if (showCorrect) labelStyle = ' color: #1a6b3c; font-weight: 600;';
+          else if (showWrong) labelStyle = ' color: #922b21; font-weight: 600;';
+          return `
+            <label style="${labelStyle}">
+              <input type="radio" name="q${qi}" value="${oi}"
+                ${isSelected ? 'checked' : ''}
+                ${qs.submitted ? 'disabled' : ''}>
+              ${opt} ${showCorrect ? '\u2713' : ''} ${showWrong ? '\u2717' : ''}
+            </label>
+          `;
+        }).join('')}
+        ${isCorrect ? `<div><span class="fb-icon correct">${icon}</span><span class="explain-text">${q.explain}</span></div>` : ''}
+        ${isWrong ? `<div><span class="fb-icon wrong">${icon}</span><span class="correct-answer">Correct answer: ${q.opts[q.ans]}</span><div class="explain-text">${q.explain}</div></div>` : ''}
+        ${qs.submitted && chosen === undefined ? `<div><span class="explain-text">Not answered. Correct answer: ${q.opts[q.ans]}. ${q.explain}</span></div>` : ''}
+      </div>
+    `;
+  }).join('');
+
+  if (qs.submitted) {
+    submitBtn.disabled = true;
+    const res = document.getElementById('quizResult');
+    let correct = 0;
+    l.quiz.forEach((q, qi) => { if (qs.answers[qi] === q.ans) correct++; });
+    const pct = Math.round((correct / l.quiz.length) * 100);
+    const pass = pct >= 60;
+    res.innerHTML = `<div class="quiz-result ${pass ? 'pass' : 'fail'}">You got ${correct}/${l.quiz.length} (${pct}%) — ${pass ? 'Pass!' : 'Review and try again'}</div>`;
+    if (pass) markCompleted(idx);
+  }
+}
+
+function submitQuiz(idx) {
+  const l = lessons[idx];
+  const qkey = 'quiz_' + idx;
+  if (!quizState[qkey]) quizState[qkey] = { answers: {}, submitted: false };
+  const qs = quizState[qkey];
+  qs.answers = {};
+  qs.submitted = false;
+
+  l.quiz.forEach((q, qi) => {
+    const sel = document.querySelector(`input[name="q${qi}"]:checked`);
+    if (sel) qs.answers[qi] = parseInt(sel.value);
+  });
+
+  qs.submitted = true;
+  renderQuiz(idx);
+}
+
+function markCompleted(idx) {
+  completed[idx] = true;
+  renderSidebar();
+  updateProgress();
+}
+
+let sidebarCollapsed = false;
+
+function toggleSidebar() {
+  sidebarCollapsed = !sidebarCollapsed;
+  document.getElementById('sidebar').classList.toggle('collapsed', sidebarCollapsed);
+}
+
+function updateProgress() {
+  const count = completed.filter(Boolean).length;
+  document.getElementById('progressLabel').textContent = `${count} / ${lessons.length}`;
+  document.getElementById('progressFill').style.width = `${(count / lessons.length) * 100}%`;
+}
+
+let flashcards = [];
+let currentCard = 0;
+let cardFlipped = false;
+
+function initFlashcards(idx) {
+  const l = lessons[idx];
+  const allTerms = [
+    "Database", "DBMS", "Schema", "Entity", "Attribute", "Relationship",
+    "Primary Key", "Foreign Key", "Normalization", "1NF", "2NF", "3NF",
+    "SQL", "DDL", "DML", "DCL", "TCL", "ACID", "Transaction", "ER Diagram",
+    "Referential Integrity", "Index", "View", "Join", "Aggregate",
+    "Cardinality", "Weak Entity", "Composite Key", "Functional Dependency",
+    "Data Redundancy", "Data Independence", "Concurrency Control", "Backup"
+  ];
+  const defs = [
+    "Organized collection of related data", "Software to manage, store and retrieve data",
+    "Logical structure of the database", "Real-world object represented in DB",
+    "Property or characteristic of an entity", "Association between entities",
+    "Uniquely identifies a row in a table", "References primary key of another table",
+    "Process of organizing data to reduce redundancy",
+    "Each cell is atomic, no repeating groups",
+    "No partial dependencies (every non-key depends on full PK)",
+    "No transitive dependencies (non-key depends only on PK)",
+    "Structured Query Language", "Data Definition Language (CREATE, ALTER, DROP)",
+    "Data Manipulation Language (SELECT, INSERT, UPDATE, DELETE)",
+    "Data Control Language (GRANT, REVOKE)",
+    "Transaction Control Language (COMMIT, ROLLBACK)",
+    "Atomicity, Consistency, Isolation, Durability",
+    "Unit of work with ACID properties",
+    "Entity-Relationship diagram (visual data model)",
+    "FK must match PK or be NULL; ensures relationship consistency",
+    "Data structure to speed up queries",
+    "Virtual table based on a SELECT query",
+    "Combine rows from two tables based on related columns",
+    "Functions like COUNT, SUM, AVG, MAX, MIN",
+    "Number of instances in a relationship (1:1, 1:M, M:N)",
+    "Entity that depends on another entity for its existence",
+    "Key with more than one column", "X → Y means X determines Y",
+    "Unnecessary duplication of data",
+    "Ability to change schema/storage without affecting other layers",
+    "Managing simultaneous access without conflicts",
+    "Copy of data for recovery after failure"
+  ];
+  flashcards = [];
+  for (let i = 0; i < allTerms.length; i++) {
+    flashcards.push({ term: allTerms[i], def: defs[i] });
+  }
+  currentCard = 0;
+  cardFlipped = false;
+  showFlashcard();
+}
+
+function showFlashcard() {
+  const front = document.getElementById('flashcardFront');
+  const counter = document.getElementById('flashcardCounter');
+  if (!front) return;
+  if (flashcards.length === 0) { front.textContent = 'No flashcards'; return; }
+  const card = flashcards[currentCard];
+  front.textContent = cardFlipped ? card.def : card.term;
+  if (counter) counter.textContent = `${currentCard + 1} / ${flashcards.length}`;
+}
+
+function flipFlashcard() {
+  cardFlipped = !cardFlipped;
+  showFlashcard();
+}
+
+function nextFlashcard() {
+  if (currentCard < flashcards.length - 1) { currentCard++; cardFlipped = false; showFlashcard(); }
+}
+
+function prevFlashcard() {
+  if (currentCard > 0) { currentCard--; cardFlipped = false; showFlashcard(); }
+}
+
+renderSidebar();
+renderLesson();
+updateProgress();
+</script>
+</body>
+</html>
