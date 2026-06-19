@@ -6,22 +6,23 @@ import ProgressBar from './ProgressBar';
 
 export default function CourseCard({ course, progress, onPress, style, variant }) {
   const { theme } = useTheme();
+  const safeProgress = isNaN(progress) || progress < 0 ? 0 : progress;
   if (variant === 'compact') {
     return (
       <TouchableOpacity
         style={[styles.compactCard, { backgroundColor: theme.surface }, style]}
         onPress={onPress}
         activeOpacity={0.7}
-        accessibilityLabel={`${course.title}, ${progress}% complete`}
+        accessibilityLabel={`${course.title}, ${safeProgress}% complete`}
         accessibilityRole="button"
       >
         <View style={styles.compactHeader}>
           <Text style={styles.compactIcon} accessibilityRole="image">{course.icon}</Text>
           <View style={styles.compactInfo}>
             <Text style={[styles.compactName, { color: theme.text }]}>{course.title}</Text>
-            <ProgressBar progress={progress} color={course.color} backgroundColor={course.bgColor} />
+            <ProgressBar progress={safeProgress} color={course.color} backgroundColor={course.bgColor} />
           </View>
-          <Text style={[styles.compactPercent, { color: course.color }]}>{progress}%</Text>
+          <Text style={[styles.compactPercent, { color: course.color }]}>{safeProgress}%</Text>
         </View>
       </TouchableOpacity>
     );
@@ -32,7 +33,7 @@ export default function CourseCard({ course, progress, onPress, style, variant }
       style={[styles.card, { borderLeftColor: course.color, backgroundColor: theme.surface }, style]}
       onPress={onPress}
         activeOpacity={0.7}
-        accessibilityLabel={`${course.title}, ${progress}% complete`}
+        accessibilityLabel={`${course.title}, ${safeProgress}% complete`}
         accessibilityRole="button"
       >
         <View style={styles.header}>
@@ -43,7 +44,7 @@ export default function CourseCard({ course, progress, onPress, style, variant }
         </View>
       </View>
       <Text style={[styles.desc, { color: theme.textSecondary }]} numberOfLines={2}>{course.description}</Text>
-      <ProgressBar progress={progress} showLabel />
+      <ProgressBar progress={safeProgress} showLabel />
     </TouchableOpacity>
   );
 }

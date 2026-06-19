@@ -178,11 +178,14 @@ export default function CertificateScreen({ route, navigation }) {
       } else {
         const { uri } = await Print.printToFileAsync({ html });
         if (await Sharing.isAvailableAsync()) {
-          await Sharing.shareAsync(uri, { mimeType: 'application/pdf' });
+          await Sharing.shareAsync(uri, { mimeType: 'application/pdf', dialogTitle: 'Download Certificate' });
+        } else {
+          alert('Sharing is not available on this device.');
         }
       }
     } catch (e) {
       console.warn('PDF export failed', e);
+      alert('Failed to export certificate. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -321,7 +324,6 @@ const styles = StyleSheet.create({
     marginBottom: 32,
     minWidth: 180,
     elevation: 4,
-    boxShadow: '0px 4px 12px rgba(94, 14, 8, 0.3)',
     shadowColor: '#5e0e08',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,

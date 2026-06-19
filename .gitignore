@@ -52,3 +52,7 @@ yarn-error.*
 # IDE
 .vscode/
 .idea/
+
+dist-test/
+dist-test2/
+null
