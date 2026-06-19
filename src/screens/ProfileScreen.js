@@ -75,7 +75,7 @@ export default function ProfileScreen({ navigation }) {
               course={course}
               progress={courseProgress}
               variant="compact"
-              onPress={() => navigation.navigate('Home', { screen: 'CourseDetail', params: { courseId: course.id } })}
+              onPress={() => navigation.navigate('CourseDetail', { courseId: course.id })}
             />
           );
         })}
@@ -101,7 +101,7 @@ export default function ProfileScreen({ navigation }) {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Actions</Text>
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>Actions</Text>
         <TouchableOpacity
           style={[styles.actionButton, { backgroundColor: theme.surface }]}
           onPress={() => navigation.navigate('Progress')}

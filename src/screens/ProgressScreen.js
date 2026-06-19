@@ -55,7 +55,7 @@ export default function ProgressScreen({ navigation }) {
               {course.chapters.map((ch, idx) => {
                 const chCompleted = ch.lessons.every(l => isLessonComplete(course.id, l.id));
                 return (
-                  <View key={ch.id} style={[
+                  <View key={`${course.id}-ch-${ch.id || idx}`} style={[
                     styles.chapterDot,
                     chCompleted ? styles.chapterDone : { backgroundColor: theme.border },
                   ]}>

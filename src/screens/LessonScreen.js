@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import { useProgress } from '../context/ProgressContext';
@@ -46,6 +46,12 @@ export default function LessonScreen({ route, navigation }) {
     return initial;
   });
 
+  useEffect(() => {
+    const initial = {};
+    lesson.codeExamples.forEach((_, i) => { initial[i] = true; });
+    setShowCode(initial);
+  }, [lessonId]);
+
   const toggleCode = (index) => {
     setShowCode(prev => ({ ...prev, [index]: !prev[index] }));
   };
@@ -61,16 +67,33 @@ export default function LessonScreen({ route, navigation }) {
   const handleComplete = () => {
     markLessonComplete(courseId, lessonId);
 
+    if (!navigation || !navigation.replace || !navigation.navigate) {
+      return;
+    }
+
     const chIndex = course.chapters.findIndex(ch => ch.id === chapterId);
     const lIndex = chapter.lessons.findIndex(l => l.id === lessonId);
 
+    if (chIndex === -1 || lIndex === -1) {
+      navigation.navigate('CourseDetail', { courseId });
+      return;
+    }
+
     if (lIndex < chapter.lessons.length - 1) {
       const nextLesson = chapter.lessons[lIndex + 1];
+      if (!nextLesson) {
+        navigation.navigate('CourseDetail', { courseId });
+        return;
+      }
       navigation.replace('Lesson', {
         courseId, chapterId, lessonId: nextLesson.id,
       });
     } else if (chIndex < course.chapters.length - 1) {
       const nextChapter = course.chapters[chIndex + 1];
+      if (!nextChapter || !nextChapter.lessons || nextChapter.lessons.length === 0) {
+        navigation.navigate('CourseDetail', { courseId });
+        return;
+      }
       const nextLesson = nextChapter.lessons[0];
       navigation.replace('Lesson', {
         courseId, chapterId: nextChapter.id, lessonId: nextLesson.id,
