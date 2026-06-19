@@ -112,6 +112,7 @@ export default function QuizScreen({ route, navigation }) {
               <Text style={styles.optionIndicator}>{indicator}</Text>
               <Text style={[
                 styles.optionText,
+                { color: theme.text },
                 isSelected && !showResults && styles.optionTextSelected,
                 isCorrect && styles.optionTextCorrect,
                 isWrong && styles.optionTextWrong,
@@ -177,11 +178,24 @@ export default function QuizScreen({ route, navigation }) {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.doneButton}
-              onPress={() => navigation.goBack()}
-              accessibilityLabel="Back to course"
+              onPress={() => {
+                const chIndex = course.chapters.findIndex(ch => ch.id === chapterId);
+                if (chIndex < course.chapters.length - 1) {
+                  const nextChapter = course.chapters[chIndex + 1];
+                  const nextLesson = nextChapter?.lessons?.[0];
+                  if (nextLesson) {
+                    navigation.navigate('Lesson', {
+                      courseId, chapterId: nextChapter.id, lessonId: nextLesson.id,
+                    });
+                    return;
+                  }
+                }
+                navigation.navigate('CourseDetail', { courseId });
+              }}
+              accessibilityLabel="Continue to next lesson"
               accessibilityRole="button"
             >
-              <Text style={styles.doneButtonText}>Back to Course</Text>
+              <Text style={styles.doneButtonText}>Next Lesson →</Text>
             </TouchableOpacity>
           </View>
         </View>

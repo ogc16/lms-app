@@ -88,18 +88,8 @@ export default function LessonScreen({ route, navigation }) {
       navigation.replace('Lesson', {
         courseId, chapterId, lessonId: nextLesson.id,
       });
-    } else if (chIndex < course.chapters.length - 1) {
-      const nextChapter = course.chapters[chIndex + 1];
-      if (!nextChapter || !nextChapter.lessons || nextChapter.lessons.length === 0) {
-        navigation.navigate('CourseDetail', { courseId });
-        return;
-      }
-      const nextLesson = nextChapter.lessons[0];
-      navigation.replace('Lesson', {
-        courseId, chapterId: nextChapter.id, lessonId: nextLesson.id,
-      });
     } else {
-      navigation.navigate('CourseDetail', { courseId });
+      navigation.navigate('Quiz', { courseId, chapterId });
     }
   };
 

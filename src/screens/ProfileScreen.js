@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Switch } from 'react-native';
+import { View, Text, TextInput, Image, StyleSheet, ScrollView, TouchableOpacity, Switch, Alert } from 'react-native';
 import PropTypes from 'prop-types';
+import * as ImagePicker from 'expo-image-picker';
 import { useProgress } from '../context/ProgressContext';
 import { useTheme } from '../context/ThemeContext';
 import { coursesArray } from '../data/courses';
@@ -11,17 +12,41 @@ import CourseCard from '../components/CourseCard';
 
 export default function ProfileScreen({ navigation }) {
   const { theme, isDark, toggleTheme } = useTheme();
-  const { getCourseProgress, isLessonComplete, getQuizScore, resetProgress, userName, setUserName } = useProgress();
+  const { getCourseProgress, isLessonComplete, getQuizScore, resetProgress, userName, setUserName, profilePicture, setProfilePicture } = useProgress();
   const { totalLessons, completedLessons, totalQuizzes, completedQuizzes, overallPercent } = useOverallStats(coursesArray, isLessonComplete, getQuizScore);
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState(userName);
 
+  const handlePickImage = async () => {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permission.granted) {
+      Alert.alert('Permission needed', 'Allow access to your photo library to set a profile picture.');
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.5,
+    });
+    if (!result.canceled && result.assets?.[0]?.uri) {
+      setProfilePicture(result.assets[0].uri);
+    }
+  };
+
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={[styles.header, { backgroundColor: theme.headerBg }]}>
-        <View style={styles.avatarContainer}>
-          <Text style={styles.avatar}>👤</Text>
-        </View>
+        <TouchableOpacity style={styles.avatarContainer} onPress={handlePickImage} accessibilityLabel="Change profile picture" accessibilityRole="button">
+          {profilePicture ? (
+            <Image source={{ uri: profilePicture }} style={styles.avatarImage} />
+          ) : (
+            <Text style={styles.avatar}>👤</Text>
+          )}
+          <View style={styles.cameraBadge}>
+            <Text style={styles.cameraIcon}>📷</Text>
+          </View>
+        </TouchableOpacity>
         {editingName ? (
           <TextInput
             style={[styles.nameInput, { color: theme.headerText, borderColor: theme.headerText }]}
@@ -155,9 +180,31 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 12,
+    overflow: 'visible',
+  },
+  avatarImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
   },
   avatar: {
     fontSize: 40,
+  },
+  cameraBadge: {
+    position: 'absolute',
+    bottom: -2,
+    right: -6,
+    backgroundColor: '#4A90D9',
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#fff',
+  },
+  cameraIcon: {
+    fontSize: 12,
   },
   headerTitle: {
     fontSize: 24,
