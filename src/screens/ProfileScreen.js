@@ -4,34 +4,17 @@ import PropTypes from 'prop-types';
 import { useProgress } from '../context/ProgressContext';
 import { useTheme } from '../context/ThemeContext';
 import { coursesArray } from '../data/courses';
-
-const courses = coursesArray;
+import useOverallStats from '../hooks/useOverallStats';
+import StatCard from '../components/StatCard';
+import ProgressBar from '../components/ProgressBar';
+import CourseCard from '../components/CourseCard';
 
 export default function ProfileScreen({ navigation }) {
   const { theme, isDark, toggleTheme } = useTheme();
-  const { getCourseProgress, isLessonComplete, getQuizScore, progress, resetProgress, userName, setUserName } = useProgress();
+  const { getCourseProgress, isLessonComplete, getQuizScore, resetProgress, userName, setUserName } = useProgress();
+  const { totalLessons, completedLessons, totalQuizzes, completedQuizzes, overallPercent } = useOverallStats(coursesArray, isLessonComplete, getQuizScore);
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState(userName);
-
-  let totalLessons = 0;
-  let completedLessons = 0;
-  let totalQuizzes = 0;
-  let completedQuizzes = 0;
-
-  courses.forEach(course => {
-    course.chapters.forEach(ch => {
-      ch.lessons.forEach(lesson => {
-        totalLessons++;
-        if (isLessonComplete(course.id, lesson.id)) completedLessons++;
-      });
-      if (ch.quiz) {
-        totalQuizzes++;
-        if (getQuizScore(course.id, ch.id)) completedQuizzes++;
-      }
-    });
-  });
-
-  const overallPercent = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
@@ -58,7 +41,7 @@ export default function ProfileScreen({ navigation }) {
             selectTextOnFocus
           />
         ) : (
-          <TouchableOpacity onPress={() => { setNameInput(userName); setEditingName(true); }}>
+          <TouchableOpacity onPress={() => { setNameInput(userName); setEditingName(true); }} accessibilityLabel="Edit name" accessibilityRole="button">
             <Text style={[styles.headerTitle, { color: theme.headerText }]}>{userName} ✏️</Text>
           </TouchableOpacity>
         )}
@@ -66,27 +49,16 @@ export default function ProfileScreen({ navigation }) {
       </View>
 
       <View style={styles.statsRow}>
-        <View style={[styles.statCard, { backgroundColor: theme.surface }]}>
-          <Text style={styles.statNumber}>{completedLessons}</Text>
-          <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Lessons Done</Text>
-        </View>
-        <View style={[styles.statCard, { backgroundColor: theme.surface }]}>
-          <Text style={styles.statNumber}>{totalLessons}</Text>
-          <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Total Lessons</Text>
-        </View>
-        <View style={[styles.statCard, { backgroundColor: theme.surface }]}>
-          <Text style={styles.statNumber}>{completedQuizzes}</Text>
-          <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Quizzes Passed</Text>
-        </View>
+        <StatCard number={completedLessons} label="Lessons Done" backgroundColor={theme.surface} />
+        <StatCard number={totalLessons} label="Total Lessons" backgroundColor={theme.surface} />
+        <StatCard number={completedQuizzes} label="Quizzes Passed" backgroundColor={theme.surface} />
       </View>
 
       <View style={styles.section}>
         <Text style={[styles.sectionTitle, { color: theme.text }]}>Overall Progress</Text>
         <View style={[styles.overallCard, { backgroundColor: theme.surface }]}>
           <Text style={styles.overallPercent}>{overallPercent}%</Text>
-          <View style={[styles.progressBarContainer, { backgroundColor: theme.border }]}>
-            <View style={[styles.progressBar, { width: `${overallPercent}%` }]} />
-          </View>
+          <ProgressBar progress={overallPercent} backgroundColor={theme.border} height={10} />
           <Text style={[styles.overallStats, { color: theme.textSecondary }]}>
             {completedLessons}/{totalLessons} lessons | {completedQuizzes}/{totalQuizzes} quizzes
           </Text>
@@ -95,26 +67,16 @@ export default function ProfileScreen({ navigation }) {
 
       <View style={styles.section}>
         <Text style={[styles.sectionTitle, { color: theme.text }]}>Course Breakdown</Text>
-        {courses.map(course => {
+        {coursesArray.map(course => {
           const courseProgress = getCourseProgress(course.id, course.chapters);
           return (
-            <TouchableOpacity
+            <CourseCard
               key={course.id}
-              style={[styles.courseCard, { backgroundColor: theme.surface }]}
+              course={course}
+              progress={courseProgress}
+              variant="compact"
               onPress={() => navigation.navigate('CourseDetail', { courseId: course.id })}
-              activeOpacity={0.7}
-            >
-              <View style={styles.courseHeader}>
-                <Text style={styles.courseIcon}>{course.icon}</Text>
-                <View style={styles.courseInfo}>
-                  <Text style={[styles.courseName, { color: theme.text }]}>{course.title}</Text>
-                  <View style={[styles.courseProgressBar, { backgroundColor: course.bgColor }]}>
-                    <View style={[styles.courseProgressFill, { width: `${courseProgress}%`, backgroundColor: course.color }]} />
-                  </View>
-                </View>
-                <Text style={[styles.coursePercent, { color: course.color }]}>{courseProgress}%</Text>
-              </View>
-            </TouchableOpacity>
+            />
           );
         })}
       </View>
@@ -143,6 +105,8 @@ export default function ProfileScreen({ navigation }) {
         <TouchableOpacity
           style={[styles.actionButton, { backgroundColor: theme.surface }]}
           onPress={() => navigation.navigate('Progress')}
+          accessibilityLabel="Detailed progress report"
+          accessibilityRole="button"
         >
           <Text style={styles.actionIcon}>📊</Text>
           <Text style={[styles.actionText, { color: theme.text }]}>Detailed Progress Report</Text>
@@ -150,10 +114,12 @@ export default function ProfileScreen({ navigation }) {
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.actionButton, styles.dangerButton, { backgroundColor: theme.surface }]}
-          onPress={() => {
-            resetProgress();
+          onPress={async () => {
+            await resetProgress();
             navigation.navigate('Home');
           }}
+          accessibilityLabel="Reset all progress"
+          accessibilityRole="button"
         >
           <Text style={styles.actionIcon}>🔄</Text>
           <Text style={styles.dangerText}>Reset All Progress</Text>
@@ -207,24 +173,6 @@ const styles = StyleSheet.create({
     marginTop: -20,
     gap: 10,
   },
-  statCard: {
-    flex: 1,
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    elevation: 3,
-    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.1)',
-  },
-  statNumber: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#4A90D9',
-  },
-  statLabel: {
-    fontSize: 12,
-    marginTop: 2,
-    textAlign: 'center',
-  },
   section: {
     paddingHorizontal: 16,
     marginTop: 24,
@@ -239,7 +187,10 @@ const styles = StyleSheet.create({
     padding: 24,
     alignItems: 'center',
     elevation: 3,
-    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.1)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
   },
   overallPercent: {
     fontSize: 48,
@@ -247,26 +198,8 @@ const styles = StyleSheet.create({
     color: '#4A90D9',
     marginBottom: 16,
   },
-  progressBarContainer: {
-    width: '100%',
-    height: 10,
-    borderRadius: 5,
-    marginBottom: 8,
-  },
-  progressBar: {
-    height: '100%',
-    backgroundColor: '#4A90D9',
-    borderRadius: 5,
-  },
   overallStats: {
     fontSize: 14,
-  },
-  courseCard: {
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 10,
-    elevation: 2,
-    boxShadow: '0px 1px 4px rgba(0, 0, 0, 0.08)',
   },
   settingRow: {
     flexDirection: 'row',
@@ -275,7 +208,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     elevation: 2,
-    boxShadow: '0px 1px 4px rgba(0, 0, 0, 0.08)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
   },
   settingInfo: {
     flexDirection: 'row',
@@ -295,36 +231,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 2,
   },
-  courseHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  courseIcon: {
-    fontSize: 28,
-    marginRight: 12,
-  },
-  courseInfo: {
-    flex: 1,
-  },
-  courseName: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 8,
-  },
-  courseProgressBar: {
-    height: 6,
-    borderRadius: 3,
-    overflow: 'hidden',
-  },
-  courseProgressFill: {
-    height: '100%',
-    borderRadius: 3,
-  },
-  coursePercent: {
-    fontSize: 18,
-    fontWeight: '700',
-    marginLeft: 12,
-  },
   actionButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -332,7 +238,10 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 10,
     elevation: 2,
-    boxShadow: '0px 1px 4px rgba(0, 0, 0, 0.08)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
   },
   actionIcon: {
     fontSize: 20,

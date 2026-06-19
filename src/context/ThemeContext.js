@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useMemo } from 'react';
+import React, { createContext, useContext, useState, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useColorScheme } from 'react-native';
 
@@ -11,7 +11,6 @@ const lightTheme = {
   border: '#E8EDF2',
   headerBg: '#4A90D9',
   headerText: '#fff',
-  cardShadow: '0px 2px 8px rgba(0, 0, 0, 0.1)',
   statusBar: 'dark',
 };
 
@@ -24,7 +23,6 @@ const darkTheme = {
   border: '#333',
   headerBg: '#1E1E1E',
   headerText: '#E0E0E0',
-  cardShadow: '0px 2px 8px rgba(0, 0, 0, 0.3)',
   statusBar: 'light',
 };
 
@@ -36,9 +34,9 @@ export function ThemeProvider({ children }) {
 
   const theme = useMemo(() => (isDark ? darkTheme : lightTheme), [isDark]);
 
-  const toggleTheme = () => setIsDark(prev => !prev);
+  const toggleTheme = useCallback(() => setIsDark(prev => !prev), []);
 
-  const value = useMemo(() => ({ theme, isDark, toggleTheme }), [theme, isDark]);
+  const value = useMemo(() => ({ theme, isDark, toggleTheme }), [theme, isDark, toggleTheme]);
 
   return (
     <ThemeContext.Provider value={value}>

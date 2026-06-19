@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useTheme } from '../context/ThemeContext';
 
+import { coursesMap } from '../data/courses';
 import HomeScreen from '../screens/HomeScreen';
 import CourseDetailScreen from '../screens/CourseDetailScreen';
 import LessonScreen from '../screens/LessonScreen';
@@ -31,7 +32,7 @@ function HomeStack() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: theme.headerBg, elevation: 0, boxShadow: 'none' },
+        headerStyle: { backgroundColor: theme.headerBg, elevation: 0, boxShadow: 'none', shadowColor: 'transparent' },
         headerTintColor: theme.headerText,
         headerTitleStyle: { fontWeight: '700', fontSize: 18 },
         headerBackTitleVisible: false,
@@ -43,28 +44,27 @@ function HomeStack() {
         component={CourseDetailScreen}
         options={({ route }) => {
           const courseId = route.params?.courseId;
-          const titles = { python: 'Python Course', cpp: 'C++ Course', cybersecurity: 'Cybersecurity', ethicalhacker: 'Ethical Hacker', bit_core: 'BIT Core Units', go: 'Go', swift: 'Swift', csharp: 'C#', vb: 'Visual Basic', web_dev: 'Web Development', sql: 'Database - SQL', nextjs: 'Next.js', react_native: 'React Native', financial_records: 'Financial Records', operations_management: 'Operations Management', financial_accounting: 'Financial Accounting (ACCA)', database: 'Database Management Systems', gis: 'Geographical Information Systems', mobile_computing: 'Mobile & Wireless Computing', ooad: 'Object-Oriented Analysis & Design', web_app_dev: 'Web Application Development 1', calculus: 'Calculus 1', software_engineering: 'Software Engineering', oop: 'Object-Oriented Programming 1' };
-          const colors = { python: '#3776AB', cpp: '#00599C', cybersecurity: '#2E7D32', ethicalhacker: '#C62828', bit_core: '#6C3483', go: '#00ADD8', swift: '#F05138', csharp: '#9B4F96', vb: '#945DB7', web_dev: '#E44D26', sql: '#336791', nextjs: '#000000', react_native: '#61DAFB', financial_records: '#1B5E20', operations_management: '#E65100', financial_accounting: '#0D47A1', database: '#3498db', gis: '#0ea5e9', mobile_computing: '#0f3460', ooad: '#e94560', web_app_dev: '#0f3460', calculus: '#2c3e50', software_engineering: '#e67e22', oop: '#9b59b6' };
+          const course = coursesMap[courseId];
           return {
-            title: titles[courseId] || 'Course',
-            headerStyle: { backgroundColor: colors[courseId] || '#2C3E50', elevation: 0, boxShadow: 'none' },
+            title: course?.title || 'Course',
+            headerStyle: { backgroundColor: course?.color || '#2C3E50', elevation: 0, boxShadow: 'none', shadowColor: 'transparent' },
           };
         }}
       />
       <Stack.Screen
         name="Lesson"
         component={LessonScreen}
-        options={{ title: 'Lesson', headerStyle: { backgroundColor: theme.headerBg, elevation: 0, boxShadow: 'none' } }}
+        options={{ title: 'Lesson', headerStyle: { backgroundColor: theme.headerBg, elevation: 0, boxShadow: 'none', shadowColor: 'transparent' } }}
       />
       <Stack.Screen
         name="Quiz"
         component={QuizScreen}
-        options={{ title: 'Chapter Quiz', headerStyle: { backgroundColor: theme.headerBg, elevation: 0, boxShadow: 'none' } }}
+        options={{ title: 'Chapter Quiz', headerStyle: { backgroundColor: theme.headerBg, elevation: 0, boxShadow: 'none', shadowColor: 'transparent' } }}
       />
       <Stack.Screen
         name="Certificate"
         component={CertificateScreen}
-        options={{ title: 'Certificate', headerStyle: { backgroundColor: '#5e0e08', elevation: 0, boxShadow: 'none' } }}
+        options={{ title: 'Certificate', headerStyle: { backgroundColor: '#5e0e08', elevation: 0, boxShadow: 'none', shadowColor: 'transparent' } }}
       />
     </Stack.Navigator>
   );

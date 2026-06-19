@@ -4,32 +4,14 @@ import PropTypes from 'prop-types';
 import { useProgress } from '../context/ProgressContext';
 import { useTheme } from '../context/ThemeContext';
 import { coursesArray } from '../data/courses';
-
-const courses = coursesArray;
+import useOverallStats from '../hooks/useOverallStats';
+import ProgressBar from '../components/ProgressBar';
+import CourseCard from '../components/CourseCard';
 
 export default function ProgressScreen({ navigation }) {
-  const { theme } = useTheme();
-  const { getCourseProgress, isLessonComplete, getQuizScore, progress, resetProgress } = useProgress();
-
-  let totalLessons = 0;
-  let completedLessons = 0;
-  let totalQuizzes = 0;
-  let completedQuizzes = 0;
-
-  courses.forEach(course => {
-    course.chapters.forEach(ch => {
-      ch.lessons.forEach(lesson => {
-        totalLessons++;
-        if (isLessonComplete(course.id, lesson.id)) completedLessons++;
-      });
-      if (ch.quiz) {
-        totalQuizzes++;
-        if (getQuizScore(course.id, ch.id)) completedQuizzes++;
-      }
-    });
-  });
-
-  const overallPercent = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+  const { theme, isDark } = useTheme();
+  const { getCourseProgress, isLessonComplete, getQuizScore, resetProgress } = useProgress();
+  const { totalLessons, completedLessons, totalQuizzes, completedQuizzes, overallPercent } = useOverallStats(coursesArray, isLessonComplete, getQuizScore);
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
@@ -41,15 +23,13 @@ export default function ProgressScreen({ navigation }) {
       <View style={[styles.overallCard, { backgroundColor: theme.surface }]}>
         <Text style={styles.overallPercent}>{overallPercent}%</Text>
         <Text style={[styles.overallLabel, { color: theme.textSecondary }]}>Overall Complete</Text>
-        <View style={[styles.progressBarContainer, { backgroundColor: theme.border }]}>
-          <View style={[styles.progressBar, { width: `${overallPercent}%` }]} />
-        </View>
+        <ProgressBar progress={overallPercent} backgroundColor={theme.border} height={10} />
         <Text style={[styles.overallStats, { color: theme.textSecondary }]}>
           {completedLessons}/{totalLessons} lessons | {completedQuizzes}/{totalQuizzes} quizzes
         </Text>
       </View>
 
-      <View style={styles.streakCard}>
+      <View style={[styles.streakCard, { backgroundColor: isDark ? '#2C2416' : '#FFF8E1' }]}>
         <Text style={styles.streakIcon}>🔥</Text>
         <View>
           <Text style={[styles.streakText, { color: theme.text }]}>Keep going!</Text>
@@ -61,25 +41,16 @@ export default function ProgressScreen({ navigation }) {
         </View>
       </View>
 
-      {courses.map((course) => {
+      {coursesArray.map((course) => {
         const courseProgress = getCourseProgress(course.id, course.chapters);
         return (
-          <TouchableOpacity
-            key={course.id}
-            style={[styles.courseCard, { backgroundColor: theme.surface }]}
-            onPress={() => navigation.navigate('CourseDetail', { courseId: course.id })}
-          >
-            <View style={styles.courseHeader}>
-              <Text style={styles.courseIcon}>{course.icon}</Text>
-              <Text style={[styles.courseName, { color: theme.text }]}>{course.title}</Text>
-              <Text style={styles.coursePercent}>{courseProgress}%</Text>
-            </View>
-            <View style={[styles.progressBarContainer, { backgroundColor: theme.border }]}>
-              <View style={[styles.progressBar, {
-                width: `${courseProgress}%`,
-                backgroundColor: course.color,
-              }]} />
-            </View>
+          <View key={course.id} style={styles.courseWrapper}>
+            <CourseCard
+              course={course}
+              progress={courseProgress}
+              variant="compact"
+              onPress={() => navigation.navigate('CourseDetail', { courseId: course.id })}
+            />
             <View style={styles.chapterSummary}>
               {course.chapters.map((ch, idx) => {
                 const chCompleted = ch.lessons.every(l => isLessonComplete(course.id, l.id));
@@ -95,11 +66,11 @@ export default function ProgressScreen({ navigation }) {
                 );
               })}
             </View>
-          </TouchableOpacity>
+          </View>
         );
       })}
 
-      <TouchableOpacity style={styles.resetButton} onPress={resetProgress}>
+      <TouchableOpacity style={[styles.resetButton, { backgroundColor: theme.surface }]} onPress={resetProgress} accessibilityLabel="Reset all progress" accessibilityRole="button">
         <Text style={styles.resetButtonText}>🔄 Reset All Progress</Text>
       </TouchableOpacity>
     </ScrollView>
@@ -128,7 +99,11 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 24,
     alignItems: 'center',
-    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.1)',
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
     elevation: 3,
   },
   overallPercent: {
@@ -140,24 +115,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 16,
   },
-  progressBarContainer: {
-    width: '100%',
-    height: 10,
-    borderRadius: 5,
-    marginBottom: 8,
-  },
-  progressBar: {
-    height: '100%',
-    backgroundColor: '#4A90D9',
-    borderRadius: 5,
-  },
   overallStats: {
     fontSize: 14,
   },
   streakCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFF8E1',
     marginHorizontal: 16,
     marginBottom: 16,
     borderRadius: 12,
@@ -176,36 +139,15 @@ const styles = StyleSheet.create({
   streakSubtext: {
     fontSize: 13,
   },
-  courseCard: {
+  courseWrapper: {
     marginHorizontal: 16,
     marginBottom: 12,
-    borderRadius: 12,
-    padding: 16,
-    boxShadow: '0px 1px 4px rgba(0, 0, 0, 0.08)',
-    elevation: 2,
-  },
-  courseHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  courseIcon: {
-    fontSize: 28,
-    marginRight: 12,
-  },
-  courseName: {
-    flex: 1,
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  coursePercent: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#4A90D9',
   },
   chapterSummary: {
     flexDirection: 'row',
-    marginTop: 10,
+    marginTop: -2,
+    marginBottom: 6,
+    marginLeft: 52,
     gap: 6,
   },
   chapterDot: {
@@ -231,7 +173,6 @@ const styles = StyleSheet.create({
     marginBottom: 32,
     padding: 14,
     borderRadius: 10,
-    backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: '#E74C3C',
     alignItems: 'center',

@@ -85,6 +85,12 @@ export default function CertificateScreen({ route, navigation }) {
     ? completionDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
     : '';
 
+  useEffect(() => {
+    if (completed && !completionDate && course) {
+      setCourseCompletionDate(course.id);
+    }
+  }, [completed, completionDate, course, setCourseCompletionDate]);
+
   if (!course) {
     return (
       <View style={[styles.centerContainer, { backgroundColor: theme.background }]}>
@@ -104,18 +110,14 @@ export default function CertificateScreen({ route, navigation }) {
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}
+          accessibilityLabel="Back to course"
+          accessibilityRole="button"
         >
           <Text style={styles.backButtonText}>Back to Course</Text>
         </TouchableOpacity>
       </View>
     );
   }
-
-  useEffect(() => {
-    if (completed && !completionDate) {
-      setCourseCompletionDate(course.id);
-    }
-  }, [completed, completionDate, course, setCourseCompletionDate]);
 
   const handleSavePDF = async () => {
     setSaving(true);
@@ -173,6 +175,8 @@ export default function CertificateScreen({ route, navigation }) {
         style={[styles.downloadButton, saving && styles.downloadButtonDisabled, { backgroundColor: ink }]}
         onPress={handleSavePDF}
         disabled={saving}
+        accessibilityLabel="Save certificate as PDF"
+        accessibilityRole="button"
       >
         {saving ? (
           <ActivityIndicator color={parchment} size="small" />
@@ -278,6 +282,10 @@ const styles = StyleSheet.create({
     minWidth: 180,
     elevation: 4,
     boxShadow: '0px 4px 12px rgba(94, 14, 8, 0.3)',
+    shadowColor: '#5e0e08',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
   },
   downloadButtonDisabled: {
     opacity: 0.7,

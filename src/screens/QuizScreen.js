@@ -1,7 +1,8 @@
-import React, { useState, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Animated } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
 import { useProgress } from '../context/ProgressContext';
+import { useTheme } from '../context/ThemeContext';
 import { coursesMap } from '../data/courses';
 
 const courses = coursesMap;
@@ -9,8 +10,17 @@ const courses = coursesMap;
 export default function QuizScreen({ route, navigation }) {
   const { courseId, chapterId } = route.params;
   const { markQuizScore } = useProgress();
+  const { theme, isDark } = useTheme();
 
   const course = courses[courseId];
+  if (!course) {
+    return (
+      <View style={[styles.errorContainer, { backgroundColor: theme.background }]}>
+        <Text style={{ color: theme.text }}>Course not found</Text>
+      </View>
+    );
+  }
+
   const chapter = course.chapters.find(ch => ch.id === chapterId);
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -20,8 +30,8 @@ export default function QuizScreen({ route, navigation }) {
 
   if (!chapter || !chapter.quiz) {
     return (
-      <View style={styles.errorContainer}>
-        <Text>No quiz available for this chapter</Text>
+      <View style={[styles.errorContainer, { backgroundColor: theme.background }]}>
+        <Text style={{ color: theme.text }}>No quiz available for this chapter</Text>
       </View>
     );
   }
@@ -69,20 +79,20 @@ export default function QuizScreen({ route, navigation }) {
 
     return (
       <View style={styles.questionCard}>
-        <Text style={styles.questionCounter}>
+        <Text style={[styles.questionCounter, { color: theme.textSecondary }]}>
           Question {currentQuestion + 1} of {totalQuestions}
         </Text>
-        <Text style={styles.questionText}>{q.question}</Text>
+        <Text style={[styles.questionText, { color: theme.text }]}>{q.question}</Text>
 
         {q.options.map((option, idx) => {
           const isSelected = selected === idx;
           const isCorrect = showResults && idx === q.correct;
           const isWrong = showResults && isSelected && idx !== q.correct;
 
-          let optionStyle = styles.optionButton;
-          if (isSelected && !showResults) optionStyle = styles.optionSelected;
-          if (isCorrect) optionStyle = styles.optionCorrect;
-          if (isWrong) optionStyle = styles.optionWrong;
+          let optionStyle = [styles.optionButton, { backgroundColor: theme.surface, borderColor: theme.border }];
+          if (isSelected && !showResults) optionStyle = [styles.optionButton, styles.optionSelected];
+          if (isCorrect) optionStyle = [styles.optionButton, styles.optionCorrect];
+          if (isWrong) optionStyle = [styles.optionButton, styles.optionWrong];
 
           let indicator = '○';
           if (showResults && isCorrect) indicator = '✓';
@@ -96,6 +106,8 @@ export default function QuizScreen({ route, navigation }) {
               onPress={() => handleAnswer(currentQuestion, idx)}
               activeOpacity={0.7}
               disabled={showResults}
+              accessibilityLabel={`Option ${idx + 1}: ${option}`}
+              accessibilityRole="button"
             >
               <Text style={styles.optionIndicator}>{indicator}</Text>
               <Text style={[
@@ -113,19 +125,19 @@ export default function QuizScreen({ route, navigation }) {
 
   if (showResults) {
     return (
-      <ScrollView style={styles.container}>
+      <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
         <View style={styles.resultsContainer}>
           <Text style={styles.resultsIcon}>
             {score === totalQuestions ? '🏆' : score >= totalQuestions / 2 ? '👏' : '💪'}
           </Text>
-          <Text style={styles.resultsTitle}>Quiz Complete!</Text>
+          <Text style={[styles.resultsTitle, { color: theme.text }]}>Quiz Complete!</Text>
           <Text style={styles.scoreText}>
             {score} / {totalQuestions}
           </Text>
-          <Text style={styles.scorePercent}>
+          <Text style={[styles.scorePercent, { color: theme.textSecondary }]}>
             {Math.round((score / totalQuestions) * 100)}%
           </Text>
-          <Text style={styles.encouragement}>
+          <Text style={[styles.encouragement, { color: theme.textSecondary }]}>
             {score === totalQuestions
               ? 'Perfect score! You\'re a rockstar!'
               : score >= totalQuestions / 2
@@ -134,17 +146,17 @@ export default function QuizScreen({ route, navigation }) {
           </Text>
 
           <View style={styles.reviewSection}>
-            <Text style={styles.reviewTitle}>Review Answers</Text>
+            <Text style={[styles.reviewTitle, { color: theme.text }]}>Review Answers</Text>
               {questions.map((q, idx) => {
               const selected = selectedAnswers[idx];
               const isCorrect = selected === q.correct;
               return (
-                <View key={q.question} style={styles.reviewItem}>
+                <View key={q.question} style={[styles.reviewItem, { backgroundColor: theme.surface }]}>
                   <Text style={styles.reviewIndicator}>
                     {isCorrect ? '✅' : '❌'}
                   </Text>
                   <View style={styles.reviewContent}>
-                    <Text style={styles.reviewQuestion}>{q.question}</Text>
+                    <Text style={[styles.reviewQuestion, { color: theme.text }]}>{q.question}</Text>
                     <Text style={styles.reviewAnswer}>
                       Your answer: {q.options[selected] || 'Not answered'}
                     </Text>
@@ -160,12 +172,14 @@ export default function QuizScreen({ route, navigation }) {
           </View>
 
           <View style={styles.resultsActions}>
-            <TouchableOpacity style={styles.retryButton} onPress={handleRetry}>
+            <TouchableOpacity style={styles.retryButton} onPress={handleRetry} accessibilityLabel="Retry quiz" accessibilityRole="button">
               <Text style={styles.retryButtonText}>🔄 Retry Quiz</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.doneButton}
               onPress={() => navigation.goBack()}
+              accessibilityLabel="Back to course"
+              accessibilityRole="button"
             >
               <Text style={styles.doneButtonText}>Back to Course</Text>
             </TouchableOpacity>
@@ -176,8 +190,9 @@ export default function QuizScreen({ route, navigation }) {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.progressHeader}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <View style={[styles.progressHeader, { backgroundColor: theme.surface, borderBottomColor: theme.border }]}>
+
         <View style={styles.progressBar}>
           {questions.map((q, idx) => (
             <View
@@ -194,11 +209,13 @@ export default function QuizScreen({ route, navigation }) {
 
       {renderQuestion()}
 
-      <View style={styles.navigation}>
+      <View style={[styles.navigation, { backgroundColor: theme.surface, borderTopColor: theme.border }]}>
         <TouchableOpacity
           style={[styles.navButton, currentQuestion === 0 && styles.navButtonDisabled]}
           onPress={handlePrev}
           disabled={currentQuestion === 0}
+          accessibilityLabel="Previous question"
+          accessibilityRole="button"
         >
           <Text style={styles.navButtonText}>← Previous</Text>
         </TouchableOpacity>
@@ -207,6 +224,8 @@ export default function QuizScreen({ route, navigation }) {
           <TouchableOpacity
             style={styles.submitButton}
             onPress={handleSubmit}
+            accessibilityLabel="Submit quiz"
+            accessibilityRole="button"
           >
             <Text style={styles.submitButtonText}>Submit</Text>
           </TouchableOpacity>
@@ -215,6 +234,8 @@ export default function QuizScreen({ route, navigation }) {
             style={[styles.navButton, selectedAnswers[currentQuestion] === undefined && styles.navButtonDisabled]}
             onPress={handleNext}
             disabled={selectedAnswers[currentQuestion] === undefined}
+            accessibilityLabel="Next question"
+            accessibilityRole="button"
           >
             <Text style={styles.navButtonText}>Next →</Text>
           </TouchableOpacity>
@@ -227,7 +248,6 @@ export default function QuizScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F7FA',
   },
   errorContainer: {
     flex: 1,
@@ -238,9 +258,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 48,
     paddingBottom: 16,
-    backgroundColor: '#fff',
     borderBottomWidth: 1,
-    borderBottomColor: '#E8EDF2',
   },
   progressBar: {
     flexDirection: 'row',
@@ -268,25 +286,21 @@ const styles = StyleSheet.create({
   },
   questionCounter: {
     fontSize: 14,
-    color: '#95A5A6',
     marginBottom: 8,
   },
   questionText: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#2C3E50',
     marginBottom: 24,
     lineHeight: 28,
   },
   optionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 16,
     marginBottom: 10,
     borderWidth: 2,
-    borderColor: '#E8EDF2',
   },
   optionSelected: {
     borderColor: '#4A90D9',
@@ -327,9 +341,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 20,
-    backgroundColor: '#fff',
     borderTopWidth: 1,
-    borderTopColor: '#E8EDF2',
   },
   navButton: {
     paddingVertical: 14,
@@ -367,7 +379,6 @@ const styles = StyleSheet.create({
   resultsTitle: {
     fontSize: 28,
     fontWeight: '800',
-    color: '#2C3E50',
     marginBottom: 8,
   },
   scoreText: {
@@ -377,12 +388,10 @@ const styles = StyleSheet.create({
   },
   scorePercent: {
     fontSize: 20,
-    color: '#95A5A6',
     marginBottom: 8,
   },
   encouragement: {
     fontSize: 16,
-    color: '#7F8C8D',
     textAlign: 'center',
     marginBottom: 24,
   },
@@ -393,12 +402,10 @@ const styles = StyleSheet.create({
   reviewTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#2C3E50',
     marginBottom: 12,
   },
   reviewItem: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 14,
     marginBottom: 8,
@@ -416,7 +423,6 @@ const styles = StyleSheet.create({
   reviewQuestion: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#2C3E50',
     marginBottom: 4,
   },
   reviewAnswer: {

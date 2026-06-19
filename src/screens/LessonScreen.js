@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import { useProgress } from '../context/ProgressContext';
+import { useTheme } from '../context/ThemeContext';
 import { coursesMap } from '../data/courses';
 
 const courses = coursesMap;
@@ -9,25 +10,52 @@ const courses = coursesMap;
 export default function LessonScreen({ route, navigation }) {
   const { courseId, chapterId, lessonId } = route.params;
   const { markLessonComplete, isLessonComplete } = useProgress();
+  const { theme } = useTheme();
 
   const course = courses[courseId];
-  const chapter = course.chapters.find(ch => ch.id === chapterId);
-  const lesson = chapter.lessons.find(l => l.id === lessonId);
+  if (!course) {
+    return (
+      <View style={[styles.errorContainer, { backgroundColor: theme.background }]}>
+        <Text style={{ color: theme.text }}>Course not found</Text>
+      </View>
+    );
+  }
 
+  const chapter = course.chapters.find(ch => ch.id === chapterId);
+  if (!chapter) {
+    return (
+      <View style={[styles.errorContainer, { backgroundColor: theme.background }]}>
+        <Text style={{ color: theme.text }}>Chapter not found</Text>
+      </View>
+    );
+  }
+
+  const lesson = chapter.lessons.find(l => l.id === lessonId);
   if (!lesson) {
     return (
-      <View style={styles.errorContainer}>
-        <Text>Lesson not found</Text>
+      <View style={[styles.errorContainer, { backgroundColor: theme.background }]}>
+        <Text style={{ color: theme.text }}>Lesson not found</Text>
       </View>
     );
   }
 
   const completed = isLessonComplete(courseId, lessonId);
-  const [showCode, setShowCode] = useState({});
-  const [showAllCode, setShowAllCode] = useState(true);
+  const [showCode, setShowCode] = useState(() => {
+    const initial = {};
+    lesson.codeExamples.forEach((_, i) => { initial[i] = true; });
+    return initial;
+  });
 
   const toggleCode = (index) => {
     setShowCode(prev => ({ ...prev, [index]: !prev[index] }));
+  };
+
+  const handleToggleAll = () => {
+    const allHidden = lesson.codeExamples.every((_, i) => !showCode[i]);
+    const newVal = allHidden;
+    const next = {};
+    lesson.codeExamples.forEach((_, i) => { next[i] = newVal; });
+    setShowCode(next);
   };
 
   const handleComplete = () => {
@@ -42,50 +70,55 @@ export default function LessonScreen({ route, navigation }) {
         courseId, chapterId, lessonId: nextLesson.id,
       });
     } else if (chIndex < course.chapters.length - 1) {
-      // Move to next chapter's first lesson
       const nextChapter = course.chapters[chIndex + 1];
       const nextLesson = nextChapter.lessons[0];
       navigation.replace('Lesson', {
         courseId, chapterId: nextChapter.id, lessonId: nextLesson.id,
       });
     } else {
-      navigation.goBack();
+      navigation.navigate('CourseDetail', { courseId });
     }
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.breadcrumb}>
+    <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
+      <View style={[styles.header, { backgroundColor: theme.headerBg }]}>
+        <Text style={[styles.breadcrumb, { color: theme.textSecondary }]}>
           {chapter.title} › {lesson.title}
         </Text>
-        <Text style={styles.title}>{lesson.title}</Text>
+        <Text style={[styles.title, { color: theme.headerText }]}>{lesson.title}</Text>
       </View>
 
       <View style={styles.content}>
-        <Text style={styles.contentText}>{lesson.content}</Text>
+        <Text style={[styles.contentText, { color: theme.text }]}>{lesson.content}</Text>
 
         {lesson.codeExamples.length > 0 && (
           <View style={styles.codeSection}>
-            <Text style={styles.codeSectionTitle}>💻 Code Examples</Text>
-            {!showAllCode && (
+            <View style={styles.codeSectionHeader}>
+              <Text style={[styles.codeSectionTitle, { color: theme.text }]}>💻 Code Examples</Text>
               <TouchableOpacity
-                style={styles.showCodeButton}
-                onPress={() => setShowAllCode(true)}
+                style={styles.toggleAllButton}
+                onPress={handleToggleAll}
+                accessibilityLabel={lesson.codeExamples.every((_, i) => !showCode[i]) ? 'Show all code examples' : 'Hide all code examples'}
+                accessibilityRole="button"
               >
-                <Text style={styles.showCodeText}>Show Code Examples</Text>
+                <Text style={{ color: '#4A90D9', fontSize: 14, fontWeight: '600' }}>
+                  {lesson.codeExamples.every((_, i) => !showCode[i]) ? 'Show All' : 'Hide All'}
+                </Text>
               </TouchableOpacity>
-            )}
+            </View>
             {lesson.codeExamples.map((example, index) => (
               <View key={example.title} style={styles.codeCard}>
                 <TouchableOpacity
                   style={styles.codeHeader}
                   onPress={() => toggleCode(index)}
+                  accessibilityLabel={`${showCode[index] ? 'Hide' : 'Show'} code example: ${example.title}`}
+                  accessibilityRole="button"
                 >
                   <Text style={styles.codeTitle}>{example.title}</Text>
-                  <Text style={styles.codeToggle}>{showCode[index] !== false ? '▲' : '▼'}</Text>
+                  <Text style={styles.codeToggle}>{showCode[index] ? '▲' : '▼'}</Text>
                 </TouchableOpacity>
-                {(showCode[index] !== false) && (
+                {showCode[index] && (
                   <View style={styles.codeBlock}>
                     <Text style={styles.codeText}>{example.code}</Text>
                   </View>
@@ -94,21 +127,14 @@ export default function LessonScreen({ route, navigation }) {
             ))}
           </View>
         )}
-
-        {showAllCode && lesson.codeExamples.length > 0 && (
-          <TouchableOpacity
-            style={styles.hideAllButton}
-            onPress={() => setShowAllCode(false)}
-          >
-            <Text style={styles.hideAllText}>Hide Code Examples</Text>
-          </TouchableOpacity>
-        )}
       </View>
 
       <TouchableOpacity
         style={[styles.completeButton, completed && styles.completedButton]}
         onPress={handleComplete}
         activeOpacity={0.8}
+        accessibilityLabel={completed ? 'Continue to next lesson' : 'Mark as complete and continue'}
+        accessibilityRole="button"
       >
         <Text style={styles.completeButtonText}>
           {completed ? '✅ Continue to Next Lesson' : '✓ Mark as Complete & Continue'}
@@ -121,7 +147,6 @@ export default function LessonScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F7FA',
   },
   errorContainer: {
     flex: 1,
@@ -129,19 +154,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   header: {
-    backgroundColor: '#2C3E50',
     padding: 20,
     paddingTop: 48,
   },
   breadcrumb: {
     fontSize: 13,
-    color: '#95A5A6',
     marginBottom: 8,
   },
   title: {
     fontSize: 24,
     fontWeight: '800',
-    color: '#fff',
   },
   content: {
     padding: 20,
@@ -149,28 +171,23 @@ const styles = StyleSheet.create({
   contentText: {
     fontSize: 16,
     lineHeight: 26,
-    color: '#2C3E50',
   },
   codeSection: {
     marginTop: 24,
   },
-  codeSectionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#2C3E50',
-    marginBottom: 12,
-  },
-  showCodeButton: {
-    backgroundColor: '#4A90D9',
-    borderRadius: 8,
-    padding: 14,
+  codeSectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 12,
   },
-  showCodeText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 15,
+  codeSectionTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  toggleAllButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 4,
   },
   codeCard: {
     backgroundColor: '#1E1E2E',
@@ -203,15 +220,6 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     color: '#E6E6FA',
     letterSpacing: 0.3,
-  },
-  hideAllButton: {
-    alignItems: 'center',
-    padding: 12,
-    marginBottom: 8,
-  },
-  hideAllText: {
-    color: '#95A5A6',
-    fontSize: 14,
   },
   completeButton: {
     backgroundColor: '#27AE60',

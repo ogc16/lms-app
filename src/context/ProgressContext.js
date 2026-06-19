@@ -20,8 +20,13 @@ export function ProgressProvider({ children }) {
       const stored = await AsyncStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
+        // Migrate old flat _userName to namespaced _meta.userName
+        if (parsed._userName && !parsed._meta) {
+          parsed._meta = { userName: parsed._userName };
+          delete parsed._userName;
+        }
         setProgress(parsed);
-        if (parsed._userName) setUserNameState(parsed._userName);
+        if (parsed._meta?.userName) setUserNameState(parsed._meta.userName);
       }
     } catch (e) {
       console.warn('Failed to load progress', e);
@@ -91,7 +96,7 @@ export function ProgressProvider({ children }) {
 
   const setUserName = useCallback((name) => {
     setProgress(prev => {
-      const next = { ...prev, _userName: name };
+      const next = { ...prev, _meta: { ...(prev._meta || {}), userName: name } };
       saveProgress(next);
       return next;
     });

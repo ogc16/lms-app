@@ -4,8 +4,7 @@ import PropTypes from 'prop-types';
 import { useProgress } from '../context/ProgressContext';
 import { useTheme } from '../context/ThemeContext';
 import { coursesArray } from '../data/courses';
-
-const courses = coursesArray;
+import CourseCard from '../components/CourseCard';
 
 export default function HomeScreen({ navigation }) {
   const { theme } = useTheme();
@@ -15,34 +14,21 @@ export default function HomeScreen({ navigation }) {
     <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={[styles.header, { backgroundColor: theme.headerBg }]}>
         <Text style={styles.logo}>📚 MyLec</Text>
-        <Text style={styles.tagline}>Learn Python & C++</Text>
+        <Text style={styles.tagline}>Learn {coursesArray.length} Courses</Text>
         <Text style={styles.subtitle}>Interactive courses with lessons and quizzes</Text>
       </View>
 
       <View style={styles.coursesSection}>
         <Text style={[styles.sectionTitle, { color: theme.text }]}>Available Courses</Text>
-        {courses.map((course) => {
+        {coursesArray.map((course) => {
           const progress = getCourseProgress(course.id, course.chapters);
           return (
-            <TouchableOpacity
+            <CourseCard
               key={course.id}
-              style={[styles.courseCard, { backgroundColor: theme.surface, borderLeftColor: course.color }]}
+              course={course}
+              progress={progress}
               onPress={() => navigation.navigate('CourseDetail', { courseId: course.id })}
-              activeOpacity={0.7}
-            >
-              <View style={styles.courseHeader}>
-                <Text style={styles.courseIcon}>{course.icon}</Text>
-                <View style={styles.courseInfo}>
-                  <Text style={[styles.courseTitle, { color: theme.text }]}>{course.title}</Text>
-                  <Text style={[styles.courseSubtitle, { color: theme.textSecondary }]}>{course.subtitle}</Text>
-                </View>
-              </View>
-              <Text style={[styles.courseDesc, { color: theme.textSecondary }]} numberOfLines={2}>{course.description}</Text>
-              <View style={[styles.progressBarContainer, { backgroundColor: theme.border }]}>
-                <View style={[styles.progressBar, { width: `${progress}%`, backgroundColor: course.color }]} />
-              </View>
-              <Text style={[styles.progressText, { color: theme.textSecondary }]}>{progress}% complete</Text>
-            </TouchableOpacity>
+            />
           );
         })}
       </View>
@@ -52,6 +38,8 @@ export default function HomeScreen({ navigation }) {
         <TouchableOpacity
           style={[styles.actionButton, { backgroundColor: theme.surface }]}
           onPress={() => navigation.navigate('Progress')}
+          accessibilityLabel="View My Progress"
+          accessibilityRole="button"
         >
           <Text style={styles.actionIcon}>📊</Text>
           <Text style={[styles.actionText, { color: theme.text }]}>View My Progress</Text>
@@ -59,6 +47,8 @@ export default function HomeScreen({ navigation }) {
         <TouchableOpacity
           style={[styles.actionButton, { backgroundColor: theme.surface }]}
           onPress={() => navigation.navigate('Profile')}
+          accessibilityLabel="My Profile"
+          accessibilityRole="button"
         >
           <Text style={styles.actionIcon}>👤</Text>
           <Text style={[styles.actionText, { color: theme.text }]}>My Profile</Text>
@@ -102,51 +92,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginBottom: 16,
   },
-  courseCard: {
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 16,
-    borderLeftWidth: 4,
-    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.1)',
-    elevation: 3,
-  },
-  courseHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  courseIcon: {
-    fontSize: 40,
-    marginRight: 16,
-  },
-  courseInfo: {
-    flex: 1,
-  },
-  courseTitle: {
-    fontSize: 22,
-    fontWeight: '700',
-  },
-  courseSubtitle: {
-    fontSize: 14,
-    marginTop: 2,
-  },
-  courseDesc: {
-    fontSize: 14,
-    lineHeight: 20,
-    marginBottom: 12,
-  },
-  progressBarContainer: {
-    height: 6,
-    borderRadius: 3,
-    marginBottom: 6,
-  },
-  progressBar: {
-    height: '100%',
-    borderRadius: 3,
-  },
-  progressText: {
-    fontSize: 12,
-  },
   quickActions: {
     paddingHorizontal: 20,
     paddingBottom: 32,
@@ -156,7 +101,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 12,
     padding: 16,
-    boxShadow: '0px 1px 4px rgba(0, 0, 0, 0.08)',
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
     elevation: 2,
   },
   actionIcon: {

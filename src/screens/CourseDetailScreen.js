@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import { useProgress } from '../context/ProgressContext';
 import { useTheme } from '../context/ThemeContext';
 import { coursesMap } from '../data/courses';
-
-const courses = coursesMap;
+import ProgressBar from '../components/ProgressBar';
+import LessonListItem from '../components/LessonListItem';
 
 export default function CourseDetailScreen({ route, navigation }) {
   const { courseId } = route.params;
-  const course = courses[courseId];
+  const course = coursesMap[courseId];
   const { isLessonComplete, getQuizScore, getCourseProgress, isCourseComplete } = useProgress();
   const { theme, isDark } = useTheme();
 
@@ -30,10 +30,7 @@ export default function CourseDetailScreen({ route, navigation }) {
         <Text style={styles.courseIcon}>{course.icon}</Text>
         <Text style={styles.courseTitle}>{course.title}</Text>
         <Text style={styles.courseDesc}>{course.description}</Text>
-        <View style={styles.progressBarContainer}>
-          <View style={[styles.progressBar, { width: `${overallProgress}%` }]} />
-        </View>
-        <Text style={styles.progressText}>{overallProgress}% complete</Text>
+        <ProgressBar progress={overallProgress} color="#fff" backgroundColor="rgba(255,255,255,0.3)" height={8} showLabel labelColor="#E8F0FE" />
       </View>
 
       {completed && (
@@ -41,6 +38,8 @@ export default function CourseDetailScreen({ route, navigation }) {
           style={[styles.certificateBanner, { backgroundColor: isDark ? '#2C2416' : '#f0ebc2', borderColor: isDark ? '#D4B896' : '#5e0e08' }]}
           onPress={() => navigation.navigate('Certificate', { courseId: course.id })}
           activeOpacity={0.7}
+          accessibilityLabel="View course certificate"
+          accessibilityRole="button"
         >
           <Text style={styles.certificateIcon}>🏆</Text>
           <View style={styles.certificateBannerText}>
@@ -57,14 +56,14 @@ export default function CourseDetailScreen({ route, navigation }) {
           const quizScore = getQuizScore(course.id, chapter.id);
 
           return (
-            <View key={chapter.id} style={styles.chapterCard}>
+            <View key={chapter.id} style={[styles.chapterCard, { backgroundColor: theme.surface }]}>
               <View style={styles.chapterHeader}>
-                <View style={styles.chapterNumBadge}>
+                <View style={[styles.chapterNumBadge, { backgroundColor: theme.border }]}>
                   <Text style={styles.chapterNum}>{chIndex + 1}</Text>
                 </View>
                 <View style={styles.chapterInfo}>
-                  <Text style={styles.chapterTitle}>{chapter.title}</Text>
-                  <Text style={styles.chapterProgress}>
+                  <Text style={[styles.chapterTitle, { color: theme.text }]}>{chapter.title}</Text>
+                  <Text style={[styles.chapterProgress, { color: theme.textSecondary }]}>
                     {completedLessons}/{chapter.lessons.length} lessons
                     {quizScore ? ` | Quiz: ${quizScore.score}/${quizScore.total}` : ''}
                   </Text>
@@ -74,38 +73,34 @@ export default function CourseDetailScreen({ route, navigation }) {
               {chapter.lessons.map((lesson) => {
                 const completed = isLessonComplete(course.id, lesson.id);
                 return (
-                  <TouchableOpacity
+                  <LessonListItem
                     key={lesson.id}
-                    style={styles.lessonItem}
+                    lesson={lesson}
+                    completed={completed}
                     onPress={() => navigation.navigate('Lesson', {
                       courseId: course.id,
                       chapterId: chapter.id,
                       lessonId: lesson.id,
                     })}
-                    activeOpacity={0.7}
-                  >
-                    <Text style={styles.lessonStatus}>{completed ? '✅' : '📖'}</Text>
-                    <Text style={[styles.lessonTitle, completed && styles.lessonCompleted]}>
-                      {lesson.title}
-                    </Text>
-                    <Text style={styles.lessonArrow}>›</Text>
-                  </TouchableOpacity>
+                  />
                 );
               })}
 
               <TouchableOpacity
-                style={styles.quizButton}
+                style={[styles.quizButton, { backgroundColor: isDark ? '#2C2416' : '#FFF8E1' }]}
                 onPress={() => navigation.navigate('Quiz', {
                   courseId: course.id,
                   chapterId: chapter.id,
                 })}
                 activeOpacity={0.7}
+                accessibilityLabel={quizScore ? `Retake quiz, previous score ${quizScore.score} out of ${quizScore.total}` : 'Take chapter quiz'}
+                accessibilityRole="button"
               >
                 <Text style={styles.quizIcon}>🧠</Text>
                 <Text style={styles.quizText}>
                   {quizScore ? `Retake Quiz (${quizScore.score}/${quizScore.total})` : 'Take Chapter Quiz'}
                 </Text>
-                <Text style={styles.lessonArrow}>›</Text>
+                <Text style={[styles.lessonArrow, { color: theme.textSecondary }]}>›</Text>
               </TouchableOpacity>
             </View>
           );
@@ -146,34 +141,19 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginBottom: 16,
   },
-  progressBarContainer: {
-    width: '80%',
-    height: 8,
-    backgroundColor: 'rgba(255,255,255,0.3)',
-    borderRadius: 4,
-    marginBottom: 8,
-  },
-  progressBar: {
-    height: '100%',
-    backgroundColor: '#fff',
-    borderRadius: 4,
-  },
-  progressText: {
-    fontSize: 13,
-    color: '#E8F0FE',
-  },
   certificateBanner: {
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: 16,
     marginTop: 16,
     padding: 16,
-    backgroundColor: '#f0ebc2',
     borderRadius: 16,
     borderWidth: 2,
-    borderColor: '#5e0e08',
     elevation: 4,
-    boxShadow: '0px 2px 12px rgba(94, 14, 8, 0.15)',
+    shadowColor: '#5e0e08',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
   },
   certificateIcon: {
     fontSize: 36,
@@ -185,17 +165,14 @@ const styles = StyleSheet.create({
   certificateBannerTitle: {
     fontSize: 18,
     fontWeight: '800',
-    color: '#5e0e08',
   },
   certificateBannerSubtitle: {
     fontSize: 13,
-    color: '#5e0e08',
     marginTop: 2,
     opacity: 0.8,
   },
   certificateArrow: {
     fontSize: 24,
-    color: '#5e0e08',
     fontWeight: '700',
     marginLeft: 8,
   },
@@ -203,11 +180,13 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   chapterCard: {
-    backgroundColor: '#fff',
     borderRadius: 16,
     padding: 16,
     marginBottom: 16,
-    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.08)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
     elevation: 3,
   },
   chapterHeader: {
@@ -219,7 +198,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#E8EDF2',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -235,47 +213,14 @@ const styles = StyleSheet.create({
   chapterTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#2C3E50',
   },
   chapterProgress: {
     fontSize: 13,
-    color: '#95A5A6',
     marginTop: 2,
-  },
-  lessonItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F2F5',
-  },
-  lessonStatus: {
-    fontSize: 16,
-    marginRight: 12,
-  },
-  lessonTitle: {
-    flex: 1,
-    fontSize: 15,
-    color: '#2C3E50',
-    fontWeight: '500',
-  },
-  lessonCompleted: {
-    color: '#95A5A6',
   },
   lessonArrow: {
     fontSize: 20,
-    color: '#BDC3C7',
     fontWeight: '700',
-  },
-  quizButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 8,
-    marginTop: 4,
-    backgroundColor: '#FFF8E1',
-    borderRadius: 10,
   },
   quizIcon: {
     fontSize: 18,
@@ -286,6 +231,14 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '600',
     color: '#F39C12',
+  },
+  quizButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    marginTop: 4,
+    borderRadius: 10,
   },
 });
 
