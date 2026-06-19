@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform } from 'react-native';
 import PropTypes from 'prop-types';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useProgress } from '../context/ProgressContext';
 import { useTheme } from '../context/ThemeContext';
 import { coursesArray } from '../data/courses';
@@ -8,11 +9,12 @@ import CourseCard from '../components/CourseCard';
 
 export default function HomeScreen({ navigation }) {
   const { theme } = useTheme();
-  const { getCourseProgress } = useProgress();
+  const { getCourseProgress, loading } = useProgress();
+  const insets = useSafeAreaInsets();
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
-      <View style={[styles.header, { backgroundColor: theme.headerBg }]}>
+      <View style={[styles.header, { backgroundColor: theme.headerBg, paddingTop: Platform.OS === 'android' ? insets.top + 20 : 60 }]}>
         <Text style={styles.logo}>📚 MyLec</Text>
         <Text style={styles.tagline}>Learn {coursesArray.length} Courses</Text>
         <Text style={styles.subtitle}>Interactive courses with lessons and quizzes</Text>
@@ -20,17 +22,21 @@ export default function HomeScreen({ navigation }) {
 
       <View style={styles.coursesSection}>
         <Text style={[styles.sectionTitle, { color: theme.text }]}>Available Courses</Text>
-        {coursesArray.map((course) => {
-          const progress = getCourseProgress(course.id, course.chapters);
-          return (
-            <CourseCard
-              key={course.id}
-              course={course}
-              progress={progress}
-              onPress={() => navigation.navigate('CourseDetail', { courseId: course.id })}
-            />
-          );
-        })}
+        {loading ? (
+          <Text style={[styles.loadingText, { color: theme.textSecondary }]}>Loading progress...</Text>
+        ) : (
+          coursesArray.map((course) => {
+            const progress = getCourseProgress(course.id, course.chapters);
+            return (
+              <CourseCard
+                key={course.id}
+                course={course}
+                progress={progress}
+                onPress={() => navigation.navigate('CourseDetail', { courseId: course.id })}
+              />
+            );
+          })
+        )}
       </View>
 
       <View style={styles.quickActions}>
@@ -107,6 +113,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 4,
     elevation: 2,
+  },
+  loadingText: {
+    textAlign: 'center',
+    paddingVertical: 32,
+    fontSize: 16,
   },
   actionIcon: {
     fontSize: 24,

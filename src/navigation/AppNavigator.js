@@ -32,7 +32,7 @@ function HomeStack() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: theme.headerBg, elevation: 0, boxShadow: 'none', shadowColor: 'transparent' },
+        headerStyle: { backgroundColor: theme.headerBg, elevation: 0, shadowColor: 'transparent' },
         headerTintColor: theme.headerText,
         headerTitleStyle: { fontWeight: '700', fontSize: 18 },
         headerBackTitleVisible: false,
@@ -47,24 +47,24 @@ function HomeStack() {
           const course = coursesMap[courseId];
           return {
             title: course?.title || 'Course',
-            headerStyle: { backgroundColor: course?.color || '#2C3E50', elevation: 0, boxShadow: 'none', shadowColor: 'transparent' },
+            headerStyle: { backgroundColor: course?.color || '#2C3E50', elevation: 0, shadowColor: 'transparent' },
           };
         }}
       />
       <Stack.Screen
         name="Lesson"
         component={LessonScreen}
-        options={{ title: 'Lesson', headerStyle: { backgroundColor: theme.headerBg, elevation: 0, boxShadow: 'none', shadowColor: 'transparent' } }}
+        options={{ title: 'Lesson', headerStyle: { backgroundColor: theme.headerBg, elevation: 0, shadowColor: 'transparent' } }}
       />
       <Stack.Screen
         name="Quiz"
         component={QuizScreen}
-        options={{ title: 'Chapter Quiz', headerStyle: { backgroundColor: theme.headerBg, elevation: 0, boxShadow: 'none', shadowColor: 'transparent' } }}
+        options={{ title: 'Chapter Quiz', headerStyle: { backgroundColor: theme.headerBg, elevation: 0, shadowColor: 'transparent' } }}
       />
       <Stack.Screen
         name="Certificate"
         component={CertificateScreen}
-        options={{ title: 'Certificate', headerStyle: { backgroundColor: '#5e0e08', elevation: 0, boxShadow: 'none', shadowColor: 'transparent' } }}
+        options={{ title: 'Certificate', headerStyle: { backgroundColor: '#5e0e08', elevation: 0, shadowColor: 'transparent' } }}
       />
     </Stack.Navigator>
   );
