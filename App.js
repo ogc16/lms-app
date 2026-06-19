@@ -9,7 +9,11 @@ function AppContent() {
   const { theme } = useTheme();
   return (
     <>
-      <StatusBar style={theme.statusBar} />
+      <StatusBar
+        style={theme.statusBar === 'dark' ? 'dark' : 'light'}
+        translucent={true}
+        backgroundColor="transparent"
+      />
       <AppNavigator />
     </>
   );

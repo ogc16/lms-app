@@ -9,7 +9,8 @@
     "scheme": "mylec",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.mylec.app"
+      "bundleIdentifier": "com.mylec.app",
+      "associatedDomains": ["applinks:mylec.com"]
     },
     "android": {
       "adaptiveIcon": {
@@ -20,7 +21,21 @@
       },
       "package": "com.mylec.app",
       "versionCode": 3,
-      "permissions": []
+      "permissions": [],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "mylec"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
