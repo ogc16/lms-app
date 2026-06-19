@@ -49,7 +49,7 @@ export default function ProgressScreen({ navigation }) {
               course={course}
               progress={courseProgress}
               variant="compact"
-              onPress={() => navigation.navigate('CourseDetail', { courseId: course.id })}
+              onPress={() => navigation.navigate('Home', { screen: 'CourseDetail', params: { courseId: course.id } })}
             />
             <View style={styles.chapterSummary}>
               {course.chapters.map((ch, idx) => {

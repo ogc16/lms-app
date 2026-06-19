@@ -75,7 +75,7 @@ export default function ProfileScreen({ navigation }) {
               course={course}
               progress={courseProgress}
               variant="compact"
-              onPress={() => navigation.navigate('CourseDetail', { courseId: course.id })}
+              onPress={() => navigation.navigate('Home', { screen: 'CourseDetail', params: { courseId: course.id } })}
             />
           );
         })}
