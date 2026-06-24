@@ -22,6 +22,7 @@ import { webAppDevCourse } from './webAppDevCourse';
 import { calculusCourse } from './calculusCourse';
 import { softwareEngineeringCourse } from './softwareEngineeringCourse';
 import { oopCourse } from './oopCourse';
+import { rustCourse } from './rustCourse';
 
 export const coursesMap = {
   python: pythonCourse,
@@ -48,6 +49,7 @@ export const coursesMap = {
   calculus: calculusCourse,
   software_engineering: softwareEngineeringCourse,
   oop: oopCourse,
+  rust: rustCourse,
 };
 
 export const coursesArray = [
@@ -56,5 +58,5 @@ export const coursesArray = [
   webDevCourse, sqlCourse, nextjsCourse, reactNativeCourse,
   financialRecordsCourse, operationsManagementCourse, financialAccountingCourse,
   databaseCourse, gisCourse, mobileComputingCourse, ooadCourse,
-  webAppDevCourse, calculusCourse, softwareEngineeringCourse, oopCourse,
+  webAppDevCourse, calculusCourse, softwareEngineeringCourse, oopCourse, rustCourse,
 ];
