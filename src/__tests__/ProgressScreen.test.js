@@ -26,7 +26,7 @@ describe('ProgressScreen', () => {
 
   it('renders overall progress section', async () => {
     const { getByText } = await renderScreen();
-    expect(getByText(/Overall Complete/)).toBeTruthy();
+    expect(getByText(/Overall Progress/)).toBeTruthy();
   });
 
   it('renders reset button', async () => {

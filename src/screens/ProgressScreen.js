@@ -21,23 +21,42 @@ export default function ProgressScreen({ navigation }) {
       </View>
 
       <View style={[styles.overallCard, { backgroundColor: theme.surface }]}>
-        <Text style={styles.overallPercent}>{overallPercent}%</Text>
-        <Text style={[styles.overallLabel, { color: theme.textSecondary }]}>Overall Complete</Text>
-        <ProgressBar progress={overallPercent} backgroundColor={theme.border} height={10} />
-        <Text style={[styles.overallStats, { color: theme.textSecondary }]}>
-          {completedLessons}/{totalLessons} lessons | {completedQuizzes}/{totalQuizzes} quizzes
-        </Text>
+        <View style={styles.overallCardTop}>
+          <View style={styles.overallCardLeft}>
+            <Text style={[styles.overallLabel, { color: theme.textSecondary }]}>Overall Progress</Text>
+            <Text style={styles.overallPercent}>{overallPercent}%</Text>
+            <Text style={[styles.overallStats, { color: theme.textSecondary }]}>
+              {completedLessons}/{totalLessons} lessons
+            </Text>
+            <Text style={[styles.overallStats, { color: theme.textSecondary }]}>
+              {completedQuizzes}/{totalQuizzes} quizzes
+            </Text>
+          </View>
+          <View style={styles.overallCardRight}>
+            <View style={[styles.circularProgress, { borderColor: theme.border }]}>
+              <View style={[styles.circularFill, { borderColor: '#4A90D9' }]} />
+              <View style={styles.circularInner}>
+                <Text style={styles.circularText}>{overallPercent}%</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+        <ProgressBar progress={overallPercent} backgroundColor={theme.border} height={8} />
       </View>
 
       <View style={[styles.streakCard, { backgroundColor: isDark ? '#2C2416' : '#FFF8E1' }]}>
         <Text style={styles.streakIcon}>🔥</Text>
-        <View>
-          <Text style={[styles.streakText, { color: theme.text }]}>Keep going!</Text>
+        <View style={styles.streakInfo}>
+          <Text style={[styles.streakText, { color: theme.text }]}>Learning Streak</Text>
           <Text style={[styles.streakSubtext, { color: theme.textSecondary }]}>
             {completedLessons > 0
-              ? `You've completed ${completedLessons} lessons so far`
+              ? `You've completed ${completedLessons} lessons so far!`
               : 'Start a lesson to begin tracking'}
           </Text>
+        </View>
+        <View style={[styles.streakCount, { backgroundColor: isDark ? '#D4A017' : '#F39C12' }]}>
+          <Text style={styles.streakCountText}>{completedLessons}</Text>
+          <Text style={styles.streakCountLabel}>done</Text>
         </View>
       </View>
 
@@ -97,8 +116,7 @@ const styles = StyleSheet.create({
   overallCard: {
     margin: 16,
     borderRadius: 16,
-    padding: 24,
-    alignItems: 'center',
+    padding: 20,
     backgroundColor: '#fff',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -106,17 +124,54 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 3,
   },
+  overallCardTop: {
+    flexDirection: 'row',
+    marginBottom: 12,
+  },
+  overallCardLeft: {
+    flex: 1,
+  },
+  overallCardRight: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 16,
+  },
+  circularProgress: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  circularFill: {
+    position: 'absolute',
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 6,
+    borderColor: '#4A90D9',
+  },
+  circularInner: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  circularText: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#4A90D9',
+  },
   overallPercent: {
-    fontSize: 56,
+    fontSize: 36,
     fontWeight: '800',
     color: '#4A90D9',
   },
   overallLabel: {
-    fontSize: 16,
-    marginBottom: 16,
+    fontSize: 14,
+    marginBottom: 4,
   },
   overallStats: {
-    fontSize: 14,
+    fontSize: 13,
   },
   streakCard: {
     flexDirection: 'row',
@@ -132,12 +187,34 @@ const styles = StyleSheet.create({
     fontSize: 32,
     marginRight: 16,
   },
+  streakInfo: {
+    flex: 1,
+  },
   streakText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '700',
   },
   streakSubtext: {
-    fontSize: 13,
+    fontSize: 12,
+    marginTop: 2,
+  },
+  streakCount: {
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    alignItems: 'center',
+    marginLeft: 8,
+  },
+  streakCountText: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#fff',
+  },
+  streakCountLabel: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#fff',
+    marginTop: -2,
   },
   courseWrapper: {
     marginHorizontal: 16,

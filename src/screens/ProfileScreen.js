@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text, TextInput, Image, StyleSheet, ScrollView, TouchableOpacity, Switch, Alert } from 'react-native';
 import PropTypes from 'prop-types';
 import * as ImagePicker from 'expo-image-picker';
@@ -10,10 +10,21 @@ import StatCard from '../components/StatCard';
 import ProgressBar from '../components/ProgressBar';
 import CourseCard from '../components/CourseCard';
 
+function getBadges(completedLessons, totalLessons, overallPercent) {
+  const badges = [];
+  if (totalLessons > 0) badges.push({ icon: '🌱', label: 'Beginner Learner', unlocked: true });
+  if (completedLessons >= 5) badges.push({ icon: '🔥', label: 'Consistency Streak', unlocked: true });
+  if (overallPercent >= 25) badges.push({ icon: '⭐', label: 'Quarter Master', unlocked: true });
+  if (overallPercent >= 50) badges.push({ icon: '🏅', label: 'Halfway Hero', unlocked: true });
+  if (overallPercent >= 100) badges.push({ icon: '🏆', label: 'Course Complete', unlocked: true });
+  return badges;
+}
+
 export default function ProfileScreen({ navigation }) {
   const { theme, isDark, toggleTheme } = useTheme();
   const { getCourseProgress, isLessonComplete, getQuizScore, resetProgress, userName, setUserName, profilePicture, setProfilePicture } = useProgress();
   const { totalLessons, completedLessons, totalQuizzes, completedQuizzes, overallPercent } = useOverallStats(coursesArray, isLessonComplete, getQuizScore);
+  const badges = useMemo(() => getBadges(completedLessons, totalLessons, overallPercent), [completedLessons, totalLessons, overallPercent]);
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState(userName);
 
@@ -91,6 +102,18 @@ export default function ProfileScreen({ navigation }) {
       </View>
 
       <View style={styles.section}>
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>🏅 Badges</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.badgesScroll}>
+          {badges.map((badge, idx) => (
+            <View key={idx} style={[styles.badgeCard, { backgroundColor: theme.surface }]}>
+              <Text style={styles.badgeIcon}>{badge.icon}</Text>
+              <Text style={[styles.badgeLabel, { color: theme.text }]}>{badge.label}</Text>
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+
+      <View style={styles.section}>
         <Text style={[styles.sectionTitle, { color: theme.text }]}>Course Breakdown</Text>
         {coursesArray.map(course => {
           const courseProgress = getCourseProgress(course.id, course.chapters);
@@ -100,7 +123,7 @@ export default function ProfileScreen({ navigation }) {
               course={course}
               progress={courseProgress}
               variant="compact"
-              onPress={() => navigation.navigate('CourseDetail', { courseId: course.id })}
+              onPress={() => navigation.navigate('Home', { screen: 'CourseDetail', params: { courseId: course.id } })}
             />
           );
         })}
@@ -313,6 +336,30 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '600',
     color: '#E74C3C',
+  },
+  badgesScroll: {
+    marginBottom: 8,
+  },
+  badgeCard: {
+    borderRadius: 12,
+    padding: 14,
+    marginRight: 10,
+    alignItems: 'center',
+    minWidth: 100,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+  },
+  badgeIcon: {
+    fontSize: 32,
+    marginBottom: 6,
+  },
+  badgeLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    textAlign: 'center',
   },
 });
 

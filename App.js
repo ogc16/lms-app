@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import ErrorBoundary from './src/components/ErrorBoundary';
 import { ProgressProvider } from './src/context/ProgressContext';
 import { ThemeProvider, useTheme } from './src/context/ThemeContext';
+import { CommunityProvider } from './src/context/CommunityContext';
 import AppNavigator from './src/navigation/AppNavigator';
 
 function AppContent() {
@@ -24,7 +25,9 @@ export default function App() {
     <ErrorBoundary>
       <ThemeProvider>
         <ProgressProvider>
-          <AppContent />
+          <CommunityProvider>
+            <AppContent />
+          </CommunityProvider>
         </ProgressProvider>
       </ThemeProvider>
     </ErrorBoundary>

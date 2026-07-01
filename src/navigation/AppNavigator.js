@@ -13,6 +13,8 @@ import QuizScreen from '../screens/QuizScreen';
 import ProgressScreen from '../screens/ProgressScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import CertificateScreen from '../screens/CertificateScreen';
+import AskQuestionScreen from '../screens/AskQuestionScreen';
+import QuestionDetailScreen from '../screens/QuestionDetailScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -65,6 +67,16 @@ function HomeStack() {
         name="Certificate"
         component={CertificateScreen}
         options={{ title: 'Certificate', headerStyle: { backgroundColor: '#5e0e08', elevation: 0, shadowColor: 'transparent' } }}
+      />
+      <Stack.Screen
+        name="AskQuestion"
+        component={AskQuestionScreen}
+        options={{ title: 'Community Q&A', headerStyle: { backgroundColor: theme.headerBg, elevation: 0, shadowColor: 'transparent' } }}
+      />
+      <Stack.Screen
+        name="QuestionDetail"
+        component={QuestionDetailScreen}
+        options={{ title: 'Question', headerStyle: { backgroundColor: theme.headerBg, elevation: 0, shadowColor: 'transparent' } }}
       />
     </Stack.Navigator>
   );
