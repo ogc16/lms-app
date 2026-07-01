@@ -9,7 +9,7 @@ const courses = coursesMap;
 
 export default function LessonScreen({ route, navigation }) {
   const { courseId, chapterId, lessonId } = route.params;
-  const { markLessonComplete, isLessonComplete } = useProgress();
+  const { markLessonComplete, markLessonViewed, isLessonComplete } = useProgress();
   const { theme } = useTheme();
 
   const course = courses[courseId];
@@ -47,6 +47,7 @@ export default function LessonScreen({ route, navigation }) {
   });
 
   useEffect(() => {
+    markLessonViewed(courseId, lessonId);
     const initial = {};
     lesson.codeExamples.forEach((_, i) => { initial[i] = true; });
     setShowCode(initial);

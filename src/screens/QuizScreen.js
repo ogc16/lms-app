@@ -9,7 +9,7 @@ const courses = coursesMap;
 
 export default function QuizScreen({ route, navigation }) {
   const { courseId, chapterId } = route.params;
-  const { markQuizScore } = useProgress();
+  const { markQuizScore, getQuizAttempts, getQuizScore } = useProgress();
   const { theme, isDark } = useTheme();
 
   const course = courses[courseId];
@@ -145,6 +145,27 @@ export default function QuizScreen({ route, navigation }) {
               ? 'Good job! Review the wrong answers.'
               : 'Keep practicing, you\'ll get better!'}
           </Text>
+
+          {(() => {
+            const attempts = getQuizAttempts(courseId, chapterId);
+            if (attempts.length > 0) {
+              const best = getQuizScore(courseId, chapterId);
+              return (
+                <View style={[styles.attemptsCard, { backgroundColor: theme.surface }]}>
+                  <Text style={[styles.attemptsTitle, { color: theme.text }]}>📋 Attempt History</Text>
+                  <Text style={[styles.attemptsBest, { color: theme.text }]}>
+                    Best: {best ? `${best.score}/${best.total}` : 'N/A'} ({attempts.length} attempt{attempts.length > 1 ? 's' : ''})
+                  </Text>
+                  {attempts.map((a, i) => (
+                    <Text key={i} style={[styles.attemptRow, { color: theme.textSecondary }]}>
+                      Attempt {i + 1}: {a.score}/{a.total} {a.passed ? '✅' : '❌'} — {new Date(a.date).toLocaleDateString()}
+                    </Text>
+                  ))}
+                </View>
+              );
+            }
+            return null;
+          })()}
 
           <View style={styles.reviewSection}>
             <Text style={[styles.reviewTitle, { color: theme.text }]}>Review Answers</Text>
@@ -452,6 +473,31 @@ const styles = StyleSheet.create({
   resultsActions: {
     width: '100%',
     gap: 12,
+  },
+  attemptsCard: {
+    width: '100%',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+  },
+  attemptsTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  attemptsBest: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 6,
+  },
+  attemptRow: {
+    fontSize: 13,
+    marginBottom: 2,
   },
   retryButton: {
     backgroundColor: '#fff',

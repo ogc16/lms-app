@@ -23,8 +23,17 @@ import { calculusCourse } from './calculusCourse';
 import { softwareEngineeringCourse } from './softwareEngineeringCourse';
 import { oopCourse } from './oopCourse';
 import { rustCourse } from './rustCourse';
+import { coursesMeta } from './coursesMeta';
 
-export const coursesMap = {
+function mergeMeta(course) {
+  const meta = coursesMeta[course.id];
+  if (meta) {
+    return { ...course, ...meta };
+  }
+  return course;
+}
+
+const rawCourses = {
   python: pythonCourse,
   cpp: cppCourse,
   cybersecurity: cybersecurityCourse,
@@ -52,11 +61,9 @@ export const coursesMap = {
   rust: rustCourse,
 };
 
-export const coursesArray = [
-  pythonCourse, cppCourse, cybersecurityCourse, ethicalhackerCourse,
-  bitCoreCourse, goCourse, swiftCourse, csharpCourse, vbCourse,
-  webDevCourse, sqlCourse, nextjsCourse, reactNativeCourse,
-  financialRecordsCourse, operationsManagementCourse, financialAccountingCourse,
-  databaseCourse, gisCourse, mobileComputingCourse, ooadCourse,
-  webAppDevCourse, calculusCourse, softwareEngineeringCourse, oopCourse, rustCourse,
-];
+export const coursesMap = {};
+Object.keys(rawCourses).forEach(key => {
+  coursesMap[key] = mergeMeta(rawCourses[key]);
+});
+
+export const coursesArray = Object.keys(rawCourses).map(key => mergeMeta(rawCourses[key]));

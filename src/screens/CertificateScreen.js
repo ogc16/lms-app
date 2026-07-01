@@ -7,7 +7,7 @@ import { useProgress } from '../context/ProgressContext';
 import { useTheme } from '../context/ThemeContext';
 import { coursesMap } from '../data/courses';
 
-function generateCertificateHTML(course, date, recipientName, isDark) {
+function generateCertificateHTML(course, date, recipientName, isDark, serial) {
   const parchment = isDark ? '#2C2416' : '#f0ebc2';
   const ink = isDark ? '#D4B896' : '#5e0e08';
   const qrData = encodeURIComponent(`Course: ${course.title} | Recipient: ${recipientName} | Date: ${date}`);
@@ -63,7 +63,8 @@ function generateCertificateHTML(course, date, recipientName, isDark) {
     .course-name { font-size: 20pt; font-weight: 700; color: ${ink}; margin-bottom: 10px; text-align: center; word-break: break-word; }
     p { font-size: 12pt; color: ${ink}; line-height: 1.3; text-align: center; max-width: 140mm; margin-bottom: 10px; word-break: break-word; }
     .seal { font-size: 40pt; margin-bottom: 8px; color: ${ink}; }
-    .date { font-size: 12pt; color: ${ink}; opacity: 0.8; margin-bottom: 8px; }
+    .date { font-size: 12pt; color: ${ink}; opacity: 0.8; margin-bottom: 4px; }
+    .serial { font-size: 9pt; color: ${ink}; opacity: 0.6; margin-bottom: 8px; font-family: 'Courier New', monospace; letter-spacing: 1px; }
     .signature-line {
       border-top: 2px solid ${ink};
       width: 50mm; text-align: center; padding-top: 4px;
@@ -101,6 +102,7 @@ function generateCertificateHTML(course, date, recipientName, isDark) {
       <p>${course.description}</p>
       <div class="seal">&#10003;</div>
       <div class="date">Completed on ${date}</div>
+      ${serial ? `<div class="serial">Serial: ${serial}</div>` : ''}
       <div class="signature-line">MyLec</div>
       <div class="qr-container">
         <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrData}" alt="QR Code" />
@@ -113,7 +115,7 @@ function generateCertificateHTML(course, date, recipientName, isDark) {
 
 export default function CertificateScreen({ route, navigation }) {
   const { courseId } = route.params;
-  const { isCourseComplete, setCourseCompletionDate, getCourseCompletionDate, userName } = useProgress();
+  const { isCourseComplete, setCourseCompletionDate, getCourseCompletionDate, getCertificateSerial, userName } = useProgress();
   const { theme, isDark } = useTheme();
   const [saving, setSaving] = useState(false);
 
@@ -124,6 +126,7 @@ export default function CertificateScreen({ route, navigation }) {
   const dateStr = completionDate
     ? completionDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
     : '';
+  const certificateSerial = course && completed ? getCertificateSerial(course.id) : null;
 
   useEffect(() => {
     if (completed && !completionDate && course) {
@@ -162,7 +165,7 @@ export default function CertificateScreen({ route, navigation }) {
   const handleSavePDF = async () => {
     setSaving(true);
     try {
-      const html = generateCertificateHTML(course, dateStr, userName, isDark);
+      const html = generateCertificateHTML(course, dateStr, userName, isDark, certificateSerial);
       if (Platform.OS === 'web') {
         const iframe = document.createElement('iframe');
         iframe.style.position = 'fixed';
@@ -207,6 +210,7 @@ export default function CertificateScreen({ route, navigation }) {
             <Text style={[styles.description, { color: ink }]}>{course.description}</Text>
             <Text style={[styles.seal, { color: ink }]}>✓</Text>
             <Text style={[styles.date, { color: ink }]}>Completed on {dateStr}</Text>
+            {certificateSerial && <Text style={[styles.serialText, { color: ink }]}>Serial: {certificateSerial}</Text>}
             <View style={[styles.signatureLine, { borderColor: ink }]}>
               <Text style={[styles.signatureText, { color: ink }]}>MyLec</Text>
             </View>
@@ -310,10 +314,17 @@ const styles = StyleSheet.create({
      alignItems: 'center',
      paddingTop: 6,
    },
-   signatureText: {
-     fontSize: 12,
-     letterSpacing: 1,
-   },
+  signatureText: {
+    fontSize: 12,
+    letterSpacing: 1,
+  },
+  serialText: {
+    fontSize: 10,
+    opacity: 0.6,
+    marginBottom: 8,
+    fontFamily: 'monospace',
+    letterSpacing: 1,
+  },
   downloadButton: {
     flexDirection: 'row',
     alignItems: 'center',
