@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, useWindowDimensions } from 'react-native';
 import PropTypes from 'prop-types';
 import { useProgress } from '../context/ProgressContext';
 import { useTheme } from '../context/ThemeContext';
@@ -12,6 +12,9 @@ export default function CourseDetailScreen({ route, navigation }) {
   const course = coursesMap[courseId];
   const { isLessonComplete, getQuizScore, getCourseProgress, isCourseComplete } = useProgress();
   const { theme, isDark } = useTheme();
+  const { width: screenWidth } = useWindowDimensions();
+  const scale = Math.min(screenWidth / 375, 1.33);
+  const s = (size) => Math.round(size * scale);
 
   if (!course) {
     return (
@@ -35,18 +38,18 @@ export default function CourseDetailScreen({ route, navigation }) {
 
       {completed && (
         <TouchableOpacity
-          style={[styles.certificateBanner, { backgroundColor: isDark ? '#2C2416' : '#f0ebc2', borderColor: isDark ? '#D4B896' : '#5e0e08' }]}
+          style={[styles.certificateBanner, { backgroundColor: isDark ? '#2C2416' : '#f0ebc2', borderColor: isDark ? '#D4B896' : '#5e0e08', padding: s(16), marginHorizontal: s(16), marginTop: s(16), borderRadius: s(16) }]}
           onPress={() => navigation.navigate('Certificate', { courseId: course.id })}
           activeOpacity={0.7}
           accessibilityLabel="View course certificate"
           accessibilityRole="button"
         >
-          <Text style={styles.certificateIcon}>🏆</Text>
+          <Text style={[styles.certificateIcon, { fontSize: s(36), marginRight: s(14) }]}>🏆</Text>
           <View style={styles.certificateBannerText}>
-            <Text style={[styles.certificateBannerTitle, { color: isDark ? '#D4B896' : '#5e0e08' }]}>Course Completed!</Text>
-            <Text style={[styles.certificateBannerSubtitle, { color: isDark ? '#B89B72' : '#5e0e08' }]}>Tap to view your certificate</Text>
+            <Text style={[styles.certificateBannerTitle, { color: isDark ? '#D4B896' : '#5e0e08', fontSize: s(18) }]}>Course Completed!</Text>
+            <Text style={[styles.certificateBannerSubtitle, { color: isDark ? '#B89B72' : '#5e0e08', fontSize: s(13) }]}>Tap to view your certificate</Text>
           </View>
-          <Text style={[styles.certificateArrow, { color: isDark ? '#D4B896' : '#5e0e08' }]}>›</Text>
+          <Text style={[styles.certificateArrow, { color: isDark ? '#D4B896' : '#5e0e08', fontSize: s(24), marginLeft: s(8) }]}>›</Text>
         </TouchableOpacity>
       )}
 
